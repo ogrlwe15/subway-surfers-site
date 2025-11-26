@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extension MYNVO - Mode NO COIN + Leaderboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 900;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            letter-spacing: -1px;
+        }
+
+        .logo span {
+            color: #ffd700;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .hero {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 60px 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero p {
+            font-size: 20px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #333;
+            padding: 18px 50px;
+            border-radius: 16px;
+            font-weight: 800;
+            font-size: 20px;
+            text-decoration: none;
+            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.5);
+            transition: all 0.3s;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 40px rgba(255, 215, 0, 0.7);
+        }
+
+        .section {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .section h2 {
+            font-size: 32px;
+            margin-bottom: 25px;
+            color: #ffd700;
+            font-weight: 800;
+        }
+
+        .installation-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .step {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 16px;
+            border-left: 4px solid #ffd700;
+            transition: all 0.3s;
+        }
+
+        .step:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #333;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: #ffd700;
+        }
+
+        .step-content p {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .step-content code {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #58a6ff;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .feature {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .feature:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 215, 0, 0.5);
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .feature h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #ffd700;
+        }
+
+        .feature p {
+            opacity: 0.85;
+            line-height: 1.5;
+        }
+
+        .screenshot {
+            width: 100%;
+            max-width: 800px;
+            margin: 30px auto;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .screenshot img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .alert-box {
+            background: rgba(34, 197, 94, 0.15);
+            border: 2px solid #22c55e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .alert-box strong {
+            color: #22c55e;
+            font-size: 18px;
+        }
+
+        .alert-box p {
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+
+        .faq {
+            margin-top: 20px;
+        }
+
+        .faq-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .faq-item h4 {
+            color: #ffd700;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .faq-item p {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 30px 40px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 15px;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        .copyright {
+            opacity: 0.6;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .download-btn {
+                font-size: 18px;
+                padding: 15px 40px;
+            }
+
+            .section {
+                padding: 25px;
+            }
+
+            .section h2 {
+                font-size: 24px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                🎮 Subway<span>Play</span>
+            </div>
+            <a href="index.html" class="back-btn">← Retour au jeu</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="hero">
+            <h1>🏆 Extension MYNVO</h1>
+            <p>
+                Mode NO COIN + Leaderboard mondial en temps réel<br>
+                Transforme ton expérience Subway Surfers avec des fonctionnalités exclusives !
+            </p>
+            <a href="#" class="download-btn" onclick="alert('📦 Télécharge les fichiers depuis le dossier /extension/ du repository GitHub !\n\nOu crée un dossier avec les fichiers de ton extension.'); return false;">
+                📥 Télécharger l'extension
+            </a>
+        </div>
+
+        <div class="section">
+            <h2>✨ Fonctionnalités</h2>
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Mode NO COIN</h3>
+                    <p>Timer automatique qui compte ton temps de survie sans collecter de pièces. Challenge ultime !</p>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">🌍</div>
+                    <h3>Leaderboard Mondial</h3>
+                    <p>TOP 3 en temps réel partagé avec tous les joueurs via Firebase. Deviens une légende !</p>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">⌨️</div>
+                    <h3>Touches Personnalisables</h3>
+                    <p>Configure ZQSD, WASD ou tes propres touches pour un contrôle parfait</p>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+                    <h3>Compteur FPS</h3>
+                    <p>Affiche les FPS en temps réel. Clique dessus pour l'activer/désactiver</p>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Détection Automatique</h3>
+                    <p>L'extension détecte automatiquement le début et la fin de chaque partie</p>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">🔔</div>
+                    <h3>Notifications</h3>
+                    <p>Reçois une notification stylée quand tu bats ton record personnel</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📋 Installation (6 étapes simples)</h2>
+            <div class="installation-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Télécharge l'extension</h3>
+                        <p>Clique sur le bouton "Télécharger" ci-dessus ou récupère les fichiers depuis le repository GitHub.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Extrais l'archive</h3>
+                        <p>Décompresse le fichier ZIP dans un dossier sur ton ordinateur (par exemple : <code>C:\Extensions\MYNVO</code>)</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Ouvre Chrome</h3>
+                        <p>Va dans le menu Chrome → Plus d'outils → Extensions<br>Ou tape directement : <code>chrome://extensions/</code></p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Active le mode développeur</h3>
+                        <p>En haut à droite de la page, active le bouton "Mode développeur"</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h3>Charge l'extension</h3>
+                        <p>Clique sur "Charger l'extension non empaquetée" et sélectionne le dossier extrait</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">6</div>
+                    <div class="step-content">
+                        <h3>C'est prêt ! 🎉</h3>
+                        <p>Retourne sur <a href="index.html" style="color: #ffd700;">la page du jeu</a> et lance une partie. L'extension s'activera automatiquement !</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert-box">
+                <strong>⚠️ Mot de passe requis</strong>
+                <p>L'extension te demandera un mot de passe au premier lancement pour sécuriser l'accès. Contacte l'administrateur si tu n'as pas le mot de passe.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🎮 Comment ça marche ?</h2>
+            <div class="faq">
+                <div class="faq-item">
+                    <h4>📌 Qu'est-ce que le mode NO COIN ?</h4>
+                    <p>C'est un challenge où tu dois survivre le plus longtemps possible SANS collecter de pièces. L'extension détecte automatiquement quand tu collectes une pièce et invalide ta run. Seul ton meilleur temps avant la première pièce est envoyé au leaderboard.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>🏆 Comment fonctionne le leaderboard ?</h4>
+                    <p>Ton meilleur temps (avant de collecter une pièce) est automatiquement envoyé à Firebase. Le TOP 3 mondial s'affiche en bas à gauche du jeu en temps réel. Tous les joueurs avec l'extension voient le même classement.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>⌨️ Comment changer les touches ?</h4>
+                    <p>Clique sur l'icône de l'extension dans Chrome (en haut à droite), puis configure tes touches préférées. Les changements sont appliqués instantanément.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>📊 À quoi sert le compteur FPS ?</h4>
+                    <p>Il affiche les images par seconde du jeu en temps réel. Clique dessus pour l'activer ou le désactiver. Utile pour vérifier les performances de ton PC.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>🔧 L'extension ne fonctionne pas ?</h4>
+                    <p>Vérifie que :<br>
+                    • Tu es bien sur le site yell0wsuit.page<br>
+                    • L'extension est activée dans <code>chrome://extensions/</code><br>
+                    • Tu as rechargé la page après installation<br>
+                    • Tu as entré le bon mot de passe</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4>🌐 Mes records sont-ils vraiment mondiaux ?</h4>
+                    <p>Oui ! Tous les joueurs ayant l'extension installée partagent le même leaderboard Firebase en temps réel. Tu affrontes le monde entier !</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📸 Aperçu de l'extension</h2>
+            <div style="text-align: center; padding: 40px; background: rgba(255, 255, 255, 0.05); border-radius: 16px;">
+                <div style="font-size: 80px; margin-bottom: 20px;">🎮</div>
+                <h3 style="color: #ffd700; font-size: 24px; margin-bottom: 15px;">Interface In-Game</h3>
+                <p style="opacity: 0.9; line-height: 1.8;">
+                    • Timer NO COIN en haut à gauche<br>
+                    • Leaderboard TOP 3 en bas à gauche<br>
+                    • Compteur FPS cliquable<br>
+                    • Bandeau de touches en bas à droite<br>
+                    • Notifications de record stylées
+                </p>
+            </div>
+        </div>
+
+        <div class="section" style="text-align: center;">
+            <h2>🚀 Prêt à devenir une légende ?</h2>
+            <p style="font-size: 18px; opacity: 0.9; margin: 20px 0 30px;">
+                Installe l'extension maintenant et rejoins les meilleurs joueurs mondiaux !
+            </p>
+            <a href="#" class="download-btn" onclick="alert('📦 Télécharge les fichiers depuis le dossier /extension/ du repository GitHub !'); return false;">
+                📥 Télécharger l'extension
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="index.html">Jouer</a>
+                <a href="extension.html">Extension</a>
+                <a href="https://github.com/ogrlwe15/subway-surfers-site" target="_blank">GitHub</a>
+            </div>
+            <div class="copyright">
+                © 2024 SubwayPlay - Extension MYNVO
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
