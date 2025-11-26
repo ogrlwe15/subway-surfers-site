@@ -1,288 +1,129 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Subway Surfers by Mynvo - Jeu en ligne gratuit</title>
+  <title>Subway Surfers by Mynvo</title>
+  <meta name="description" content="Subway Surfers version Mynvo avec TOP 3 et FPS">
   <style>
-    :root {
-      --primary: #7c62dc;
-      --bg-dark: #0a0a0a;
-      --bg-card: rgba(30, 30, 40, 0.8);
-      --text-light: #f0f0f0;
-      --success: #00cc66;
-      --danger: #ff4444;
-      --warning: #ffaa00;
-    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#0a0a0a 0%,#1a0a2e 100%);color:#fff;min-height:100vh;display:flex;flex-direction:column;overflow:hidden;}
     
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    /* HEADER */
+    header{background:rgba(124,98,220,0.12);backdrop-filter:blur(16px);padding:20px 40px;position:fixed;top:0;left:0;right:0;z-index:100;border-bottom:3px solid rgba(124,98,220,0.4);box-shadow:0 4px 30px rgba(124,98,220,0.2);}
+    .header-content{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;}
+    .logo{font-size:32px;font-weight:900;display:flex;align-items:center;gap:12px;text-shadow:0 0 20px rgba(124,98,220,0.6);}
+    .logo img{height:48px;border-radius:50%;border:3px solid #7c62dc;box-shadow:0 0 25px rgba(124,98,220,0.5);transition:transform 0.3s;}
+    .logo img:hover{transform:scale(1.1) rotate(5deg);}
+    .logo span{color:#7c62dc;}
+    .nav-links a{color:#fff;text-decoration:none;margin-left:28px;font-weight:600;font-size:16px;transition:all 0.3s;cursor:pointer;position:relative;}
+    .nav-links a:hover{color:#7c62dc;text-shadow:0 0 10px rgba(124,98,220,0.8);}
+    .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:#7c62dc;transition:width 0.3s;}
+    .nav-links a:hover::after{width:100%;}
     
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
-      color: var(--text-light);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+    /* MAIN */
+    main{flex:1;display:flex;align-items:center;justify-content:center;padding:120px 20px 20px;}
+    .game-container{width:100%;max-width:1400px;background:rgba(124,98,220,0.08);backdrop-filter:blur(25px);border-radius:30px;padding:45px;box-shadow:0 30px 90px rgba(124,98,220,0.3);overflow:hidden;position:relative;border:3px solid rgba(124,98,220,0.3);transition:transform 0.3s;}
+    .game-container:hover{transform:translateY(-5px);box-shadow:0 35px 100px rgba(124,98,220,0.4);}
     
-    header {
-      background: rgba(124, 98, 220, 0.15);
-      backdrop-filter: blur(12px);
-      padding: 18px 40px;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      border-bottom: 2px solid var(--primary);
-    }
+    h1{font-size:52px;text-align:center;margin-bottom:35px;text-shadow:0 0 40px rgba(124,98,220,0.8);color:#7c62dc;font-weight:900;letter-spacing:2px;}
     
-    .header-content {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    .game-frame{position:relative;border-radius:24px;overflow:hidden;box-shadow:0 20px 60px rgba(124,98,220,0.4);border:3px solid rgba(124,98,220,0.4);}
+    iframe{width:100%;height:720px;border:none;background:#000;display:block;}
     
-    .logo {
-      font-size: 34px;
-      font-weight: 900;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
+    .loading{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;text-align:center;}
+    .spinner{width:80px;height:80px;border:10px solid rgba(124,98,220,0.2);border-top:10px solid #7c62dc;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 25px;}
+    @keyframes spin{to{transform:rotate(360deg);}}
     
-    .logo span {
-      color: var(--primary);
-    }
+    .fs-button{position:absolute;top:20px;right:20px;z-index:200;background:rgba(0,0,0,0.85);border:2px solid #7c62dc;color:#fff;padding:12px 18px;border-radius:14px;cursor:pointer;font-weight:700;font-size:14px;transition:all 0.3s;box-shadow:0 4px 15px rgba(0,0,0,0.5);}
+    .fs-button:hover{background:#7c62dc;color:#000;transform:scale(1.05);box-shadow:0 6px 20px rgba(124,98,220,0.6);}
     
-    .nav-links {
-      display: flex;
-      gap: 24px;
-    }
+    /* OVERLAYS */
+    #fps-overlay{position:fixed;top:110px;left:25px;z-index:999999;background:rgba(0,0,0,0.95);color:#7c62dc;padding:14px 22px;border-radius:16px;font-size:20px;font-weight:900;border:3px solid #7c62dc;box-shadow:0 0 30px rgba(124,98,220,0.5);font-family:system-ui,sans-serif;pointer-events:none;transition:all 0.3s;}
     
-    .nav-links a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-      transition: color 0.2s;
-      cursor: pointer;
-    }
+    #top3-overlay{position:fixed;bottom:25px;left:25px;z-index:999999;background:rgba(0,0,0,0.98);color:#fff;padding:20px 28px;border-radius:18px;border:3px solid #7c62dc;font-size:15px;line-height:1.8;box-shadow:0 0 40px rgba(124,98,220,0.6);font-family:system-ui,sans-serif;pointer-events:none;min-width:300px;}
+    #top3-overlay .title{color:#7c62dc;font-size:18px;font-weight:900;margin-bottom:14px;text-align:center;text-shadow:0 0 10px rgba(124,98,220,0.8);}
+    #top3-overlay .player{margin:8px 0;padding:10px;border-radius:10px;background:rgba(124,98,220,0.1);transition:all 0.3s;}
+    #top3-overlay .player:hover{background:rgba(124,98,220,0.2);transform:translateX(5px);}
+    #top3-overlay .player.first{color:#7c62dc;font-weight:800;font-size:16px;}
     
-    .nav-links a:hover {
-      color: var(--primary);
-    }
+    #timer-overlay{position:fixed;top:25px;right:25px;background:rgba(0,0,0,0.95);color:#fff;padding:14px 20px;border-radius:14px;border:3px solid #7c62dc;z-index:999999;font-weight:900;display:none;font-size:18px;box-shadow:0 0 30px rgba(124,98,220,0.5);}
     
-    main {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 120px 20px 40px;
-    }
+    /* BOTTOM MENU */
+    #bottom-menu{position:fixed;bottom:25px;right:25px;background:rgba(0,0,0,0.92);border:3px solid #7c62dc;border-radius:18px;padding:18px 24px;z-index:999999;color:#fff;font-family:'Segoe UI',sans-serif;min-width:280px;box-shadow:0 0 35px rgba(124,98,220,0.6);backdrop-filter:blur(10px);}
+    .menu-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+    .menu-title{font-size:18px;font-weight:800;color:#7c62dc;text-shadow:0 0 10px rgba(124,98,220,0.6);}
+    #close-bottom-menu{background:#7c62dc;border:none;color:#000;font-weight:800;border-radius:10px;padding:6px 12px;cursor:pointer;transition:all 0.3s;}
+    #close-bottom-menu:hover{background:#9580e8;transform:scale(1.1);}
     
-    .game-container {
-      width: 100%;
-      max-width: 1350px;
-      background: var(--bg-card);
-      backdrop-filter: blur(20px);
-      border-radius: 28px;
-      padding: 40px;
-      border: 2px solid var(--primary);
-    }
+    .quick-btn{width:100%;padding:12px 14px;background:rgba(124,98,220,0.1);border:2px solid #7c62dc;border-radius:12px;color:#fff;cursor:pointer;font-weight:700;transition:all 0.3s;margin-top:10px;font-size:14px;}
+    .quick-btn:hover{background:#7c62dc;color:#000;transform:translateX(5px);box-shadow:0 4px 15px rgba(124,98,220,0.4);}
     
-    .game-frame {
-      position: relative;
-      border-radius: 20px;
-      overflow: hidden;
-      border: 2px solid var(--primary);
-    }
+    /* MODALS */
+    .mynvo-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#0a0a0a 0%,#1a0a2e 100%);color:#fff;padding:30px;border-radius:20px;border:4px solid #7c62dc;z-index:100000;max-width:94%;width:750px;box-shadow:0 0 80px rgba(124,98,220,0.7);max-height:90vh;overflow-y:auto;}
+    .mynvo-modal h2,.mynvo-modal h3{color:#7c62dc;text-align:center;margin-bottom:18px;font-weight:900;text-shadow:0 0 15px rgba(124,98,220,0.8);}
     
-    iframe {
-      width: 100%;
-      height: 720px;
-      border: none;
-      background: #000000;
-      display: block;
-    }
+    .mynvo-row{display:flex;gap:14px;align-items:center;margin-bottom:14px;}
+    .mynvo-label{min-width:130px;color:#aaa;font-weight:600;}
     
-    /* CRITICAL: Overlays TOUJOURS visibles même en fullscreen */
-    #fps-overlay, #timer-overlay, #top3-overlay {
-      position: fixed !important;
-      z-index: 2147483647 !important;
-      pointer-events: none !important;
-      font-family: 'Courier New', monospace !important;
-    }
+    input[type="text"],input[type="range"]{padding:10px;border-radius:10px;border:2px solid #7c62dc;background:rgba(0,0,0,0.6);color:#fff;font-size:15px;}
+    input[type="text"]{width:100%;}
+    input[type="range"]{flex:1;cursor:pointer;}
     
-    /* Force l'affichage même dans fullscreen */
-    :fullscreen #fps-overlay,
-    :fullscreen #timer-overlay,
-    :fullscreen #top3-overlay,
-    :-webkit-full-screen #fps-overlay,
-    :-webkit-full-screen #timer-overlay,
-    :-webkit-full-screen #top3-overlay {
-      display: block !important;
-      visibility: visible !important;
-      opacity: 1 !important;
-    }
+    .key-display{display:inline-block;min-width:70px;padding:12px 18px;background:#0a0a0a;border:2px solid #7c62dc;border-radius:10px;text-align:center;font-weight:800;font-size:18px;cursor:pointer;transition:all 0.3s;}
+    .key-display:hover{border-color:#9580e8;background:rgba(124,98,220,0.2);transform:scale(1.05);}
+    .key-display.active{border-color:#00ff00;background:rgba(0,255,0,0.2);animation:pulse 0.6s infinite;}
+    @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
     
-    #fps-overlay {
-      top: 20px;
-      left: 20px;
-      background: rgba(0, 0, 0, 0.9);
-      color: var(--primary);
-      padding: 12px 20px;
-      border-radius: 12px;
-      font-size: 20px;
-      font-weight: 700;
-      border: 3px solid var(--primary);
-      box-shadow: 0 0 20px rgba(124, 98, 220, 0.6);
-    }
+    .modal-section{background:rgba(124,98,220,0.08);padding:18px;border-radius:14px;margin-bottom:16px;border:2px solid rgba(124,98,220,0.3);}
     
-    #timer-overlay {
-      top: 20px;
-      right: 20px;
-      background: rgba(0, 0, 0, 0.9);
-      color: #fff;
-      padding: 14px 20px;
-      border-radius: 12px;
-      border: 3px solid var(--primary);
-      font-weight: 700;
-      font-size: 18px;
-      box-shadow: 0 0 20px rgba(124, 98, 220, 0.6);
-    }
+    button{transition:all 0.3s;font-family:inherit;}
+    .btn-primary{background:#7c62dc;color:#000;padding:12px 24px;border:none;border-radius:12px;font-size:16px;cursor:pointer;font-weight:800;}
+    .btn-primary:hover{background:#9580e8;transform:scale(1.05);box-shadow:0 6px 20px rgba(124,98,220,0.6);}
+    .btn-danger{background:#ef4444;color:#fff;padding:12px 24px;border:none;border-radius:12px;font-size:16px;cursor:pointer;font-weight:800;}
+    .btn-danger:hover{background:#dc2626;transform:scale(1.05);}
     
-    #timer-overlay.running {
-      border-color: var(--success);
-      animation: pulse 2s infinite;
-    }
+    footer{text-align:center;padding:30px;font-size:15px;background:rgba(124,98,220,0.08);color:#7c62dc;font-weight:600;border-top:2px solid rgba(124,98,220,0.3);}
     
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 20px rgba(0, 204, 102, 0.6); }
-      50% { box-shadow: 0 0 30px rgba(0, 204, 102, 0.9); }
-    }
-    
-    .timer-display {
-      font-size: 26px;
-      font-weight: bold;
-      color: var(--success);
-      text-shadow: 0 0 10px rgba(0, 204, 102, 0.5);
-    }
-    
-    .timer-status {
-      font-size: 12px;
-      color: #aaa;
-      margin-top: 4px;
-    }
-    
-    #top3-overlay {
-      bottom: 20px;
-      left: 20px;
-      background: rgba(0, 0, 0, 0.95);
-      color: #fff;
-      padding: 18px 24px;
-      border-radius: 14px;
-      border: 3px solid var(--primary);
-      font-size: 14px;
-      min-width: 300px;
-      box-shadow: 0 0 25px rgba(124, 98, 220, 0.6);
-    }
-    
-    #top3-overlay .title {
-      color: var(--primary);
-      font-size: 17px;
-      font-weight: 900;
-      margin-bottom: 12px;
-      text-align: center;
-    }
-    
-    #top3-overlay .player {
-      margin: 8px 0;
-      padding: 8px;
-      border-radius: 8px;
-      background: rgba(124, 98, 220, 0.1);
-    }
-    
-    #top3-overlay .player.first {
-      color: var(--primary);
-      font-weight: 700;
-      font-size: 16px;
-      background: rgba(124, 98, 220, 0.2);
-    }
-    
-    .notification {
-      position: fixed;
-      top: 90px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(20, 20, 30, 0.95);
-      color: white;
-      padding: 14px 24px;
-      border-radius: 10px;
-      border-left: 4px solid var(--primary);
-      z-index: 2147483646;
-      opacity: 0;
-      transition: opacity 0.3s;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
-    }
-    
-    .notification.show {
-      opacity: 1;
-    }
-    
-    footer {
-      text-align: center;
-      padding: 25px;
-      font-size: 15px;
-      opacity: 0.85;
-    }
-
-    @media (max-width: 768px) {
-      iframe {
-        height: 400px;
-      }
-      #fps-overlay, #timer-overlay, #top3-overlay {
-        font-size: 14px;
-        padding: 10px 14px;
-      }
-    }
+    /* SCROLLBAR */
+    ::-webkit-scrollbar{width:12px;}
+    ::-webkit-scrollbar-track{background:rgba(0,0,0,0.3);}
+    ::-webkit-scrollbar-thumb{background:#7c62dc;border-radius:6px;}
+    ::-webkit-scrollbar-thumb:hover{background:#9580e8;}
   </style>
 </head>
 <body>
+
   <header>
     <div class="header-content">
       <div class="logo">
+        <img src="logo.png" alt="Mynvo" onerror="this.style.display='none'">
         Subway<span>Surfers</span> by <span>Mynvo</span>
       </div>
       <div class="nav-links">
-        <a id="play-link">Jouer</a>
-        <a href="https://discord.gg/bQTtDXmF" target="_blank">Discord</a>
+        <a id="play-link">🎮 Jouer</a>
+        <a onclick="openSettings()">⚙️ Paramètres</a>
+        <a href="https://discord.gg/bQTtDXmF" target="_blank">💬 Discord</a>
       </div>
     </div>
   </header>
 
   <main>
     <div class="game-container">
+      <h1>⚡ SUBWAY SURFERS ⚡</h1>
       <div class="game-frame">
+        <div class="loading" id="loading-ui">
+          <div class="spinner"></div>
+          <p style="font-size:18px;font-weight:700;">Chargement du jeu...</p>
+        </div>
+        <button class="fs-button" id="fs-btn" title="Plein écran">⤢ Plein écran</button>
         <iframe id="game-iframe" src="./game/" allowfullscreen allow="autoplay; fullscreen *"></iframe>
       </div>
     </div>
   </main>
 
-  <!-- OVERLAYS PERMANENTS -->
   <div id="fps-overlay">🎮 FPS: <span id="fps-value">60</span></div>
-
-  <div id="timer-overlay">
-    <div class="timer-display"><span id="timer-value">00:00.00</span></div>
-    <div class="timer-status">Appuyez F1 pour démarrer</div>
-  </div>
-
+  
   <div id="top3-overlay">
     <div class="title">🏆 TOP 3 NO COIN</div>
     <div class="player first">🥇 Mynvo – 13:27</div>
@@ -290,366 +131,366 @@
     <div class="player">🥉 .... – 0:00</div>
   </div>
 
-  <footer>Subway Surfers by Mynvo © 2023</footer>
+  <div id="timer-overlay">⏱️ <span id="timer-value">00:00</span></div>
 
-  <script>
-    const iframe = document.getElementById('game-iframe');
-    let timerInterval = null;
-    let timerStart = 0;
-    let timerElapsed = 0;
-    let timerActive = false;
-    let giveAttempts = 0;
-    const MAX_GIVE_ATTEMPTS = 8;
+  <div id="bottom-menu">
+    <div class="menu-header">
+      <div class="menu-title">⚙️ Menu Rapide</div>
+      <button id="close-bottom-menu">✖</button>
+    </div>
+    <button class="quick-btn" onclick="openSettings()">🎮 Paramètres & Touches</button>
+    <button class="quick-btn" onclick="toggleFPS()">📊 Afficher/Masquer FPS</button>
+    <button class="quick-btn" onclick="toggleFullscreen()">⤢ Mode Plein Écran</button>
+    <button class="quick-btn" onclick="openVolumeMenu()">🔊 Volume du Jeu</button>
+    <button class="quick-btn" onclick="openMapMenu()">🗺️ Position TOP3</button>
+    <button class="quick-btn" onclick="openTimerMenu()">⏱️ Timer & Chrono</button>
+  </div>
 
-    // ============= 1. GIVE AUTOMATIQUE PUISSANT =============
-    function autoGiveResources() {
-      console.log(`💰 Tentative Give #${giveAttempts + 1}...`);
-      
-      try {
-        const iframeWindow = iframe.contentWindow;
-        const iframeDoc = iframeWindow.document;
-        
-        // Méthode 1: Injection de script PUISSANT
-        const scriptElement = iframeDoc.createElement('script');
-        scriptElement.id = 'mynvo-give-script-' + giveAttempts;
-        scriptElement.textContent = `
-          (function() {
-            console.log('💰 [MYNVO] Exécution du Give...');
-            
-            // Cibler TOUTES les variables possibles
-            const targets = [
-              'coins', 'Coins', 'COINS', 'coin', 'Coin',
-              'keys', 'Keys', 'KEYS', 'key', 'Key',
-              'gold', 'Gold', 'money', 'Money',
-              'currency', 'Currency'
-            ];
-            
-            const value = 999999999;
-            let modified = 0;
-            
-            // Parcourir window
-            targets.forEach(function(target) {
-              if (typeof window[target] !== 'undefined') {
-                window[target] = value;
-                modified++;
-                console.log('✅ window.' + target + ' = ' + value);
-              }
-            });
-            
-            // Chercher dans tous les objets globaux
-            for (let key in window) {
-              try {
-                const obj = window[key];
-                if (obj && typeof obj === 'object') {
-                  targets.forEach(function(target) {
-                    if (target in obj && typeof obj[target] === 'number') {
-                      obj[target] = value;
-                      modified++;
-                      console.log('✅ window.' + key + '.' + target + ' = ' + value);
-                    }
-                  });
-                }
-              } catch(e) {}
-            }
-            
-            // Unity WebGL SendMessage
-            if (typeof gameInstance !== 'undefined') {
-              try {
-                gameInstance.SendMessage('GameManager', 'AddCoins', value);
-                gameInstance.SendMessage('GameManager', 'AddKeys', value);
-                gameInstance.SendMessage('PlayerData', 'AddCoins', value);
-                gameInstance.SendMessage('PlayerData', 'AddKeys', value);
-                modified += 4;
-                console.log('✅ Unity gameInstance messages envoyés');
-              } catch(e) {
-                console.warn('Unity SendMessage error:', e);
-              }
-            }
-            
-            // Recherche dans localStorage
-            try {
-              for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key && (key.includes('coin') || key.includes('key') || key.includes('save'))) {
-                  try {
-                    const data = JSON.parse(localStorage.getItem(key));
-                    if (data && typeof data === 'object') {
-                      targets.forEach(function(target) {
-                        if (target in data) {
-                          data[target] = value;
-                          modified++;
-                        }
-                      });
-                      localStorage.setItem(key, JSON.stringify(data));
-                      console.log('✅ localStorage.' + key + ' modifié');
-                    }
-                  } catch(e) {}
-                }
-              }
-            } catch(e) {
-              console.warn('localStorage error:', e);
-            }
-            
-            console.log('💰 [MYNVO] Give terminé: ' + modified + ' modifications');
-            window.mynvoGiveSuccess = modified > 0;
-          })();
-        `;
-        
-        iframeDoc.head.appendChild(scriptElement);
-        
-        // Méthode 2: PostMessage
-        iframeWindow.postMessage({
-          type: 'mynvo_give',
-          coins: 999999999,
-          keys: 999999999,
-          timestamp: Date.now()
-        }, '*');
-        
-        // Méthode 3: Direct window modification (backup)
-        setTimeout(() => {
-          try {
-            iframeWindow.coins = 999999999;
-            iframeWindow.keys = 999999999;
-            iframeWindow.Coins = 999999999;
-            iframeWindow.Keys = 999999999;
-            console.log('💰 Direct window modification effectuée');
-          } catch(e) {}
-        }, 100);
-        
-        giveAttempts++;
-        
-        // Check si succès
-        setTimeout(() => {
-          if (iframeWindow.mynvoGiveSuccess) {
-            console.log('✅ Give réussi!');
-            showNotification('💰 999,999,999 pièces & clés données avec succès!', 'success');
-          } else if (giveAttempts < MAX_GIVE_ATTEMPTS) {
-            console.log('⚠️ Give incomplet, retry...');
-            setTimeout(autoGiveResources, 2000);
-          }
-        }, 500);
-        
-      } catch (error) {
-        console.error('❌ Erreur Give:', error);
-        if (giveAttempts < MAX_GIVE_ATTEMPTS) {
-          setTimeout(autoGiveResources, 2000);
-        }
-      }
-    }
+  <footer>🎮 Subway Surfers by Mynvo | Meilleure expérience de jeu 🚀</footer>
 
-    // Déclencher le give
-    iframe.addEventListener('load', () => {
-      console.log('✅ Iframe chargée');
-      giveAttempts = 0;
-      
-      // Premier give immédiat
-      setTimeout(autoGiveResources, 1000);
-      
-      // Gives de retry toutes les 3 secondes
-      let retryCount = 0;
-      const retryInterval = setInterval(() => {
-        if (retryCount++ < 5) {
-          autoGiveResources();
-        } else {
-          clearInterval(retryInterval);
-          console.log('✅ Séquence de Give terminée');
-        }
-      }, 3000);
-    });
-
-    // ============= 2. TOUCHES ZQSD FORCÉES =============
-    const keyMapping = {
-      'z': { key: 'ArrowUp', code: 'ArrowUp', keyCode: 38 },
-      'q': { key: 'ArrowLeft', code: 'ArrowLeft', keyCode: 37 },
-      's': { key: 'ArrowDown', code: 'ArrowDown', keyCode: 40 },
-      'd': { key: 'ArrowRight', code: 'ArrowRight', keyCode: 39 },
-      ' ': { key: ' ', code: 'Space', keyCode: 32 }
-    };
-
-    function setupZQSDKeys() {
-      ['keydown', 'keyup'].forEach(eventType => {
-        // Capturer en phase de capture (true)
-        window.addEventListener(eventType, (e) => {
-          const key = e.key.toLowerCase();
-          const mapped = keyMapping[key];
-          
-          if (mapped) {
-            e.preventDefault();
-            e.stopImmediatePropagation();
-            
-            // Créer événement avec tous les paramètres
-            const newEvent = new KeyboardEvent(eventType, {
-              key: mapped.key,
-              code: mapped.code,
-              keyCode: mapped.keyCode,
-              which: mapped.keyCode,
-              bubbles: true,
-              cancelable: true,
-              composed: true
-            });
-            
-            try {
-              // Envoyer à l'iframe de multiples façons
-              iframe.contentWindow.document.dispatchEvent(newEvent);
-              iframe.contentWindow.dispatchEvent(newEvent);
-              iframe.contentDocument.dispatchEvent(newEvent);
-              
-              // PostMessage backup
-              iframe.contentWindow.postMessage({
-                type: 'keyboard_event',
-                eventType: eventType,
-                key: mapped.key,
-                keyCode: mapped.keyCode
-              }, '*');
-              
-              console.log(`🎮 ${eventType}: ${key} → ${mapped.key}`);
-            } catch (err) {
-              console.warn('Dispatch error:', err);
-            }
-          }
-        }, true);
-      });
-      
-      console.log('✅ Touches ZQSD configurées');
-    }
-
-    // ============= 3. TIMER MANUEL =============
-    function setupTimer() {
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'F1') {
-          e.preventDefault();
-          if (!timerActive) startTimer();
-        }
-        else if (e.key === 'F2') {
-          e.preventDefault();
-          if (timerActive) stopTimer();
-        }
-        else if (e.key === 'F3') {
-          e.preventDefault();
-          resetTimer();
-        }
-      });
-    }
-
-    function startTimer() {
-      timerStart = Date.now() - timerElapsed;
-      timerActive = true;
-      
-      document.getElementById('timer-overlay').classList.add('running');
-      document.querySelector('.timer-status').textContent = 'En cours...';
-      
-      timerInterval = setInterval(() => {
-        timerElapsed = Date.now() - timerStart;
-        document.getElementById('timer-value').textContent = formatTime(timerElapsed);
-      }, 10);
-      
-      showNotification('▶️ Timer démarré (F2=Stop, F3=Reset)', 'success');
-    }
-
-    function stopTimer() {
-      clearInterval(timerInterval);
-      timerActive = false;
-      document.getElementById('timer-overlay').classList.remove('running');
-      document.querySelector('.timer-status').textContent = 'Arrêté';
-      showNotification('⏸️ Timer arrêté', 'warning');
-    }
-
-    function resetTimer() {
-      clearInterval(timerInterval);
-      timerActive = false;
-      timerElapsed = 0;
-      document.getElementById('timer-value').textContent = '00:00.00';
-      document.getElementById('timer-overlay').classList.remove('running');
-      document.querySelector('.timer-status').textContent = 'Appuyez F1';
-      showNotification('🔄 Timer réinitialisé', 'info');
-    }
-
-    function formatTime(ms) {
-      const minutes = Math.floor(ms / 60000);
-      const seconds = Math.floor((ms % 60000) / 1000);
-      const centiseconds = Math.floor((ms % 1000) / 10);
-      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(centiseconds).padStart(2, '0')}`;
-    }
-
-    // ============= 4. FPS COUNTER =============
-    let fpsFrames = 0;
-    let fpsLastTime = performance.now();
-    
-    function updateFPS() {
-      fpsFrames++;
-      const now = performance.now();
-      
-      if (now - fpsLastTime >= 1000) {
-        const fps = Math.round((fpsFrames * 1000) / (now - fpsLastTime));
-        document.getElementById('fps-value').textContent = fps;
-        
-        const fpsEl = document.getElementById('fps-overlay');
-        if (fps >= 55) {
-          fpsEl.style.color = '#7c62dc';
-          fpsEl.style.borderColor = '#7c62dc';
-        } else if (fps >= 30) {
-          fpsEl.style.color = '#f59e0b';
-          fpsEl.style.borderColor = '#f59e0b';
-        } else {
-          fpsEl.style.color = '#ef4444';
-          fpsEl.style.borderColor = '#ef4444';
-        }
-        
-        fpsFrames = 0;
-        fpsLastTime = now;
-      }
-      
-      requestAnimationFrame(updateFPS);
-    }
-
-    // ============= NOTIFICATIONS =============
-    function showNotification(message, type = 'info') {
-      const notification = document.createElement('div');
-      notification.className = 'notification';
-      notification.textContent = message;
-      
-      const colors = {
-        success: '#00cc66',
-        warning: '#ffaa00',
-        error: '#ff4444',
-        info: '#7c62dc'
-      };
-      notification.style.borderLeftColor = colors[type] || colors.info;
-      
-      document.body.appendChild(notification);
-      
-      setTimeout(() => notification.classList.add('show'), 10);
-      setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => notification.remove(), 300);
-      }, 4000);
-    }
-
-    // ============= INITIALISATION =============
-    document.addEventListener('DOMContentLoaded', () => {
-      setupZQSDKeys();
-      setupTimer();
-      updateFPS();
-      
-      console.log('%c🎮 MYNVO SYSTEM READY!', 'color: #7c62dc; font-weight: bold; font-size: 16px;');
-      console.log('%c💰 Give automatique: ACTIF', 'color: #00cc66; font-size: 14px;');
-      console.log('%c⌨️  Touches: ZQSD + Espace', 'color: #7c62dc; font-size: 14px;');
-      console.log('%c⏱️  Timer: F1=Start | F2=Stop | F3=Reset', 'color: #7c62dc; font-size: 14px;');
-      console.log('%c📊 FPS & Timer: Toujours visibles', 'color: #7c62dc; font-size: 14px;');
-      
-      // Message de bienvenue
-      setTimeout(() => {
-        showNotification('🎮 Bienvenue! Système MYNVO initialisé avec succès', 'success');
-        setTimeout(() => {
-          showNotification('💰 Give automatique en cours...', 'info');
-        }, 2000);
-      }, 1000);
-    });
-
-    document.getElementById('play-link').addEventListener('click', () => {
-      document.querySelector('.game-container').scrollIntoView({ behavior: 'smooth' });
-      iframe.focus();
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
+
+// ============================================
+// SUBWAY SURFERS MYNVO - SCRIPT OPTIMISÉ
+// Partie 1: Configuration & Utilitaires
+// ============================================
+
+// Configuration globale
+let config = {
+  up: "z",
+  down: "s", 
+  left: "q",
+  right: "d",
+  jump: " ",
+  name: "Joueur",
+  showFPS: true,
+  showTop3: true,
+  top3Position: "bottom-left",
+  volume: 1,
+  timerKey: null,
+  timerRunning: false
+};
+
+// Variables globales
+let isCapturingKey = false;
+let iframeReady = false;
+let keyStates = {};
+let currentCanvas = null;
+let fpsFrames = 0;
+let fpsLastTime = performance.now();
+let timerInterval = null;
+let timerStart = 0;
+
+const iframe = document.getElementById('game-iframe');
+
+// ============================================
+// UTILITAIRES
+// ============================================
+
+function escapeHtml(str) {
+  if (!str && str !== '') return '';
+  return String(str).replace(/[&<>"']/g, m => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[m]);
+}
+
+function getKeyDisplay(key) {
+  if (key === ' ') return 'ESPACE';
+  if (!key) return '...';
+  return key.toString().toUpperCase();
+}
+
+function getKeyCode(key) {
+  const keyMap = {
+    'ArrowUp': 38, 'ArrowDown': 40, 'ArrowLeft': 37, 'ArrowRight': 39,
+    ' ': 32, 'z': 90, 'Z': 90, 'q': 81, 'Q': 81,
+    's': 83, 'S': 83, 'd': 68, 'D': 68,
+    'w': 87, 'W': 87, 'a': 65, 'A': 65
+  };
+  return keyMap[key] || 0;
+}
+
+function formatTime(ms) {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const mm = String(Math.floor(total / 60)).padStart(2, '0');
+  const ss = String(total % 60).padStart(2, '0');
+  return `${mm}:${ss}`;
+}
+
+// ============================================
+// GESTION CONFIG (LocalStorage)
+// ============================================
+
+function loadConfig() {
+  try {
+    const saved = localStorage.getItem("mynvoConfig");
+    if (saved) {
+      config = { ...config, ...JSON.parse(saved) };
+      console.log('%c[MYNVO] ✅ Configuration chargée', 'color: #7c62dc; font-weight: bold;', config);
+    }
+  } catch (e) {
+    console.warn('[MYNVO] ⚠️ Erreur chargement config:', e);
+  }
+}
+
+function saveConfig() {
+  try {
+    localStorage.setItem("mynvoConfig", JSON.stringify(config));
+    console.log('%c[MYNVO] 💾 Configuration sauvegardée', 'color: #7c62dc; font-weight: bold;', config);
+  } catch (e) {
+    console.error('[MYNVO] ❌ Erreur sauvegarde config:', e);
+  }
+}
+
+function applyOverlaysFromConfig() {
+  document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
+  document.getElementById('top3-overlay').style.display = config.showTop3 ? 'block' : 'none';
+  positionTop3(config.top3Position);
+  document.getElementById('fps-value').textContent = '60';
+  document.getElementById('timer-overlay').style.display = config.timerRunning ? 'block' : 'none';
+}
+
+function positionTop3(pos) {
+  const el = document.getElementById('top3-overlay');
+  el.style.top = el.style.bottom = el.style.left = el.style.right = '';
+  
+  switch(pos) {
+    case 'bottom-left':
+      el.style.bottom = '25px';
+      el.style.left = '25px';
+      break;
+    case 'bottom-right':
+      el.style.bottom = '25px';
+      el.style.right = '25px';
+      break;
+    case 'top-left':
+      el.style.top = '110px';
+      el.style.left = '25px';
+      break;
+    case 'top-right':
+      el.style.top = '110px';
+      el.style.right = '25px';
+      break;
+  }
+}
+
+// ============================================
+// COMMUNICATION IFRAME
+// ============================================
+
+function postToIframe(msg) {
+  try {
+    iframe.contentWindow.postMessage(msg, '*');
+  } catch (e) {
+    console.warn('[MYNVO] ⚠️ postMessage échoué:', e);
+  }
+}
+
+function simulateKeyInIframe(type, mappedKey, keyCode) {
+  if (!keyCode) return;
+
+  try {
+    const iframeWin = iframe.contentWindow;
+    const iframeDoc = iframe.contentDocument || iframeWin.document;
+
+    if (!iframeDoc) {
+      postToIframe({ type: 'keyboard_event', eventType: type, key: mappedKey, keyCode });
+      return;
+    }
+
+    const event = new KeyboardEvent(type, {
+      keyCode: keyCode,
+      which: keyCode,
+      key: mappedKey,
+      bubbles: true,
+      cancelable: true
+    });
+
+    iframeDoc.dispatchEvent(event);
+    iframeWin.dispatchEvent(event);
+    
+    if (currentCanvas) {
+      currentCanvas.dispatchEvent(event);
+    }
+    
+    iframeDoc.querySelectorAll('canvas, #canvas, #unity-canvas').forEach(el => {
+      el.dispatchEvent(event);
+    });
+
+    console.log(`%c[MYNVO] 🎯 ${type}: ${mappedKey} (${keyCode})`, 'color: #7c62dc;');
+  } catch (err) {
+    console.error('[MYNVO] ❌ Erreur dispatch event:', err);
+  }
+}
+
+// Charger la config au démarrage
+loadConfig();
+
+console.log('%c[MYNVO] 🚀 Système initialisé!', 'color: #7c62dc; font-weight: bold; font-size: 16px;');
+
+
+      // ============================================
+// SUBWAY SURFERS MYNVO - SCRIPT OPTIMISÉ
+// Partie 4: Timer & Chronomètre
+// ============================================
+
+// ============================================
+// MENU TIMER
+// ============================================
+
+function openTimerMenu() {
+  if (document.getElementById('mynvo-timer')) return;
+
+  const modal = document.createElement('div');
+  modal.id = 'mynvo-timer';
+  modal.className = 'mynvo-modal';
+  
+  modal.innerHTML = `
+    <h3>⏱️ Chronomètre</h3>
+    
+    <div class="modal-section">
+      <h4 style="color:#aaa;margin-bottom:12px;font-size:16px;">Configuration</h4>
+      <div class="mynvo-row">
+        <div class="mynvo-label">Touche Raccourci</div>
+        <input id="timer-key-input" readonly 
+               style="flex:1;padding:10px;background:rgba(0,0,0,0.6);border:2px solid #7c62dc;border-radius:10px;color:#fff;text-align:center;font-weight:700;" 
+               value="${config.timerKey ? getKeyDisplay(config.timerKey) : 'Non assignée'}">
+        <button id="set-timer-key" class="btn-primary" style="padding:10px 16px;">Définir</button>
+      </div>
+      <div style="font-size:13px;color:#aaa;margin-top:10px;">
+        💡 Cette touche permet de démarrer/arrêter le timer rapidement pendant le jeu
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <h4 style="color:#aaa;margin-bottom:12px;font-size:16px;">Contrôles</h4>
+      <div style="display:flex;gap:10px;justify-content:center;">
+        <button id="start-timer" class="btn-primary" style="flex:1;padding:14px;">
+          ▶️ Démarrer
+        </button>
+        <button id="stop-timer" class="btn-danger" style="flex:1;padding:14px;">
+          ⏸️ Arrêter
+        </button>
+        <button id="reset-timer" style="flex:1;padding:14px;background:rgba(124,98,220,0.2);border:2px solid #7c62dc;border-radius:12px;color:#fff;font-weight:700;cursor:pointer;">
+          🔄 Reset
+        </button>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:20px;">
+      <button id="close-timer" class="btn-danger">Fermer</button>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // Définir la touche timer
+  modal.querySelector('#set-timer-key').addEventListener('click', () => {
+    const input = modal.querySelector('#timer-key-input');
+    input.value = '... Appuie sur une touche';
+    isCapturingKey = true;
+
+    const handler = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      config.timerKey = e.key;
+      input.value = getKeyDisplay(e.key);
+      isCapturingKey = false;
+      saveConfig();
+      document.removeEventListener('keydown', handler, true);
+      console.log(`[MYNVO] ⏱️ Touche timer: ${e.key}`);
+    };
+
+    document.addEventListener('keydown', handler, true);
+  });
+
+  // Boutons de contrôle
+  modal.querySelector('#start-timer').addEventListener('click', startTimer);
+  modal.querySelector('#stop-timer').addEventListener('click', stopTimer);
+  modal.querySelector('#reset-timer').addEventListener('click', resetTimer);
+  modal.querySelector('#close-timer').addEventListener('click', () => modal.remove());
+}
+
+// ============================================
+// FONCTIONS TIMER
+// ============================================
+
+function startTimer() {
+  if (timerInterval) {
+    console.log('[MYNVO] ⏱️ Timer déjà en cours');
+    return;
+  }
+
+  timerStart = Date.now();
+  document.getElementById('timer-overlay').style.display = 'block';
+  
+  timerInterval = setInterval(() => {
+    const elapsed = Date.now() - timerStart;
+    document.getElementById('timer-value').textContent = formatTime(elapsed);
+    
+    // Envoyer à l'iframe (optionnel)
+    postToIframe({ type: 'timer_update', elapsed: elapsed });
+  }, 250);
+
+  config.timerRunning = true;
+  saveConfig();
+  
+  console.log('%c[MYNVO] ▶️ Timer démarré!', 'color: #7c62dc; font-weight: bold;');
+}
+
+function stopTimer() {
+  if (!timerInterval) {
+    console.log('[MYNVO] ⏱️ Timer déjà arrêté');
+    return;
+  }
+
+  clearInterval(timerInterval);
+  timerInterval = null;
+  
+  config.timerRunning = false;
+  saveConfig();
+  
+  const finalTime = document.getElementById('timer-value').textContent;
+  console.log(`%c[MYNVO] ⏸️ Timer arrêté: ${finalTime}`, 'color: #7c62dc; font-weight: bold;');
+}
+
+function resetTimer() {
+  timerStart = Date.now();
+  document.getElementById('timer-value').textContent = '00:00';
+  
+  postToIframe({ type: 'timer_reset' });
+  
+  console.log('%c[MYNVO] 🔄 Timer réinitialisé', 'color: #7c62dc; font-weight: bold;');
+}
+
+function toggleTimer() {
+  if (timerInterval) {
+    stopTimer();
+    document.getElementById('timer-overlay').style.display = 'none';
+  } else {
+    startTimer();
+  }
+}
+
+// ============================================
+// INITIALISATION FINALE
+// ============================================
+
+// Si le timer était en cours, le redémarrer
+if (config.timerRunning) {
+  console.log('[MYNVO] ⏱️ Restauration du timer...');
+  // Note: on ne redémarre pas automatiquement pour éviter la confusion
+  // L'utilisateur doit le relancer manuellement
+  config.timerRunning = false;
+  saveConfig();
+}
+
+console.log('%c[MYNVO] ⏱️ Système de timer chargé!', 'color: #7c62dc; font-weight: bold;');
+console.log('%c[MYNVO] 🎉 Tous les systèmes sont opérationnels!', 'color: #7c62dc; font-weight: bold; font-size: 18px;');
+console.log('%c[MYNVO] Configuration actuelle:', 'color: #7c62dc;', config);
