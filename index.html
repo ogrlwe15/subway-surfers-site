@@ -8,33 +8,45 @@
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     body{font-family:Segoe UI,sans-serif;background:linear-gradient(135deg,#5e4fff,#8b5cf6);color:#fff;min-height:100vh;display:flex;flex-direction:column;overflow:hidden;}
-    header{background:rgba(0,0,0,0.35);backdrop-filter:blur(12px);padding:18px 40px;position:fixed;top:0;left:0;right:0;z-index:100;}
+    
+    /* ===== HEADER ===== */
+    header{
+      background:#000; /* Fond noir */
+      padding:18px 40px;
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      z-index:100;
+      backdrop-filter:blur(12px);
+    }
     .header-content{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;}
     .logo{font-size:34px;font-weight:900;display:flex;align-items:center;gap:14px;}
-    .logo img{height:50px;border-radius:50%;border:4px solid #ffd700;box-shadow:0 0 20px #ffd70044;}
-    .logo span{color:#ffd700;}
+    .logo img{height:50px;border-radius:50%;border:4px solid #a855f7;box-shadow:0 0 20px #a855f744;} /* Bordure violette */
+    .logo span{color:#a855f7;} /* Mynvo en violet */
     .nav-links a{color:#fff;text-decoration:none;margin-left:24px;font-weight:600;font-size:17px;transition:0.2s;cursor:pointer;}
     .nav-links a:hover{opacity:0.7;}
+
     main{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;}
     .game-container{width:100%;max-width:1350px;background:rgba(0,0,0,0.4);backdrop-filter:blur(20px);border-radius:28px;padding:40px;box-shadow:0 25px 80px rgba(0,0,0,0.5);overflow:hidden;position:relative;}
     h1{font-size:56px;text-align:center;margin-bottom:30px;text-shadow:0 6px 30px rgba(0,0,0,0.6);}
     .game-frame{position:relative;border-radius:20px;overflow:hidden;box-shadow:0 15px 50px rgba(0,0,0,0.6);}
     iframe{width:100%;height:720px;border:none;background:#000;display:block;}
     .loading{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;text-align:center;}
-    .spinner{width:70px;height:70px;border:8px solid #ffffff33;border-top:8px solid #ffd700;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:20px;}
+    .spinner{width:70px;height:70px;border:8px solid #ffffff33;border-top:8px solid #a855f7;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:20px;}
     @keyframes spin{to{transform:rotate(360deg);}}
     footer{text-align:center;padding:25px;font-size:15px;opacity:0.85;background:rgba(0,0,0,0.2);}
-    .fs-button{position:absolute;top:18px;right:18px;z-index:200;background:rgba(0,0,0,0.6);border:2px solid #ffd700;color:#fff;padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700;}
+    .fs-button{position:absolute;top:18px;right:18px;z-index:200;background:rgba(0,0,0,0.6);border:2px solid #a855f7;color:#fff;padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700;}
     .fs-button:hover{opacity:0.9;}
     .key-display{display:inline-block;min-width:50px;padding:10px 16px;background:#333;border:2px solid #555;border-radius:8px;text-align:center;font-weight:700;font-size:18px;cursor:pointer;transition:0.2s;}
-    .key-display:hover{border-color:#ffd700;background:#444;}
+    .key-display:hover{border-color:#a855f7;background:#444;}
     .key-display.active{border-color:#00ff00;background:#1a4d1a;animation:pulse 0.5s;}
     @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
     #fps-overlay{position:fixed;top:100px;left:20px;z-index:999999;background:rgba(0,0,0,0.85);color:#22c55e;padding:10px 18px;border-radius:12px;font-size:18px;font-weight:700;border:2px solid #22c55e;box-shadow:0 0 20px rgba(34,197,94,0.3);font-family:system-ui,sans-serif;pointer-events:none;}
-    #top3-overlay{position:fixed;bottom:20px;left:20px;z-index:999999;background:rgba(0,0,0,0.9);color:#fff;padding:16px 22px;border-radius:14px;border:2px solid #ffd700;font-size:14px;line-height:1.6;box-shadow:0 0 30px rgba(255,215,0,0.4);font-family:system-ui,sans-serif;pointer-events:none;min-width:280px;}
-    #top3-overlay .title{color:#ffd700;font-size:16px;font-weight:900;margin-bottom:10px;text-align:center;}
+    #top3-overlay{position:fixed;bottom:20px;left:20px;z-index:999999;background:rgba(0,0,0,0.9);color:#fff;padding:16px 22px;border-radius:14px;border:2px solid #a855f7;font-size:14px;line-height:1.6;box-shadow:0 0 30px rgba(168,85,247,0.4);font-family:system-ui,sans-serif;pointer-events:none;min-width:280px;}
+    #top3-overlay .title{color:#a855f7;font-size:16px;font-weight:900;margin-bottom:10px;text-align:center;}
     #top3-overlay .player{margin:6px 0;padding:6px;border-radius:8px;background:rgba(255,255,255,0.05);}
-    #top3-overlay .player.first{color:#ffd700;font-weight:700;font-size:15px;}
+    #top3-overlay .player.first{color:#a855f7;font-weight:700;font-size:15px;}
   </style>
 </head>
 <body>
@@ -51,17 +63,6 @@
       </div>
     </div>
   </header>
-
-  <main>
-    <div class="game-container">
-      <h1>Subway Surfers – Mynvo</h1>
-      <div class="game-frame">
-        <div class="loading" id="loading-ui"><div class="spinner"></div><p>Chargement du jeu...</p></div>
-        <button class="fs-button" id="fs-btn" title="Plein écran">⤢ Plein écran</button>
-        <iframe id="game-iframe" src="./game/" allowfullscreen allow="autoplay; fullscreen *"></iframe>
-      </div>
-    </div>
-  </main>
 
   <div id="fps-overlay">🎮 FPS: <span id="fps-value">60</span></div>
   <div id="top3-overlay">
@@ -182,12 +183,12 @@
       if(document.getElementById('mynvo-settings')) return;
       const div=document.createElement('div');
       div.id='mynvo-settings';
-      div.style='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#111;color:#fff;padding:30px 35px;border-radius:16px;border:4px solid #ffd700;z-index:999999;max-width:90%;box-shadow:0 0 80px rgba(0,0,0,0.9);';
+      div.style='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#111;color:#fff;padding:30px 35px;border-radius:16px;border:4px solid #a855f7;z-index:999999;max-width:90%;box-shadow:0 0 80px rgba(0,0,0,0.9);';
       function getKeyDisplay(k){return k===' '?'ESPACE':k.toUpperCase();}
-      div.innerHTML=`<h2 style="color:#ffd700;text-align:center;margin-bottom:20px;font-size:24px;">⚙️ Paramètres Mynvo</h2>
+      div.innerHTML=`<h2 style="color:#a855f7;text-align:center;margin-bottom:20px;font-size:24px;">⚙️ Paramètres Mynvo</h2>
         <div style="margin-bottom:20px;"><label style="display:block;margin-bottom:8px;font-size:15px;">📝 Pseudo</label><input type="text" id="set-name" value="${escapeHtml(config.name)}" style="width:100%;padding:12px;font-size:16px;background:#222;border:2px solid #444;border-radius:10px;color:#fff;"></div>
         <div style="background:#1a1a1a;padding:20px;border-radius:12px;margin-bottom:20px;">
-        <h3 style="color:#ffd700;margin-bottom:15px;font-size:18px;">🎮 Touches de jeu</h3><p style="font-size:13px;color:#aaa;margin-bottom:15px;">Clique sur une touche puis appuie sur celle que tu veux</p>
+        <h3 style="color:#a855f7;margin-bottom:15px;font-size:18px;">🎮 Touches de jeu</h3><p style="font-size:13px;color:#aaa;margin-bottom:15px;">Clique sur une touche puis appuie sur celle que tu veux</p>
         <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:15px;">
         <div><label style="display:block;margin-bottom:8px;font-size:14px;">⬆️ Haut</label><div class="key-display" data-key="up">${getKeyDisplay(config.up)}</div></div>
         <div><label style="display:block;margin-bottom:8px;font-size:14px;">⬇️ Bas</label><div class="key-display" data-key="down">${getKeyDisplay(config.down)}</div></div>
@@ -199,7 +200,7 @@
         <button id="close-settings" style="background:#ff4444;color:#fff;padding:12px 24px;border:none;border-radius:10px;font-size:16px;cursor:pointer;font-weight:600;">❌ Fermer</button>
         <button id="save-settings" style="background:#00ff00;color:#000;padding:12px 28px;border:none;border-radius:10px;font-size:16px;cursor:pointer;margin-left:12px;font-weight:700;">✓ Enregistrer</button>
         </div>
-        <p style="font-size:12px;color:#ffd700;margin-top:15px;text-align:center;font-weight:600;">⚠️ Recharge la page (F5) après avoir changé les touches</p>
+        <p style="font-size:12px;color:#a855f7;margin-top:15px;text-align:center;font-weight:600;">⚠️ Recharge la page (F5) après avoir changé les touches</p>
       `;
       document.body.appendChild(div);
       let activeKeyElement=null;
@@ -228,7 +229,7 @@
     }
 
     document.getElementById('play-link').addEventListener('click',()=>{ document.querySelector('.game-container')?.scrollIntoView({behavior:'smooth',block:'center'}); iframe.focus(); });
-    console.log('%c[MYNVO Parent] Touch system initialized!','color:#58a6ff;font-weight:bold;'); console.log('%c[MYNVO Parent] Current config:','color:#ffd700;',config);
+    console.log('%c[MYNVO Parent] Touch system initialized!','color:#58a6ff;font-weight:bold;'); console.log('%c[MYNVO Parent] Current config:','color:#a855f7;',config);
   </script>
 </body>
 </html>
