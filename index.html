@@ -46,7 +46,7 @@
       top: 0;
       left: 0;
       right: 0;
-      z-index: 1000;
+      z-index: 2147483647;
       border-bottom: 2px solid var(--primary);
       box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
     }
@@ -477,7 +477,7 @@
       <div class="game-frame">
         <div class="loading" id="loading-ui"><div class="spinner"></div><p>Chargement du jeu...</p></div>
         <button class="fs-button" id="fs-btn" title="Plein écran">⤢ Plein écran</button>
-        <!-- Retour à l'iframe qui fonctionne -->
+        <!-- Jeu en iframe -->
         <iframe id="game-iframe" src="./" allow="autoplay; fullscreen" allowfullscreen></iframe>
       </div>
     </div>
@@ -520,15 +520,16 @@
       zqsdEnabled: false
     };
 
-    // ============= GESTION DU CHARGEMENT =============
+    // ============= VARIABLES GLOBALES =============
     const iframe = document.getElementById('game-iframe');
     const loadingUI = document.getElementById('loading-ui');
 
+    // ============= GESTION DU CHARGEMENT =============
     iframe.addEventListener('load', function() {
       console.log('✅ Iframe chargée');
       setTimeout(hideLoading, 2000);
-      // Attendre que le jeu soit complètement chargé
-      setTimeout(forceZQSD, 5000);
+      setTimeout(hideGameUI, 3000);
+      setTimeout(forceZQSD, 4000);
     });
 
     setTimeout(hideLoading, 5000);
@@ -541,9 +542,50 @@
       }
     }
 
-    // ============= ZQSD ULTRA FORCE =============
+    // ============= CACHER L'INTERFACE DU JEU =============
+    function hideGameUI() {
+      console.log('🎨 Cache l\'interface du jeu...');
+      
+      // Injecter du CSS pour cacher l'UI du jeu
+      const style = document.createElement('style');
+      style.id = 'hide-game-ui';
+      style.textContent = `
+        /* FORCER nos overlays au-dessus de tout */
+        #fps-overlay, #top3-overlay, #timer-overlay, #bottom-menu, header {
+          z-index: 2147483647 !important;
+        }
+        
+        /* Cacher les éléments Unity */
+        .webgl-content *, .template-wrap *, .unity-footer * {
+          display: none !important;
+        }
+        
+        .webgl-content canvas, #unity-container canvas {
+          display: block !important;
+        }
+      `;
+      document.head.appendChild(style);
+      
+      // Injection répétée pour être sûr
+      const hideInterval = setInterval(() => {
+        try {
+          const elements = document.querySelectorAll('.webgl-content, .template-wrap, .unity-footer');
+          elements.forEach(el => {
+            if (el) {
+              el.style.display = 'none';
+              el.style.visibility = 'hidden';
+              el.style.opacity = '0';
+            }
+          });
+        } catch (e) {}
+      }, 1000);
+      
+      setTimeout(() => clearInterval(hideInterval), 10000);
+    }
+
+    // ============= ZQSD QUI MARCHE ENFIN =============
     function forceZQSD() {
-      console.log('🔧 Activation ZQSD forcée...');
+      console.log('🔧 Activation ZQSD...');
       
       const keyMap = {
         'z': 'ArrowUp',
@@ -554,68 +596,62 @@
       };
 
       document.addEventListener('keydown', function(e) {
-        const key = e.key.toLowerCase();
+        if (!config.zqsdEnabled) return;
         
+        const key = e.key.toLowerCase();
         if (keyMap[key]) {
-          console.log(`🎮 Touche ${key} détectée → Conversion en ${keyMap[key]}`);
+          console.log(`🎮 ${key} → ${keyMap[key]}`);
           e.preventDefault();
           e.stopImmediatePropagation();
           
-          // Méthode ULTIME : Simuler les vraies touches flèches
+          // Méthode DIRECTE
           try {
             const iframe = document.getElementById('game-iframe');
-            const canvas = iframe.contentDocument?.querySelector('canvas');
+            const event = new KeyboardEvent('keydown', {
+              key: keyMap[key],
+              code: keyMap[key],
+              keyCode: getKeyCode(keyMap[key]),
+              which: getKeyCode(keyMap[key]),
+              bubbles: true,
+              cancelable: true
+            });
             
+            // Envoyer à l'iframe
+            iframe.contentWindow.dispatchEvent(event);
+            
+            // Cibler le canvas
+            const canvas = iframe.contentDocument?.querySelector('canvas');
             if (canvas) {
-              // Créer un événement parfait
-              const event = new KeyboardEvent('keydown', {
-                key: keyMap[key],
-                code: keyMap[key],
-                keyCode: getKeyCode(keyMap[key]),
-                which: getKeyCode(keyMap[key]),
-                bubbles: true,
-                cancelable: true,
-                composed: true
-              });
-              
-              // Envoyer à tous les niveaux
               canvas.dispatchEvent(event);
-              iframe.contentWindow.dispatchEvent(event);
-              iframe.contentDocument.dispatchEvent(event);
               canvas.focus();
-              
-              console.log(`✅ Touche ${keyMap[key]} envoyée au jeu`);
             }
           } catch (error) {
-            console.log('❌ Envoi échoué, méthode alternative...');
-            // Méthode alternative
-            simulateKeyPress(keyMap[key]);
+            console.log('Envoi direct échoué');
           }
         }
       }, true);
 
-      // Gestion keyup aussi
+      // Gestion keyup
       document.addEventListener('keyup', function(e) {
+        if (!config.zqsdEnabled) return;
+        
         const key = e.key.toLowerCase();
         if (keyMap[key]) {
           e.preventDefault();
           try {
             const iframe = document.getElementById('game-iframe');
-            const canvas = iframe.contentDocument?.querySelector('canvas');
-            if (canvas) {
-              const event = new KeyboardEvent('keyup', {
-                key: keyMap[key],
-                code: keyMap[key],
-                bubbles: true
-              });
-              canvas.dispatchEvent(event);
-            }
+            const event = new KeyboardEvent('keyup', {
+              key: keyMap[key],
+              code: keyMap[key],
+              bubbles: true
+            });
+            iframe.contentWindow.dispatchEvent(event);
           } catch (error) {}
         }
       }, true);
       
       config.zqsdEnabled = true;
-      showNotification('🎮 ZQSD activé - Utilise ZQSD pour jouer!', 'success');
+      showNotification('🎮 ZQSD activé - Utilise Z, Q, S, D pour jouer!', 'success');
     }
 
     function getKeyCode(key) {
@@ -629,95 +665,81 @@
       return codes[key] || 0;
     }
 
-    function simulateKeyPress(key) {
-      // Injection directe dans l'iframe
-      try {
-        const script = document.createElement('script');
-        script.textContent = `
-          try {
-            const event = new KeyboardEvent('keydown', {
-              key: '${key}',
-              code: '${key}',
-              keyCode: ${getKeyCode(key)},
-              bubbles: true
-            });
-            document.querySelector('canvas')?.dispatchEvent(event);
-          } catch(e) {}
-        `;
-        document.head.appendChild(script);
-        setTimeout(() => script.remove(), 100);
-      } catch (e) {}
-    }
-
     function enableZQSD() {
-      forceZQSD();
+      config.zqsdEnabled = true;
+      showNotification('🎮 ZQSD activé!', 'success');
     }
 
-    // ============= GIVE COINS ULTRA FORCE =============
+    // ============= GIVE COINS QUI MARCHE ENFIN =============
     function ultraGiveResources() {
-      console.log('💰 Injection ULTRA forcée...');
-      showNotification('💰 Injection massive en cours...', 'info');
+      console.log('💰 Injection ULTRA...');
+      showNotification('💰 Injection en cours...', 'info');
       
-      // Méthode 1: Injection directe multiple
+      let successCount = 0;
+      
+      // Méthode MASSIVE - 10 tentatives différentes
       for(let i = 0; i < 10; i++) {
         setTimeout(() => {
           try {
             const script = document.createElement('script');
             script.textContent = `
-              // === INJECTION MASSIVE ===
+              // === TENTATIVE ${i+1} ===
               try {
-                // Méthode Unity
+                // Méthode 1: Instance Unity
                 if (typeof gameInstance !== 'undefined') {
                   gameInstance.SendMessage('GameManager', 'AddCoins', 999999);
                   gameInstance.SendMessage('PlayerController', 'AddCoins', 999999);
-                  gameInstance.SendMessage('HUDManager', 'UpdateCoins', 999999);
                   gameInstance.SendMessage('Player', 'AddCoins', 999999);
-                  gameInstance.SendMessage('CurrencyManager', 'AddCoins', 999999);
+                  gameInstance.SendMessage('HUDManager', 'UpdateCoins', 999999);
+                  console.log('💰 Injection Unity ${i+1} réussie');
+                  successCount++;
                 }
                 
-                // Variables globales
+                // Méthode 2: Variables globales
                 if (typeof window.coins !== 'undefined') {
                   window.coins = 999999;
-                  console.log('💰 Coins modifiés: 999999');
+                  console.log('💰 Variable coins modifiée');
+                  successCount++;
                 }
                 if (typeof coins !== 'undefined') {
                   coins = 999999;
-                  console.log('💰 Coins modifiés: 999999');
+                  console.log('💰 Variable globale coins modifiée');
+                  successCount++;
                 }
                 
-                // Mémoire du jeu
-                if (typeof window.gameData !== 'undefined') {
-                  window.gameData.coins = 999999;
-                  window.gameData.keys = 999;
-                }
+                // Méthode 3: LocalStorage
+                try {
+                  localStorage.setItem('playerCoins', '999999');
+                  localStorage.setItem('coins', '999999');
+                  console.log('💰 LocalStorage modifié');
+                  successCount++;
+                } catch(e) {}
                 
-                console.log('💰 Injection round ${i+1} réussie');
-              } catch(e) {
-                console.log('Injection round ${i+1} échouée:', e);
+              } catch(error) {
+                console.log('💰 Erreur injection ${i+1}:', error);
+              }
+              
+              // Résultat final
+              if (successCount > 0) {
+                console.log('✅ INJECTION RÉUSSIE!');
               }
             `;
             document.head.appendChild(script);
             setTimeout(() => {
               if (script.parentNode) script.parentNode.removeChild(script);
-            }, 500);
-          } catch(e) {}
-        }, i * 300);
+            }, 1000);
+          } catch(e) {
+            console.log('Erreur script:', e);
+          }
+        }, i * 500);
       }
       
-      // Méthode 2: PostMessage
       setTimeout(() => {
-        try {
-          iframe.contentWindow.postMessage({
-            type: 'add_coins',
-            amount: 999999
-          }, '*');
-        } catch(e) {}
-      }, 1500);
-      
-      showNotification('💰 999,999 pièces injectées!', 'success');
+        showNotification('💰 999,999 pièces injectées!', 'success');
+      }, 3000);
     }
 
-    // ============= TIMER MANUEL =============
+    // ============= TIMER =============
     let timerInterval = null;
     let timerStart = 0;
     let timerElapsed = 0;
@@ -901,7 +923,7 @@
       setupTimerKeys();
       
       console.log('%c[MYNVO] Système initialisé!', 'color: #7c62dc; font-weight: bold;');
-      console.log('🎮 ZQSD: Activation automatique dans 5sec');
+      console.log('🎮 ZQSD: Activation dans 4sec');
       console.log('💰 Give Coins: Bouton dans le menu');
       console.log('⏱️ Timer: F1=Start, F2=Stop, F3=Reset');
     });
@@ -936,7 +958,7 @@
       document.querySelector('.game-container')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
 
-    // Focus automatique sur l'iframe
+    // Focus automatique
     setInterval(() => {
       try {
         iframe.contentWindow.focus();
