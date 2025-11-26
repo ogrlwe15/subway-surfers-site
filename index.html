@@ -1,164 +1,420 @@
-<script>
-  // ============= CONFIG =============
-  let config = {
-    up: "z", down: "s", left: "q", right: "d", jump: " ", name: "Joueur"
-  };
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Subway Surfers by Mynvo</title>
+  <meta name="description" content="Subway Surfers version Mynvo avec TOP 3 et FPS">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:Segoe UI,sans-serif;background:linear-gradient(135deg,#5e4fff,#8b5cf6);color:#fff;min-height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+    header{background:rgba(0,0,0,0.35);backdrop-filter:blur(12px);padding:18px 40px;position:fixed;top:0;left:0;right:0;z-index:100;}
+    .header-content{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;}
+    .logo{font-size:34px;font-weight:900;display:flex;align-items:center;gap:14px;}
+    .logo img{height:50px;border-radius:50%;border:4px solid #ffd700;box-shadow:0 0 20px #ffd70044;}
+    .logo span{color:#ffd700;}
+    .nav-links a{color:#fff;text-decoration:none;margin-left:24px;font-weight:600;font-size:17px;transition:0.2s;cursor:pointer;}
+    .nav-links a:hover{opacity:0.7;}
+    main{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;}
+    .game-container{width:100%;max-width:1350px;background:rgba(0,0,0,0.4);backdrop-filter:blur(20px);border-radius:28px;padding:40px;box-shadow:0 25px 80px rgba(0,0,0,0.5);overflow:hidden;position:relative;}
+    h1{font-size:56px;text-align:center;margin-bottom:30px;text-shadow:0 6px 30px rgba(0,0,0,0.6);}
+    .game-frame{position:relative;border-radius:20px;overflow:hidden;box-shadow:0 15px 50px rgba(0,0,0,0.6);}
+    iframe{width:100%;height:720px;border:none;background:#000;display:block;}
+    .loading{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;text-align:center;}
+    .spinner{width:70px;height:70px;border:8px solid #ffffff33;border-top:8px solid #ffd700;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:20px;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    footer{text-align:center;padding:25px;font-size:15px;opacity:0.85;background:rgba(0,0,0,0.2);}
+    .fs-button{position:absolute;top:18px;right:18px;z-index:200;background:rgba(0,0,0,0.6);border:2px solid #ffd700;color:#fff;padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700;}
+    .fs-button:hover{opacity:0.9;}
+    .key-display{display:inline-block;min-width:50px;padding:10px 16px;background:#333;border:2px solid #555;border-radius:8px;text-align:center;font-weight:700;font-size:18px;cursor:pointer;transition:0.2s;}
+    .key-display:hover{border-color:#ffd700;background:#444;}
+    .key-display.active{border-color:#00ff00;background:#1a4d1a;animation:pulse 0.5s;}
+    @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
+    #fps-overlay{position:fixed;top:100px;left:20px;z-index:999999;background:rgba(0,0,0,0.85);color:#22c55e;padding:10px 18px;border-radius:12px;font-size:18px;font-weight:700;border:2px solid #22c55e;box-shadow:0 0 20px rgba(34,197,94,0.3);font-family:system-ui,sans-serif;pointer-events:none;}
+    #top3-overlay{position:fixed;bottom:20px;left:20px;z-index:999999;background:rgba(0,0,0,0.9);color:#fff;padding:16px 22px;border-radius:14px;border:2px solid #ffd700;font-size:14px;line-height:1.6;box-shadow:0 0 30px rgba(255,215,0,0.4);font-family:system-ui,sans-serif;pointer-events:none;min-width:280px;}
+    #top3-overlay .title{color:#ffd700;font-size:16px;font-weight:900;margin-bottom:10px;text-align:center;}
+    #top3-overlay .player{margin:6px 0;padding:6px;border-radius:8px;background:rgba(255,255,255,0.05);}
+    #top3-overlay .player.first{color:#ffd700;font-weight:700;font-size:15px;}
+  </style>
+</head>
+<body>
 
-  try {
-    const saved = localStorage.getItem("mynvoConfig");
-    if (saved) config = { ...config, ...JSON.parse(saved) };
-  } catch(e) {}
+  <header>
+    <div class="header-content">
+      <div class="logo">
+        <img src="logo.png" alt="Mynvo" onerror="this.style.display='none'">
+        Subway<span>Surfers</span> by <span>Mynvo</span>
+      </div>
+      <div class="nav-links">
+        <a id="play-link">Jouer</a>
+        <a onclick="openSettings();return false;">Paramètres</a>
+      </div>
+    </div>
+  </header>
 
-  function saveConfig() {
-    localStorage.setItem("mynvoConfig", JSON.stringify(config));
-  }
+  <main>
+    <div class="game-container">
+      <h1>Subway Surfers – Mynvo</h1>
+      <div class="game-frame">
+        <div class="loading" id="loading-ui"><div class="spinner"></div><p>Chargement du jeu...</p></div>
+        <button class="fs-button" id="fs-btn" title="Plein écran">⤢ Plein écran</button>
+        <iframe id="game-iframe" src="./game/" allowfullscreen allow="autoplay; fullscreen *"></iframe>
+      </div>
+    </div>
+  </main>
 
-  let isCapturingKey = false;
-  const iframe = document.getElementById('game-iframe');
-  let iframeReady = false;
-  let currentCanvas = null;
+  <!-- FPS Counter (sur le parent) -->
+  <div id="fps-overlay">🎮 FPS: <span id="fps-value">60</span></div>
 
-  // ============= MAPPING KEY → KEYCODE =============
-  function getKeyCode(key) {
-    const map = {
-      'ArrowUp': 38, 'ArrowDown': 40, 'ArrowLeft': 37, 'ArrowRight': 39,
-      ' ': 32,
-      'z': 90, 'q': 81, 's': 83, 'd': 68,
-      'Z': 90, 'Q': 81, 'S': 83, 'D': 68,
-      'w': 87, 'a': 65, 'W': 87, 'A': 65
+  <!-- TOP 3 (sur le parent) -->
+  <div id="top3-overlay">
+    <div class="title">🏆 TOP 3 NO COIN</div>
+    <div class="player first">🥇 Mynvo – 13:27</div>
+    <div class="player">🥈 Le_A – 11:51</div>
+    <div class="player">🥉 .... – 0:00</div>
+  </div>
+
+  <footer>Subway Surfers by Mynvo</footer>
+
+  <script>
+    // ============= CONFIG =============
+    let config = {
+      up: "z", down: "s", left: "q", right: "d", jump: " ", name: "Joueur"
     };
-    return map[key] || 0;
-  }
-
-  // ============= INJECTION DIRECTE (la méthode qui marche vraiment) =============
-  function simulateKey(type, keyName, keyCode) {
-    if (!iframeReady || !keyCode) return;
-
+    
     try {
-      const doc = iframe.contentDocument || iframe.contentWindow.document;
-      const win = iframe.contentWindow;
-
-      const event = new KeyboardEvent(type, {
-        key: keyName,
-        code: keyName === ' ' ? 'Space' : keyName,
-        keyCode: keyCode,
-        which: keyCode,
-        bubbles: true,
-        cancelable: true
-      });
-
-      // On envoie sur tout ce qu’on peut (Unity est capricieux)
-      doc.dispatchEvent(event);
-      win.dispatchEvent(event);
-      if (currentCanvas) currentCanvas.dispatchEvent(event);
-      doc.querySelectorAll('canvas').forEach(c => c.dispatchEvent(event));
-
-      // console.log(`✅ ${type}: ${keyName} (code ${keyCode})`);
-    } catch (err) {
-      // Silencieux en prod
+      const saved = localStorage.getItem("mynvoConfig");
+      if (saved) config = {...config, ...JSON.parse(saved)};
+    } catch(e) {}
+    
+    function saveConfig() { 
+      localStorage.setItem("mynvoConfig", JSON.stringify(config));
+      console.log("✅ Config sauvegardée:", config);
     }
-  }
 
-  // ============= DÉTECTION DU CANVAS À CHAQUE CHARGEMENT =============
-  iframe.addEventListener('load', () => {
-    document.getElementById('loading-ui').style.display = 'none';
+    let isCapturingKey = false;
+    const iframe = document.getElementById('game-iframe');
 
-    setTimeout(() => {
-      try {
-        iframe.contentWindow.location; // Test d’accès
-        iframeReady = true;
-        console.log('%c✅ Iframe accessible → injection directe activée', 'color:lime');
+    // ============= MAPPING TOUCHES → KEYCODES =============
+    function getKeyCode(key) {
+      const map = {
+        'ArrowUp': 38, 'ArrowDown': 40, 'ArrowLeft': 37, 'ArrowRight': 39,
+        ' ': 32, 'z': 90, 'Z': 90, 'q': 81, 'Q': 81,
+        's': 83, 'S': 83, 'd': 68, 'D': 68,
+        'w': 87, 'W': 87, 'a': 65, 'A': 65
+      };
+      return map[key] || 0;
+    }
 
-        // Surveille le canvas en continu (important après restart)
-        setInterval(() => {
-          const canvas = iframe.contentDocument?.querySelector('canvas');
-          if (canvas && canvas !== currentCanvas) {
-            currentCanvas = canvas;
-            console.log('%c Nouveau canvas détecté !', 'color:cyan');
+    // ============= INJECTION DIRECTE DANS L'IFRAME =============
+    let iframeReady = false;
+    let keyStates = {}; // Pour éviter les répétitions
+    let currentCanvas = null; // Garder une référence au canvas actuel
+
+    iframe.addEventListener('load', () => {
+      document.getElementById('loading-ui').style.display = 'none';
+      console.log('%c[MYNVO Parent] Iframe loaded!', 'color: #00ff00; font-weight: bold;');
+      
+      // Attendre un peu que le jeu Unity se charge
+      setTimeout(() => {
+        try {
+          const iframeWin = iframe.contentWindow;
+          const iframeDoc = iframe.contentDocument || iframeWin.document;
+          
+          console.log('%c[MYNVO Parent] Attempting to access iframe...', 'color: #ffd700;');
+          
+          // Vérifier si on peut accéder à l'iframe
+          if (iframeDoc) {
+            iframeReady = true;
+            console.log('%c[MYNVO Parent] ✅ Iframe accessible! Direct injection mode.', 'color: #00ff00; font-weight: bold;');
+            
+            // SURVEILLER EN CONTINU le canvas (même après la mort/restart)
+            setInterval(() => {
+              const canvas = iframeDoc.querySelector('canvas');
+              if (canvas && canvas !== currentCanvas) {
+                currentCanvas = canvas;
+                console.log('%c[MYNVO Parent] 🎮 Unity canvas detected/updated!', 'color: #00ff00; font-weight: bold;');
+              }
+            }, 500); // Vérifier toutes les 500ms
           }
-        }, 800);
-      } catch (e) {
-        console.warn('Iframe bloquée (CORS) → ZQSD ne marchera pas');
-        iframeReady = false;
+        } catch (err) {
+          console.warn('%c[MYNVO Parent] ⚠️ Cannot access iframe (CORS). Using postMessage fallback...', 'color: #ff6b6b;', err);
+          iframeReady = false;
+        }
+      }, 2000);
+    });
+
+    // ============= SYSTÈME DE TOUCHES =============
+    function simulateKeyInIframe(type, mappedKey, keyCode) {
+      if (!keyCode) return;
+      
+      try {
+        const iframeWin = iframe.contentWindow;
+        const iframeDoc = iframe.contentDocument || iframeWin.document;
+        
+        if (!iframeDoc) {
+          console.warn('[MYNVO Parent] Cannot access iframe document');
+          return;
+        }
+        
+        // Créer l'événement avec keyCode (méthode old-school pour Unity)
+        const event = new KeyboardEvent(type, {
+          keyCode: keyCode,
+          which: keyCode,
+          key: mappedKey,
+          bubbles: true,
+          cancelable: true
+        });
+        
+        // Dispatcher sur tous les targets possibles
+        iframeDoc.dispatchEvent(event);
+        iframeWin.dispatchEvent(event);
+        
+        // Utiliser le canvas actuel (mis à jour en continu)
+        if (currentCanvas) {
+          currentCanvas.dispatchEvent(event);
+        }
+        
+        // Tous les canvas possibles (au cas où)
+        iframeDoc.querySelectorAll('canvas, #canvas, #unity-canvas').forEach(el => {
+          el.dispatchEvent(event);
+        });
+        
+        console.log(`%c[MYNVO Parent] 🎯 Dispatched ${type}: ${mappedKey} (keyCode: ${keyCode})`, 'color: #58a6ff;');
+        
+      } catch (err) {
+        console.error('[MYNVO Parent] Error dispatching event:', err);
       }
-    }, 2500);
-  });
-
-  // ============= INTERCEPTION DES TOUCHES (parent) =============
-  const keyMap = {
-    up: { name: 'ArrowUp', code: 38 },
-    down: { name: 'ArrowDown', code: 40 },
-    left: { name: 'ArrowLeft', code: 37 },
-    right: { name: 'ArrowRight', code: 39 },
-    jump: { name: ' ', code: 32 }
-  };
-
-  document.addEventListener('keydown', (e) => {
-    if (isCapturingKey) return;
-
-    const lowered = e.key.toLowerCase();
-    let action = null;
-
-    if (lowered === config.up.toLowerCase()) action = keyMap.up;
-    else if (lowered === config.down.toLowerCase()) action = keyMap.down;
-    else if (lowered === config.left.toLowerCase()) action = keyMap.left;
-    else if (lowered === config.right.toLowerCase()) action = keyMap.right;
-    else if (e.key === config.jump) action = keyMap.jump;
-
-    if (action) {
-      e.preventDefault();
-      simulateKey('keydown', action.name, action.code);
     }
-  });
 
-  document.addEventListener('keyup', (e) => {
-    if (isCapturingKey) return;
+    // Intercepter les touches
+    document.addEventListener('keydown', (e) => {
+      if (isCapturingKey) return;
+      
+      const key = e.key;
+      const keyMap = {
+        [config.up.toLowerCase()]: { key: 'ArrowUp', code: 38 },
+        [config.down.toLowerCase()]: { key: 'ArrowDown', code: 40 },
+        [config.left.toLowerCase()]: { key: 'ArrowLeft', code: 37 },
+        [config.right.toLowerCase()]: { key: 'ArrowRight', code: 39 },
+        [config.jump]: { key: ' ', code: 32 }
+      };
 
-    const lowered = e.key.toLowerCase();
-    let action = null;
+      const mapped = keyMap[key.toLowerCase()];
+      if (mapped) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        
+        // Éviter les répétitions
+        if (keyStates[mapped.code]) return;
+        keyStates[mapped.code] = true;
+        
+        console.log(`[MYNVO Parent] keydown: ${key} → ${mapped.key} (keyCode: ${mapped.code})`);
+        
+        if (iframeReady) {
+          simulateKeyInIframe('keydown', mapped.key, mapped.code);
+        } else {
+          // Fallback: postMessage
+          iframe.contentWindow.postMessage({
+            type: 'keydown',
+            key: mapped.key,
+            keyCode: mapped.code
+          }, '*');
+        }
+      }
+    }, true);
 
-    if (lowered === config.up.toLowerCase()) action = keyMap.up;
-    else if (lowered === config.down.toLowerCase()) action = keyMap.down;
-    else if (lowered === config.left.toLowerCase()) action = keyMap.left;
-    else if (lowered === config.right.toLowerCase()) action = keyMap.right;
-    else if (e.key === config.jump) action = keyMap.jump;
+    document.addEventListener('keyup', (e) => {
+      if (isCapturingKey) return;
+      
+      const key = e.key;
+      const keyMap = {
+        [config.up.toLowerCase()]: { key: 'ArrowUp', code: 38 },
+        [config.down.toLowerCase()]: { key: 'ArrowDown', code: 40 },
+        [config.left.toLowerCase()]: { key: 'ArrowLeft', code: 37 },
+        [config.right.toLowerCase()]: { key: 'ArrowRight', code: 39 },
+        [config.jump]: { key: ' ', code: 32 }
+      };
 
-    if (action) {
-      e.preventDefault();
-      simulateKey('keyup', action.name, action.code);
+      const mapped = keyMap[key.toLowerCase()];
+      if (mapped) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        
+        keyStates[mapped.code] = false;
+        
+        console.log(`[MYNVO Parent] keyup: ${key} → ${mapped.key} (keyCode: ${mapped.code})`);
+        
+        if (iframeReady) {
+          simulateKeyInIframe('keyup', mapped.key, mapped.code);
+        } else {
+          iframe.contentWindow.postMessage({
+            type: 'keyup',
+            key: mapped.key,
+            keyCode: mapped.code
+          }, '*');
+        }
+      }
+    }, true);
+
+    // ============= FPS COUNTER =============
+    let fpsFrames = 0;
+    let fpsLastTime = performance.now();
+    
+    function updateFPS() {
+      fpsFrames++;
+      const now = performance.now();
+      
+      if (now - fpsLastTime >= 1000) {
+        const fps = Math.round((fpsFrames * 1000) / (now - fpsLastTime));
+        document.getElementById('fps-value').textContent = fps;
+        
+        const fpsEl = document.getElementById('fps-overlay');
+        if (fps >= 55) {
+          fpsEl.style.color = '#22c55e';
+          fpsEl.style.borderColor = '#22c55e';
+        } else if (fps >= 30) {
+          fpsEl.style.color = '#f59e0b';
+          fpsEl.style.borderColor = '#f59e0b';
+        } else {
+          fpsEl.style.color = '#ef4444';
+          fpsEl.style.borderColor = '#ef4444';
+        }
+        
+        fpsFrames = 0;
+        fpsLastTime = now;
+      }
+      
+      requestAnimationFrame(updateFPS);
     }
-  });
+    updateFPS();
 
-  // ============= LE RESTE (FPS, fullscreen, settings) → inchangé =============
-  // (je te le remets proprement si tu veux, mais il était déjà bon)
+    // ============= FULLSCREEN =============
+    document.getElementById('fs-btn').addEventListener('click', async () => {
+      try {
+        if (iframe.requestFullscreen) await iframe.requestFullscreen();
+        else if (iframe.webkitRequestFullscreen) await iframe.webkitRequestFullscreen();
+      } catch (err) {
+        alert('Plein écran non supporté');
+      }
+    });
 
-  let fpsFrames = 0, fpsLastTime = performance.now();
-  function updateFPS() {
-    fpsFrames++;
-    const now = performance.now();
-    if (now - fpsLastTime >= 1000) {
-      const fps = Math.round((fpsFrames * 1000) / (now - fpsLastTime));
-      document.getElementById('fps-value').textContent = fps;
-      const el = document.getElementById('fps-overlay');
-      el.style.color = el.style.borderColor = fps >= 55 ? '#22c55e' : fps >= 30 ? '#f59e0b' : '#ef4444';
-      fpsFrames = 0; fpsLastTime = now;
+    // ============= SETTINGS MODAL =============
+    function openSettings() {
+      if (document.getElementById('mynvo-settings')) return;
+      
+      const div = document.createElement('div');
+      div.id = 'mynvo-settings';
+      div.style = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#111;color:#fff;padding:30px 35px;border-radius:16px;border:4px solid #ffd700;z-index:999999;max-width:90%;box-shadow:0 0 80px rgba(0,0,0,0.9);';
+      
+      div.innerHTML = `
+        <h2 style="color:#ffd700;text-align:center;margin-bottom:20px;font-size:24px;">⚙️ Paramètres Mynvo</h2>
+        
+        <div style="margin-bottom:20px;">
+          <label style="display:block;margin-bottom:8px;font-size:15px;">📝 Pseudo</label>
+          <input type="text" id="set-name" value="${escapeHtml(config.name)}" style="width:100%;padding:12px;font-size:16px;background:#222;border:2px solid #444;border-radius:10px;color:#fff;">
+        </div>
+        
+        <div style="background:#1a1a1a;padding:20px;border-radius:12px;margin-bottom:20px;">
+          <h3 style="color:#ffd700;margin-bottom:15px;font-size:18px;">🎮 Touches de jeu</h3>
+          <p style="font-size:13px;color:#aaa;margin-bottom:15px;">Clique sur une touche puis appuie sur celle que tu veux</p>
+          
+          <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:15px;">
+            <div>
+              <label style="display:block;margin-bottom:8px;font-size:14px;">⬆️ Haut</label>
+              <div class="key-display" data-key="up">${getKeyDisplay(config.up)}</div>
+            </div>
+            <div>
+              <label style="display:block;margin-bottom:8px;font-size:14px;">⬇️ Bas</label>
+              <div class="key-display" data-key="down">${getKeyDisplay(config.down)}</div>
+            </div>
+            <div>
+              <label style="display:block;margin-bottom:8px;font-size:14px;">⬅️ Gauche</label>
+              <div class="key-display" data-key="left">${getKeyDisplay(config.left)}</div>
+            </div>
+            <div>
+              <label style="display:block;margin-bottom:8px;font-size:14px;">➡️ Droite</label>
+              <div class="key-display" data-key="right">${getKeyDisplay(config.right)}</div>
+            </div>
+            <div style="grid-column:1/-1;">
+              <label style="display:block;margin-bottom:8px;font-size:14px;">🚀 Saut</label>
+              <div class="key-display" data-key="jump">${getKeyDisplay(config.jump)}</div>
+            </div>
+          </div>
+        </div>
+        
+        <div style="text-align:center;">
+          <button id="close-settings" style="background:#ff4444;color:#fff;padding:12px 24px;border:none;border-radius:10px;font-size:16px;cursor:pointer;font-weight:600;">❌ Fermer</button>
+          <button id="save-settings" style="background:#00ff00;color:#000;padding:12px 28px;border:none;border-radius:10px;font-size:16px;cursor:pointer;margin-left:12px;font-weight:700;">✓ Enregistrer</button>
+        </div>
+        <p style="font-size:12px;color:#ffd700;margin-top:15px;text-align:center;font-weight:600;">⚠️ Recharge la page (F5) après avoir changé les touches</p>
+      `;
+      
+      document.body.appendChild(div);
+
+      let activeKeyElement = null;
+      
+      function getKeyDisplay(key) {
+        if (key === ' ') return 'ESPACE';
+        return key.toUpperCase();
+      }
+      
+      div.querySelectorAll('.key-display').forEach(el => {
+        el.addEventListener('click', () => {
+          if (activeKeyElement) activeKeyElement.classList.remove('active');
+          activeKeyElement = el;
+          el.classList.add('active');
+          el.textContent = '...';
+          isCapturingKey = true;
+        });
+      });
+      
+      const captureHandler = (e) => {
+        if (!activeKeyElement) return;
+        
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const keyName = activeKeyElement.dataset.key;
+        const newKey = e.key;
+        
+        config[keyName] = newKey;
+        activeKeyElement.textContent = getKeyDisplay(newKey);
+        activeKeyElement.classList.remove('active');
+        activeKeyElement = null;
+        isCapturingKey = false;
+      };
+      
+      document.addEventListener('keydown', captureHandler, true);
+      
+      document.getElementById('close-settings').onclick = () => {
+        document.removeEventListener('keydown', captureHandler, true);
+        isCapturingKey = false;
+        div.remove();
+      };
+      
+      document.getElementById('save-settings').onclick = () => {
+        config.name = document.getElementById('set-name').value.trim() || 'Joueur';
+        saveConfig();
+        document.removeEventListener('keydown', captureHandler, true);
+        isCapturingKey = false;
+        alert('✓ Paramètres sauvegardés !\n\n⚠️ IMPORTANT : Recharge la page (F5) pour que les nouvelles touches fonctionnent.');
+        div.remove();
+      };
     }
-    requestAnimationFrame(updateFPS);
-  }
-  updateFPS();
 
-  document.getElementById('fs-btn').onclick = () => iframe.requestFullscreen?.() || iframe.webkitRequestFullscreen?.();
+    function escapeHtml(str) {
+      if (!str && str !== '') return '';
+      return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]);
+    }
 
-  document.getElementById('play-link').onclick = () => {
-    document.querySelector('.game-container').scrollIntoView({ behavior: 'smooth' });
-    setTimeout(() => iframe.focus(), 500);
-  };
+    document.getElementById('play-link').addEventListener('click', () => {
+      document.querySelector('.game-container')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      iframe.focus();
+    });
 
-  // Ton système de settings est nickel → je le garde tel quel
-  function openSettings() { /* ... ton code actuel ... */ }
-  function escapeHtml(str) { return String(str).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]); }
-
-  // ↑ Colle ici tout le code du modal settings que tu avais (il est parfait)
-
-  console.log('%c[MYNVO] ZQSD activé ! Config:', 'color: lime; font-size: 16px;', config);
-</script>
+    console.log('%c[MYNVO Parent] Touch system initialized!', 'color: #58a6ff; font-weight: bold;');
+    console.log('%c[MYNVO Parent] Current config:', 'color: #ffd700;', config);
+  </script>
+</body>
+</html>
