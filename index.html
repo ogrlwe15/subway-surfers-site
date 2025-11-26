@@ -106,48 +106,120 @@
       return map[key] || 0;
     }
 
-    // ============= SYSTÈME DE TOUCHES via postMessage =============
-    function sendKeyToGame(type, originalKey) {
-      // Mapper la touche utilisateur vers la direction
-      const keyMap = {
-        [config.up.toLowerCase()]: 'ArrowUp',
-        [config.down.toLowerCase()]: 'ArrowDown',
-        [config.left.toLowerCase()]: 'ArrowLeft',
-        [config.right.toLowerCase()]: 'ArrowRight',
-        [config.jump]: ' '
-      };
+    // ============= INJECTION DIRECTE DANS L'IFRAME =============
+    let iframeReady = false;
+    let keyStates = {}; // Pour éviter les répétitions
 
-      const mappedKey = keyMap[originalKey.toLowerCase()] || originalKey;
-      const keyCode = getKeyCode(mappedKey);
+    iframe.addEventListener('load', () => {
+      document.getElementById('loading-ui').style.display = 'none';
+      console.log('%c[MYNVO Parent] Iframe loaded!', 'color: #00ff00; font-weight: bold;');
+      
+      // Attendre un peu que le jeu Unity se charge
+      setTimeout(() => {
+        try {
+          const iframeWin = iframe.contentWindow;
+          const iframeDoc = iframe.contentDocument || iframeWin.document;
+          
+          console.log('%c[MYNVO Parent] Attempting to access iframe...', 'color: #ffd700;');
+          
+          // Vérifier si on peut accéder à l'iframe
+          if (iframeDoc) {
+            iframeReady = true;
+            console.log('%c[MYNVO Parent] ✅ Iframe accessible! Direct injection mode.', 'color: #00ff00; font-weight: bold;');
+            
+            // Attendre le canvas Unity
+            const checkCanvas = setInterval(() => {
+              const canvas = iframeDoc.querySelector('canvas');
+              if (canvas) {
+                console.log('%c[MYNVO Parent] 🎮 Unity canvas found!', 'color: #00ff00; font-weight: bold;');
+                clearInterval(checkCanvas);
+              }
+            }, 100);
+          }
+        } catch (err) {
+          console.warn('%c[MYNVO Parent] ⚠️ Cannot access iframe (CORS). Using postMessage fallback...', 'color: #ff6b6b;', err);
+          iframeReady = false;
+        }
+      }, 2000);
+    });
 
-      if (keyCode) {
-        iframe.contentWindow.postMessage({
-          type: type,
-          key: mappedKey,
-          keyCode: keyCode
-        }, '*');
+    // ============= SYSTÈME DE TOUCHES =============
+    function simulateKeyInIframe(type, mappedKey, keyCode) {
+      if (!keyCode) return;
+      
+      try {
+        const iframeWin = iframe.contentWindow;
+        const iframeDoc = iframe.contentDocument || iframeWin.document;
         
-        console.log(`[MYNVO Parent] ${type}: ${originalKey} → ${mappedKey} (keyCode: ${keyCode})`);
+        if (!iframeDoc) {
+          console.warn('[MYNVO Parent] Cannot access iframe document');
+          return;
+        }
+        
+        // Créer l'événement avec keyCode (méthode old-school pour Unity)
+        const event = new KeyboardEvent(type, {
+          keyCode: keyCode,
+          which: keyCode,
+          key: mappedKey,
+          bubbles: true,
+          cancelable: true
+        });
+        
+        // Dispatcher sur tous les targets possibles
+        iframeDoc.dispatchEvent(event);
+        iframeWin.dispatchEvent(event);
+        
+        const canvas = iframeDoc.querySelector('canvas');
+        if (canvas) {
+          canvas.dispatchEvent(event);
+        }
+        
+        // Tous les canvas possibles
+        iframeDoc.querySelectorAll('canvas, #canvas, #unity-canvas').forEach(el => {
+          el.dispatchEvent(event);
+        });
+        
+        console.log(`%c[MYNVO Parent] 🎯 Dispatched ${type}: ${mappedKey} (keyCode: ${keyCode})`, 'color: #58a6ff;');
+        
+      } catch (err) {
+        console.error('[MYNVO Parent] Error dispatching event:', err);
       }
     }
 
-    // Intercepter TOUTES les touches du parent
+    // Intercepter les touches
     document.addEventListener('keydown', (e) => {
-      if (isCapturingKey) return; // Ne pas intercepter pendant la config
+      if (isCapturingKey) return;
       
       const key = e.key;
-      const userKeys = [
-        config.up.toLowerCase(),
-        config.down.toLowerCase(),
-        config.left.toLowerCase(),
-        config.right.toLowerCase(),
-        config.jump
-      ];
+      const keyMap = {
+        [config.up.toLowerCase()]: { key: 'ArrowUp', code: 38 },
+        [config.down.toLowerCase()]: { key: 'ArrowDown', code: 40 },
+        [config.left.toLowerCase()]: { key: 'ArrowLeft', code: 37 },
+        [config.right.toLowerCase()]: { key: 'ArrowRight', code: 39 },
+        [config.jump]: { key: ' ', code: 32 }
+      };
 
-      if (userKeys.includes(key.toLowerCase())) {
+      const mapped = keyMap[key.toLowerCase()];
+      if (mapped) {
         e.preventDefault();
         e.stopImmediatePropagation();
-        sendKeyToGame('keydown', key);
+        
+        // Éviter les répétitions
+        if (keyStates[mapped.code]) return;
+        keyStates[mapped.code] = true;
+        
+        console.log(`[MYNVO Parent] keydown: ${key} → ${mapped.key} (keyCode: ${mapped.code})`);
+        
+        if (iframeReady) {
+          simulateKeyInIframe('keydown', mapped.key, mapped.code);
+        } else {
+          // Fallback: postMessage
+          iframe.contentWindow.postMessage({
+            type: 'keydown',
+            key: mapped.key,
+            keyCode: mapped.code
+          }, '*');
+        }
       }
     }, true);
 
@@ -155,18 +227,32 @@
       if (isCapturingKey) return;
       
       const key = e.key;
-      const userKeys = [
-        config.up.toLowerCase(),
-        config.down.toLowerCase(),
-        config.left.toLowerCase(),
-        config.right.toLowerCase(),
-        config.jump
-      ];
+      const keyMap = {
+        [config.up.toLowerCase()]: { key: 'ArrowUp', code: 38 },
+        [config.down.toLowerCase()]: { key: 'ArrowDown', code: 40 },
+        [config.left.toLowerCase()]: { key: 'ArrowLeft', code: 37 },
+        [config.right.toLowerCase()]: { key: 'ArrowRight', code: 39 },
+        [config.jump]: { key: ' ', code: 32 }
+      };
 
-      if (userKeys.includes(key.toLowerCase())) {
+      const mapped = keyMap[key.toLowerCase()];
+      if (mapped) {
         e.preventDefault();
         e.stopImmediatePropagation();
-        sendKeyToGame('keyup', key);
+        
+        keyStates[mapped.code] = false;
+        
+        console.log(`[MYNVO Parent] keyup: ${key} → ${mapped.key} (keyCode: ${mapped.code})`);
+        
+        if (iframeReady) {
+          simulateKeyInIframe('keyup', mapped.key, mapped.code);
+        } else {
+          iframe.contentWindow.postMessage({
+            type: 'keyup',
+            key: mapped.key,
+            keyCode: mapped.code
+          }, '*');
+        }
       }
     }, true);
 
@@ -201,12 +287,6 @@
       requestAnimationFrame(updateFPS);
     }
     updateFPS();
-
-    // ============= IFRAME LOAD =============
-    iframe.addEventListener('load', () => {
-      document.getElementById('loading-ui').style.display = 'none';
-      console.log('%c[MYNVO Parent] Iframe loaded, postMessage system active!', 'color: #00ff00; font-weight: bold;');
-    });
 
     // ============= FULLSCREEN =============
     document.getElementById('fs-btn').addEventListener('click', async () => {
