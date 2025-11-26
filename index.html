@@ -170,12 +170,12 @@
         iframeDoc.dispatchEvent(event);
         iframeWin.dispatchEvent(event);
         
-        // Utiliser le canvas actuel (mis à jour en continu)
-        if (currentCanvas) {
-          currentCanvas.dispatchEvent(event);
+        const canvas = iframeDoc.querySelector('canvas');
+        if (canvas) {
+          canvas.dispatchEvent(event);
         }
         
-        // Tous les canvas possibles (au cas où)
+        // Tous les canvas possibles
         iframeDoc.querySelectorAll('canvas, #canvas, #unity-canvas').forEach(el => {
           el.dispatchEvent(event);
         });
