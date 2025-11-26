@@ -7,34 +7,34 @@
   <meta name="description" content="Subway Surfers version Mynvo avec TOP 3 et FPS">
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:Segoe UI,sans-serif;background:linear-gradient(135deg,#5e4fff,#8b5cf6);color:#fff;min-height:100vh;display:flex;flex-direction:column;overflow:hidden;}
-    header{background:rgba(0,0,0,0.35);backdrop-filter:blur(12px);padding:18px 40px;position:fixed;top:0;left:0;right:0;z-index:100;}
+    body{font-family:Segoe UI,sans-serif;background:#000000;color:#fff;min-height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+    header{background:rgba(124,98,220,0.15);backdrop-filter:blur(12px);padding:18px 40px;position:fixed;top:0;left:0;right:0;z-index:100;border-bottom:2px solid #7c62dc;}
     .header-content{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;}
     .logo{font-size:34px;font-weight:900;display:flex;align-items:center;gap:14px;}
-    .logo img{height:50px;border-radius:50%;border:4px solid #ffd700;box-shadow:0 0 20px #ffd70044;}
-    .logo span{color:#ffd700;}
+    .logo img{height:50px;border-radius:50%;border:4px solid #7c62dc;box-shadow:0 0 20px #7c62dc44;}
+    .logo span{color:#7c62dc;}
     .nav-links a{color:#fff;text-decoration:none;margin-left:24px;font-weight:600;font-size:17px;transition:0.2s;cursor:pointer;}
-    .nav-links a:hover{opacity:0.7;}
+    .nav-links a:hover{color:#7c62dc;}
     main{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;}
-    .game-container{width:100%;max-width:1350px;background:rgba(0,0,0,0.4);backdrop-filter:blur(20px);border-radius:28px;padding:40px;box-shadow:0 25px 80px rgba(0,0,0,0.5);overflow:hidden;position:relative;}
-    h1{font-size:56px;text-align:center;margin-bottom:30px;text-shadow:0 6px 30px rgba(0,0,0,0.6);}
-    .game-frame{position:relative;border-radius:20px;overflow:hidden;box-shadow:0 15px 50px rgba(0,0,0,0.6);}
-    iframe{width:100%;height:720px;border:none;background:#000;display:block;}
+    .game-container{width:100%;max-width:1350px;background:rgba(124,98,220,0.1);backdrop-filter:blur(20px);border-radius:28px;padding:40px;box-shadow:0 25px 80px rgba(124,98,220,0.25);overflow:hidden;position:relative;border:2px solid #7c62dc;}
+    h1{font-size:56px;text-align:center;margin-bottom:30px;text-shadow:0 6px 30px rgba(124,98,220,0.6);color:#7c62dc;}
+    .game-frame{position:relative;border-radius:20px;overflow:hidden;box-shadow:0 15px 50px rgba(124,98,220,0.3);border:2px solid #7c62dc;}
+    iframe{width:100%;height:720px;border:none;background:#000000;display:block;}
     .loading{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;text-align:center;}
-    .spinner{width:70px;height:70px;border:8px solid #ffffff33;border-top:8px solid #ffd700;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:20px;}
+    .spinner{width:70px;height:70px;border:8px solid #ffffff33;border-top:8px solid #7c62dc;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:20px;}
     @keyframes spin{to{transform:rotate(360deg);}}
-    footer{text-align:center;padding:25px;font-size:15px;opacity:0.85;background:rgba(0,0,0,0.2);}
-    .fs-button{position:absolute;top:18px;right:18px;z-index:200;background:rgba(0,0,0,0.6);border:2px solid #ffd700;color:#fff;padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700;}
-    .fs-button:hover{opacity:0.9;}
-    .key-display{display:inline-block;min-width:50px;padding:10px 16px;background:#333;border:2px solid #555;border-radius:8px;text-align:center;font-weight:700;font-size:18px;cursor:pointer;transition:0.2s;}
-    .key-display:hover{border-color:#ffd700;background:#444;}
+    footer{text-align:center;padding:25px;font-size:15px;opacity:0.85;background:rgba(124,98,220,0.08);color:#7c62dc;}
+    .fs-button{position:absolute;top:18px;right:18px;z-index:200;background:rgba(0,0,0,0.8);border:2px solid #7c62dc;color:#fff;padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700;}
+    .fs-button:hover{background:#7c62dc;color:#000;}
+    .key-display{display:inline-block;min-width:50px;padding:10px 16px;background:#0a0a0a;border:2px solid #7c62dc;border-radius:8px;text-align:center;font-weight:700;font-size:18px;cursor:pointer;transition:0.2s;}
+    .key-display:hover{border-color:#9580e8;background:#1a1a1a;}
     .key-display.active{border-color:#00ff00;background:#1a4d1a;animation:pulse 0.5s;}
     @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
-    #fps-overlay{position:fixed;top:100px;left:20px;z-index:999999;background:rgba(0,0,0,0.85);color:#22c55e;padding:10px 18px;border-radius:12px;font-size:18px;font-weight:700;border:2px solid #22c55e;box-shadow:0 0 20px rgba(34,197,94,0.3);font-family:system-ui,sans-serif;pointer-events:none;}
-    #top3-overlay{position:fixed;bottom:20px;left:20px;z-index:999999;background:rgba(0,0,0,0.9);color:#fff;padding:16px 22px;border-radius:14px;border:2px solid #ffd700;font-size:14px;line-height:1.6;box-shadow:0 0 30px rgba(255,215,0,0.4);font-family:system-ui,sans-serif;pointer-events:none;min-width:280px;}
-    #top3-overlay .title{color:#ffd700;font-size:16px;font-weight:900;margin-bottom:10px;text-align:center;}
-    #top3-overlay .player{margin:6px 0;padding:6px;border-radius:8px;background:rgba(255,255,255,0.05);}
-    #top3-overlay .player.first{color:#ffd700;font-weight:700;font-size:15px;}
+    #fps-overlay{position:fixed;top:100px;left:20px;z-index:999999;background:rgba(0,0,0,0.95);color:#7c62dc;padding:10px 18px;border-radius:12px;font-size:18px;font-weight:700;border:2px solid #7c62dc;box-shadow:0 0 20px rgba(124,98,220,0.4);font-family:system-ui,sans-serif;pointer-events:none;}
+    #top3-overlay{position:fixed;bottom:20px;left:20px;z-index:999999;background:rgba(0,0,0,0.98);color:#fff;padding:16px 22px;border-radius:14px;border:2px solid #7c62dc;font-size:14px;line-height:1.6;box-shadow:0 0 30px rgba(124,98,220,0.5);font-family:system-ui,sans-serif;pointer-events:none;min-width:280px;}
+    #top3-overlay .title{color:#7c62dc;font-size:16px;font-weight:900;margin-bottom:10px;text-align:center;}
+    #top3-overlay .player{margin:6px 0;padding:6px;border-radius:8px;background:rgba(124,98,220,0.08);}
+    #top3-overlay .player.first{color:#7c62dc;font-weight:700;font-size:15px;}
   </style>
 </head>
 <body>
@@ -48,6 +48,7 @@
       <div class="nav-links">
         <a id="play-link">Jouer</a>
         <a onclick="openSettings();return false;">Paramètres</a>
+        <a href="https://discord.gg/bQTtDXmF" target="_blank">Discord</a>
       </div>
     </div>
   </header>
@@ -113,7 +114,7 @@
 
     iframe.addEventListener('load', () => {
       document.getElementById('loading-ui').style.display = 'none';
-      console.log('%c[MYNVO Parent] Iframe loaded!', 'color: #00ff00; font-weight: bold;');
+      console.log('%c[MYNVO Parent] Iframe loaded!', 'color: #7c62dc; font-weight: bold;');
       
       // Attendre un peu que le jeu Unity se charge
       setTimeout(() => {
@@ -121,19 +122,19 @@
           const iframeWin = iframe.contentWindow;
           const iframeDoc = iframe.contentDocument || iframeWin.document;
           
-          console.log('%c[MYNVO Parent] Attempting to access iframe...', 'color: #ffd700;');
+          console.log('%c[MYNVO Parent] Attempting to access iframe...', 'color: #7c62dc;');
           
           // Vérifier si on peut accéder à l'iframe
           if (iframeDoc) {
             iframeReady = true;
-            console.log('%c[MYNVO Parent] ✅ Iframe accessible! Direct injection mode.', 'color: #00ff00; font-weight: bold;');
+            console.log('%c[MYNVO Parent] ✅ Iframe accessible! Direct injection mode.', 'color: #7c62dc; font-weight: bold;');
             
             // SURVEILLER EN CONTINU le canvas (même après la mort/restart)
             setInterval(() => {
               const canvas = iframeDoc.querySelector('canvas');
               if (canvas && canvas !== currentCanvas) {
                 currentCanvas = canvas;
-                console.log('%c[MYNVO Parent] 🎮 Unity canvas detected/updated!', 'color: #00ff00; font-weight: bold;');
+                console.log('%c[MYNVO Parent] 🎮 Unity canvas detected/updated!', 'color: #7c62dc; font-weight: bold;');
               }
             }, 500); // Vérifier toutes les 500ms
           }
@@ -180,7 +181,7 @@
           el.dispatchEvent(event);
         });
         
-        console.log(`%c[MYNVO Parent] 🎯 Dispatched ${type}: ${mappedKey} (keyCode: ${keyCode})`, 'color: #58a6ff;');
+                  console.log(`%c[MYNVO Parent] 🎯 Dispatched ${type}: ${mappedKey} (keyCode: ${keyCode})`, 'color: #7c62dc;');
         
       } catch (err) {
         console.error('[MYNVO Parent] Error dispatching event:', err);
@@ -271,8 +272,8 @@
         
         const fpsEl = document.getElementById('fps-overlay');
         if (fps >= 55) {
-          fpsEl.style.color = '#22c55e';
-          fpsEl.style.borderColor = '#22c55e';
+          fpsEl.style.color = '#7c62dc';
+          fpsEl.style.borderColor = '#7c62dc';
         } else if (fps >= 30) {
           fpsEl.style.color = '#f59e0b';
           fpsEl.style.borderColor = '#f59e0b';
@@ -305,18 +306,18 @@
       
       const div = document.createElement('div');
       div.id = 'mynvo-settings';
-      div.style = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#111;color:#fff;padding:30px 35px;border-radius:16px;border:4px solid #ffd700;z-index:999999;max-width:90%;box-shadow:0 0 80px rgba(0,0,0,0.9);';
+      div.style = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#000000;color:#fff;padding:30px 35px;border-radius:16px;border:4px solid #7c62dc;z-index:999999;max-width:90%;box-shadow:0 0 80px rgba(124,98,220,0.6);';
       
       div.innerHTML = `
-        <h2 style="color:#ffd700;text-align:center;margin-bottom:20px;font-size:24px;">⚙️ Paramètres Mynvo</h2>
+        <h2 style="color:#7c62dc;text-align:center;margin-bottom:20px;font-size:24px;">⚙️ Paramètres Mynvo</h2>
         
         <div style="margin-bottom:20px;">
           <label style="display:block;margin-bottom:8px;font-size:15px;">📝 Pseudo</label>
-          <input type="text" id="set-name" value="${escapeHtml(config.name)}" style="width:100%;padding:12px;font-size:16px;background:#222;border:2px solid #444;border-radius:10px;color:#fff;">
+          <input type="text" id="set-name" value="${escapeHtml(config.name)}" style="width:100%;padding:12px;font-size:16px;background:#0a0a0a;border:2px solid #7c62dc;border-radius:10px;color:#fff;">
         </div>
         
-        <div style="background:#1a1a1a;padding:20px;border-radius:12px;margin-bottom:20px;">
-          <h3 style="color:#ffd700;margin-bottom:15px;font-size:18px;">🎮 Touches de jeu</h3>
+        <div style="background:#0a0a0a;padding:20px;border-radius:12px;margin-bottom:20px;border:2px solid #7c62dc;">
+          <h3 style="color:#7c62dc;margin-bottom:15px;font-size:18px;">🎮 Touches de jeu</h3>
           <p style="font-size:13px;color:#aaa;margin-bottom:15px;">Clique sur une touche puis appuie sur celle que tu veux</p>
           
           <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:15px;">
@@ -345,9 +346,9 @@
         
         <div style="text-align:center;">
           <button id="close-settings" style="background:#ff4444;color:#fff;padding:12px 24px;border:none;border-radius:10px;font-size:16px;cursor:pointer;font-weight:600;">❌ Fermer</button>
-          <button id="save-settings" style="background:#00ff00;color:#000;padding:12px 28px;border:none;border-radius:10px;font-size:16px;cursor:pointer;margin-left:12px;font-weight:700;">✓ Enregistrer</button>
+          <button id="save-settings" style="background:#7c62dc;color:#fff;padding:12px 28px;border:none;border-radius:10px;font-size:16px;cursor:pointer;margin-left:12px;font-weight:700;">✓ Enregistrer</button>
         </div>
-        <p style="font-size:12px;color:#ffd700;margin-top:15px;text-align:center;font-weight:600;">⚠️ Recharge la page (F5) après avoir changé les touches</p>
+        <p style="font-size:12px;color:#7c62dc;margin-top:15px;text-align:center;font-weight:600;">⚠️ Recharge la page (F5) après avoir changé les touches</p>
       `;
       
       document.body.appendChild(div);
@@ -413,8 +414,8 @@
       iframe.focus();
     });
 
-    console.log('%c[MYNVO Parent] Touch system initialized!', 'color: #58a6ff; font-weight: bold;');
-    console.log('%c[MYNVO Parent] Current config:', 'color: #ffd700;', config);
+    console.log('%c[MYNVO Parent] Touch system initialized!', 'color: #7c62dc; font-weight: bold;');
+    console.log('%c[MYNVO Parent] Current config:', 'color: #7c62dc;', config);
   </script>
 </body>
 </html>
