@@ -95,7 +95,7 @@
     let isCapturingKey = false;
     const iframe = document.getElementById('game-iframe');
 
-    // ============= MAPPING TOUCHES → KEYCODES =============
+    // ============= MAPPING TOUCHES → KEYCODES ============
     function getKeyCode(key) {
       const map = {
         'ArrowUp': 38, 'ArrowDown': 40, 'ArrowLeft': 37, 'ArrowRight': 39,
@@ -106,36 +106,31 @@
       return map[key] || 0;
     }
 
-    // ============= INJECTION DIRECTE DANS L'IFRAME =============
+    // ============= INJECTION DIRECTE DANS L'IFRAME ===========
     let iframeReady = false;
-    let keyStates = {}; // Pour éviter les répétitions
-    let currentCanvas = null; // Garder une référence au canvas actuel
+    let keyStates = {};
+    let currentCanvas = null;
 
     iframe.addEventListener('load', () => {
       document.getElementById('loading-ui').style.display = 'none';
       console.log('%c[MYNVO Parent] Iframe loaded!', 'color: #00ff00; font-weight: bold;');
       
-      // Attendre un peu que le jeu Unity se charge
       setTimeout(() => {
         try {
           const iframeWin = iframe.contentWindow;
           const iframeDoc = iframe.contentDocument || iframeWin.document;
           
-          console.log('%c[MYNVO Parent] Attempting to access iframe...', 'color: #ffd700;');
-          
-          // Vérifier si on peut accéder à l'iframe
           if (iframeDoc) {
             iframeReady = true;
-            console.log('%c[MYNVO Parent] ✅ Iframe accessible! Direct injection mode.', 'color: #00ff00; font-weight: bold;');
+            console.log('%c[MYNVO Parent] ✅ Iframe accessible! Direct injection mode.', 'color: #ffd700; font-weight: bold;');
             
-            // SURVEILLER EN CONTINU le canvas (même après la mort/restart)
             setInterval(() => {
               const canvas = iframeDoc.querySelector('canvas');
               if (canvas && canvas !== currentCanvas) {
                 currentCanvas = canvas;
                 console.log('%c[MYNVO Parent] 🎮 Unity canvas detected/updated!', 'color: #00ff00; font-weight: bold;');
               }
-            }, 500); // Vérifier toutes les 500ms
+            }, 500);
           }
         } catch (err) {
           console.warn('%c[MYNVO Parent] ⚠️ Cannot access iframe (CORS). Using postMessage fallback...', 'color: #ff6b6b;', err);
@@ -144,7 +139,6 @@
       }, 2000);
     });
 
-    // ============= SYSTÈME DE TOUCHES =============
     function simulateKeyInIframe(type, mappedKey, keyCode) {
       if (!keyCode) return;
       
@@ -157,7 +151,6 @@
           return;
         }
         
-        // Créer l'événement avec keyCode (méthode old-school pour Unity)
         const event = new KeyboardEvent(type, {
           keyCode: keyCode,
           which: keyCode,
@@ -166,16 +159,13 @@
           cancelable: true
         });
         
-        // Dispatcher sur tous les targets possibles
         iframeDoc.dispatchEvent(event);
         iframeWin.dispatchEvent(event);
         
-        // Utiliser le canvas actuel (mis à jour en continu)
         if (currentCanvas) {
           currentCanvas.dispatchEvent(event);
         }
         
-        // Tous les canvas possibles (au cas où)
         iframeDoc.querySelectorAll('canvas, #canvas, #unity-canvas').forEach(el => {
           el.dispatchEvent(event);
         });
@@ -187,15 +177,13 @@
       }
     }
 
-    // BLOQUER les flèches natives dans l'iframe AUSSI depuis le parent
     iframe.addEventListener('load', () => {
       try {
         const iframeDoc = iframe.contentDocument;
         const iframeWin = iframe.contentWindow;
         
         if (iframeDoc) {
-          // Bloquer TOUTES les touches natives dans l'iframe
-          const blockedKeys = [37, 38, 39, 40, 32]; // Flèches + Espace
+          const blockedKeys = [37, 38, 39, 40, 32];
           
           ['keydown', 'keyup'].forEach(eventType => {
             iframeDoc.addEventListener(eventType, (e) => {
@@ -205,7 +193,7 @@
                 console.log(`%c[MYNVO Parent] 🚫 Blocked native ${eventType} in iframe:`, 'color: #ff6b6b;', e.keyCode);
                 return false;
               }
-            }, true); // CAPTURE PHASE - avant que Unity puisse les recevoir
+            }, true);
           });
           
           console.log('%c[MYNVO Parent] 🔒 Native keys blocked in iframe!', 'color: #ffd700; font-weight: bold;');
@@ -215,7 +203,6 @@
       }
     }, { once: true });
 
-    // Intercepter les touches
     document.addEventListener('keydown', (e) => {
       if (isCapturingKey) return;
       
@@ -233,7 +220,6 @@
         e.preventDefault();
         e.stopImmediatePropagation();
         
-        // Éviter les répétitions
         if (keyStates[mapped.code]) return;
         keyStates[mapped.code] = true;
         
@@ -242,7 +228,6 @@
         if (iframeReady) {
           simulateKeyInIframe('keydown', mapped.key, mapped.code);
         } else {
-          // Fallback: postMessage
           iframe.contentWindow.postMessage({
             type: 'keydown',
             key: mapped.key,
@@ -319,9 +304,10 @@
 
     // ============= FULLSCREEN =============
     document.getElementById('fs-btn').addEventListener('click', async () => {
+      const container = document.querySelector('.game-container');
       try {
-        if (iframe.requestFullscreen) await iframe.requestFullscreen();
-        else if (iframe.webkitRequestFullscreen) await iframe.webkitRequestFullscreen();
+        if (container.requestFullscreen) await container.requestFullscreen();
+        else if (container.webkitRequestFullscreen) await container.webkitRequestFullscreen();
       } catch (err) {
         alert('Plein écran non supporté');
       }
@@ -334,7 +320,7 @@
       const div = document.createElement('div');
       div.id = 'mynvo-settings';
       div.style = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#111;color:#fff;padding:30px 35px;border-radius:16px;border:4px solid #ffd700;z-index:999999;max-width:90%;box-shadow:0 0 80px rgba(0,0,0,0.9);';
-      
+
       div.innerHTML = `
         <h2 style="color:#ffd700;text-align:center;margin-bottom:20px;font-size:24px;">⚙️ Paramètres Mynvo</h2>
         
@@ -426,7 +412,7 @@
         saveConfig();
         document.removeEventListener('keydown', captureHandler, true);
         isCapturingKey = false;
-        alert('✓ Paramètres sauvegardés !\n\n⚠️ IMPORTANT : Recharge la page (F5) pour que les nouvelles touches fonctionnent.');
+        alert('✓ Paramètres sauvegardés !\\n\\n⚠️ IMPORTANT : Recharge la page (F5) pour que les nouvelles touches fonctionnent.');
         div.remove();
       };
     }
