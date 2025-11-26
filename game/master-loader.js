@@ -27,3 +27,19 @@ sdkScript.src = "poki-sdk.js", sdkScript.onload = function() {
     var i = document.createElement("script");
     i.src = root + loader, document.body.appendChild(i)
 }, document.body.appendChild(sdkScript);
+
+// =============== PATCH ZQSD -> Arrow Keys ===============
+window.addEventListener("message", (e) => {
+    const d = e.data;
+    if (!d || !d.type) return;
+
+    if (d.type === "keyDown") {
+        const ev = new KeyboardEvent("keydown", { key: d.key });
+        document.dispatchEvent(ev);
+    }
+
+    if (d.type === "keyUp") {
+        const ev = new KeyboardEvent("keyup", { key: d.key });
+        document.dispatchEvent(ev);
+    }
+});
