@@ -1,232 +1,821 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subway Surfers</title>
-
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            background-color: #0d0d0f;
-            font-family: Arial, sans-serif;
-        }
-
-        #menu {
-            width: 100%;
-            height: 100%;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background: #0d0d0f;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 999;
-            color: #fff;
-            user-select: none;
-        }
-
-        #menu h1 {
-            margin-bottom: 20px;
-            font-size: 42px;
-            color: #ffffff;
-            text-shadow: 0px 0px 12px #7c62dc;
-        }
-
-        #startBtn {
-            width: 180px;
-            padding: 15px;
-            background-color: #7c62dc;
-            color: #ffffff;
-            font-size: 18px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            transition: 0.2s ease;
-        }
-
-        #startBtn:hover {
-            background-color: #9e87ff;
-            box-shadow: 0px 0px 12px #7c62dc;
-        }
-
-        /* Frame du jeu */
-        #game-iframe {
-            width: 100%;
-            height: 100vh;
-            border: none;
-            outline: none;
-        }
-
-        /* Overlay du mode éditeur */
-        #overlay-editor {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 100%;
-            background: #000000aa;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 998;
-        }
-
-        #editor-box {
-            background: #1a1a1d;
-            padding: 20px;
-            border-radius: 10px;
-            width: 420px;
-            color: #fff;
-            border: 2px solid #7c62dc66;
-        }
-
-        .editor-input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 12px;
-            background: #111;
-            border: 1px solid #555;
-            color: white;
-            border-radius: 6px;
-        }
-
-        .editor-btn {
-            padding: 10px;
-            width: 100%;
-            background-color: #7c62dc;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            margin-top: 10px;
-            border-radius: 6px;
-        }
-
-        .editor-btn:hover {
-            background-color: #9676ff;
-        }
-
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Subway Surfers by Mynvo</title>
+  <meta name="description" content="Subway Surfers version Mynvo avec TOP 3 et FPS">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:Segoe UI,sans-serif;background:#000000;color:#fff;min-height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+    header{background:rgba(124,98,220,0.15);backdrop-filter:blur(12px);padding:18px 40px;position:fixed;top:0;left:0;right:0;z-index:100;border-bottom:2px solid #7c62dc;}
+    .header-content{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;}
+    .logo{font-size:34px;font-weight:900;display:flex;align-items:center;gap:14px;}
+    .logo img{height:50px;border-radius:50%;border:4px solid #7c62dc;box-shadow:0 0 20px #7c62dc44;}
+    .logo span{color:#7c62dc;}
+    .nav-links a{color:#fff;text-decoration:none;margin-left:24px;font-weight:600;font-size:17px;transition:0.2s;cursor:pointer;}
+    .nav-links a:hover{color:#7c62dc;}
+    main{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;}
+    .game-container{width:100%;max-width:1350px;background:rgba(124,98,220,0.1);backdrop-filter:blur(20px);border-radius:28px;padding:40px;box-shadow:0 25px 80px rgba(124,98,220,0.25);overflow:hidden;position:relative;border:2px solid #7c62dc;}
+    h1{font-size:56px;text-align:center;margin-bottom:30px;text-shadow:0 6px 30px rgba(124,98,220,0.6);color:#7c62dc;}
+    .game-frame{position:relative;border-radius:20px;overflow:hidden;box-shadow:0 15px 50px rgba(124,98,220,0.3);border:2px solid #7c62dc;}
+    iframe{width:100%;height:720px;border:none;background:#000000;display:block;}
+    .loading{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;text-align:center;}
+    .spinner{width:70px;height:70px;border:8px solid #ffffff33;border-top:8px solid #7c62dc;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:20px;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    footer{text-align:center;padding:25px;font-size:15px;opacity:0.85;background:rgba(124,98,220,0.08);color:#7c62dc;}
+    .fs-button{position:absolute;top:18px;right:18px;z-index:200;background:rgba(0,0,0,0.8);border:2px solid #7c62dc;color:#fff;padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700;}
+    .fs-button:hover{background:#7c62dc;color:#000;}
+    .key-display{display:inline-block;min-width:50px;padding:10px 16px;background:#0a0a0a;border:2px solid #7c62dc;border-radius:8px;text-align:center;font-weight:700;font-size:18px;cursor:pointer;transition:0.2s;}
+    .key-display:hover{border-color:#9580e8;background:#1a1a1a;}
+    .key-display.active{border-color:#00ff00;background:#1a4d1a;animation:pulse 0.5s;}
+    @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
+    /* overlays */
+    #fps-overlay{position:fixed;top:100px;left:20px;z-index:999999;background:rgba(0,0,0,0.95);color:#7c62dc;padding:10px 18px;border-radius:12px;font-size:18px;font-weight:700;border:2px solid #7c62dc;box-shadow:0 0 20px rgba(124,98,220,0.4);font-family:system-ui,sans-serif;pointer-events:none;}
+    #top3-overlay{position:fixed;bottom:20px;left:20px;z-index:999999;background:rgba(0,0,0,0.98);color:#fff;padding:16px 22px;border-radius:14px;border:2px solid #7c62dc;font-size:14px;line-height:1.6;box-shadow:0 0 30px rgba(124,98,220,0.5);font-family:system-ui,sans-serif;pointer-events:none;min-width:280px;}
+    #top3-overlay .title{color:#7c62dc;font-size:16px;font-weight:900;margin-bottom:10px;text-align:center;}
+    #top3-overlay .player{margin:6px 0;padding:6px;border-radius:8px;background:rgba(124,98,220,0.08);}
+    #top3-overlay .player.first{color:#7c62dc;font-weight:700;font-size:15px;}
+    /* bottom menu */
+    #bottom-menu{position:fixed;bottom:20px;right:20px;background:rgba(0,0,0,0.85);border:2px solid #7c62dc;border-radius:14px;padding:14px 18px;z-index:999999;color:#fff;font-family:Segoe UI,sans-serif;min-width:260px;box-shadow:0 0 25px #7c62dc55;}
+    .quick-btn{width:100%;padding:8px 10px;background:#111;border:2px solid #7c62dc;border-radius:10px;color:#fff;cursor:pointer;font-weight:600;transition:0.15s;margin-top:8px;}
+    .quick-btn:hover{background:#7c62dc;color:#000;}
+    /* small helper overlays for timer */
+    #timer-overlay{position:fixed;top:20px;right:20px;background:rgba(0,0,0,0.9);color:#fff;padding:10px 14px;border-radius:10px;border:2px solid #7c62dc;z-index:999999;font-weight:700;display:none;}
+    /* simple modal style for in-page menus */
+    .mynvo-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#000;color:#fff;padding:24px;border-radius:12px;border:4px solid #7c62dc;z-index:100000;max-width:92%;width:720px;box-shadow:0 0 60px rgba(124,98,220,0.55);}
+    .mynvo-row{display:flex;gap:12px;align-items:center;margin-bottom:12px;}
+    .mynvo-label{min-width:120px;color:#aaa;}
+    input[type="range"]{width:100%;}
+  </style>
 </head>
 <body>
 
-    <div id="menu">
-        <h1>Subway Surfers</h1>
-        <button id="startBtn">Start Game</button>
+  <header>
+    <div class="header-content">
+      <div class="logo">
+        <img src="logo.png" alt="Mynvo" onerror="this.style.display='none'">
+        Subway<span>Surfers</span> by <span>Mynvo</span>
+      </div>
+      <div class="nav-links">
+        <a id="play-link">Jouer</a>
+        <a onclick="openSettings();return false;">Paramètres</a>
+        <a href="https://discord.gg/bQTtDXmF" target="_blank">Discord</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="game-container">
+      <h1>Subway Surfers – Mynvo</h1>
+      <div class="game-frame">
+        <div class="loading" id="loading-ui"><div class="spinner"></div><p>Chargement du jeu...</p></div>
+        <button class="fs-button" id="fs-btn" title="Plein écran">⤢ Plein écran</button>
+        <iframe id="game-iframe" src="./game/" allowfullscreen allow="autoplay; fullscreen *"></iframe>
+      </div>
+    </div>
+  </main>
+
+  <!-- FPS Counter (sur le parent) -->
+  <div id="fps-overlay">🎮 FPS: <span id="fps-value">60</span></div>
+
+  <!-- TOP 3 (sur le parent) -->
+  <div id="top3-overlay">
+    <div class="title">🏆 TOP 3 NO COIN</div>
+    <div class="player first">🥇 Mynvo – 13:27</div>
+    <div class="player">🥈 Le_A – 11:51</div>
+    <div class="player">🥉 .... – 0:00</div>
+  </div>
+
+  <!-- TIMER overlay (parent) -->
+  <div id="timer-overlay">⏱️ <span id="timer-value">00:00</span></div>
+
+  <!-- Bottom menu -->
+  <div id="bottom-menu">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <div style="font-size:16px;font-weight:700;color:#7c62dc;">⚙️ Menu rapide</div>
+      <button id="close-bottom-menu" style="background:#7c62dc;border:none;color:#000;font-weight:700;border-radius:8px;padding:4px 10px;cursor:pointer;">✖</button>
     </div>
 
-    <iframe id="game-iframe" src="./game/index.html" allow="autoplay; fullscreen"></iframe>
+    <button class="quick-btn" onclick="openSettings();">🎮 Touches</button>
+    <button class="quick-btn" onclick="openTouchesDCP();">🎛️ Touches DCP</button>
+    <button class="quick-btn" onclick="toggleFPS();">📊 FPS (afficher/masquer)</button>
+    <button class="quick-btn" onclick="toggleFullscreen();">⤢ Plein écran</button>
+    <button class="quick-btn" onclick="openSongMenu();">🎵 Son du jeu</button>
+    <button class="quick-btn" onclick="openMapMenu();">🗺️ Map</button>
+    <button class="quick-btn" onclick="openTimerMenu();">⏱️ Timer + touche</button>
+    <button class="quick-btn" onclick="openUIEditor();">💻 Interface</button>
+  </div>
 
-    <div id="overlay-editor">
-        <div id="editor-box">
-            <h2>UI Editor</h2>
+  <footer>Subway Surfers by Mynvo</footer>
 
-            <input type="text" id="editor-key" class="editor-input" placeholder="Key (ex: ArrowLeft)">
-            <input type="text" id="editor-bind" class="editor-input" placeholder="Bind action">
-            <input type="number" id="editor-volume" class="editor-input" placeholder="Volume (0-100)">
-            <button id="save-editor" class="editor-btn">Save</button>
-        </div>
-    </div>
-<script>
-    const startBtn = document.getElementById("startBtn");
-    const menu = document.getElementById("menu");
-    const iframe = document.getElementById("game-iframe");
-
-    startBtn.addEventListener("click", () => {
-        menu.style.display = "none";
-        iframe.focus();
-
-        iframe.contentWindow.postMessage({ type: "start_game" }, "*");
-    });
-
-    // Plein écran (si utilisé par le jeu)
-    function goFullscreen() {
-        if (iframe.requestFullscreen) iframe.requestFullscreen();
-        else if (iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
-        else if (iframe.msRequestFullscreen) iframe.msRequestFullscreen();
-    }
-</script>
-<script>
+  <script>
+    // ============= CONFIG =============
     let config = {
-        jump: "Space",
-        left: "ArrowLeft",
-        right: "ArrowRight",
-        roll: "ArrowDown",
-        volume: 50
+      up: "z", down: "s", left: "q", right: "d", jump: " ", name: "Joueur",
+      showFPS: true, showTop3: true,
+      top3Position: "bottom-left", // bottom-left, bottom-right, top-left, top-right
+      volume: 1,
+      timerKey: null, // key assigned to toggle timer
+      timerRunning: false
     };
 
-    const editorOverlay = document.getElementById("overlay-editor");
-    const saveEditor = document.getElementById("save-editor");
+    
+    try {
+      const saved = localStorage.getItem("mynvoConfig");
+      if (saved) config = {...config, ...JSON.parse(saved)};
+    } catch(e) {}
 
-    window.addEventListener("message", (event) => {
-        const data = event.data;
-        if (!data || typeof data !== "object") return;
+    function saveConfig() {
+      localStorage.setItem("mynvoConfig", JSON.stringify(config));
+      console.log("✅ Config sauvegardée:", config);
+    }
 
-        if (data.type === "open_editor") {
-            editorOverlay.style.display = "flex";
+    let isCapturingKey = false;
+    const iframe = document.getElementById('game-iframe');
+
+    // helper to set overlay visibilities from config on load
+    function applyOverlaysFromConfig() {
+      document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
+      document.getElementById('top3-overlay').style.display = config.showTop3 ? 'block' : 'none';
+      positionTop3(config.top3Position);
+      document.getElementById('fps-value').textContent = '60';
+      document.getElementById('timer-overlay').style.display = config.timerRunning ? 'block' : 'none';
+    }
+
+    // ============= MAPPING TOUCHES → KEYCODES ============
+    function getKeyCode(key) {
+      const map = {
+        'ArrowUp': 38, 'ArrowDown': 40, 'ArrowLeft': 37, 'ArrowRight': 39,
+        ' ': 32, 'z': 90, 'Z': 90, 'q': 81, 'Q': 81,
+        's': 83, 'S': 83, 'd': 68, 'D': 68,
+        'w': 87, 'W': 87, 'a': 65, 'A': 65
+      };
+      return map[key] || 0;
+    }
+
+    // ============= IFRAME ACCESS / CORS handling ===========
+    let iframeReady = false;
+    let keyStates = {}; // Pour éviter les répétitions
+    let currentCanvas = null;
+
+    iframe.addEventListener('load', () => {
+      document.getElementById('loading-ui').style.display = 'none';
+      console.log('%c[MYNVO Parent] Iframe loaded!', 'color: #7c62dc; font-weight: bold;');
+
+      setTimeout(() => {
+        try {
+          const iframeWin = iframe.contentWindow;
+          const iframeDoc = iframe.contentDocument || iframeWin.document;
+
+          console.log('%c[MYNVO Parent] Attempting to access iframe...', 'color: #7c62dc;');
+
+          if (iframeDoc) {
+            iframeReady = true;
+            console.log('%c[MYNVO Parent] ✅ Iframe accessible! Direct injection mode.', 'color: #7c62dc; font-weight: bold;');
+
+            // surveiller canvas
+            setInterval(() => {
+              const canvas = iframeDoc.querySelector('canvas');
+              if (canvas && canvas !== currentCanvas) {
+                currentCanvas = canvas;
+                console.log('%c[MYNVO Parent] 🎮 Unity canvas detected/updated!', 'color: #7c62dc; font-weight: bold;');
+              }
+            }, 500);
+          }
+        } catch (err) {
+          console.warn('%c[MYNVO Parent] ⚠️ Cannot access iframe (CORS). Using postMessage fallback...', 'color: #ff6b6b;', err);
+          iframeReady = false;
         }
 
-        if (data.type === "request_config") {
-            iframe.contentWindow.postMessage({
-                type: "mynvo_config",
-                config: config
-            }, "*");
-        }
+        // inform iframe of initial settings (volume, overlays) via postMessage (works even cross-origin)
+        postToIframe({type:'mynvo_init', config: {volume: config.volume}});
+      }, 1200);
     });
 
-    saveEditor.addEventListener("click", () => {
-        let newKey = document.getElementById("editor-key").value;
-        let newBind = document.getElementById("editor-bind").value;
-        let newVolume = document.getElementById("editor-volume").value;
-
-        if (newKey && newBind) {
-            config[newBind] = newKey;
-        }
-
-        if (newVolume !== "") {
-            config.volume = Number(newVolume);
-        }
-
-        editorOverlay.style.display = "none";
-
-        iframe.contentWindow.postMessage({
-            type: "mynvo_config",
-            config: config
-        }, "*");
-    });
-</script>
-<script>
+    // convenience postMessage wrapper
     function postToIframe(msg) {
-        const iframe = document.getElementById("game-iframe");
-        if (!iframe) return;
-        iframe.contentWindow.postMessage(msg, "*");
+      try {
+        iframe.contentWindow.postMessage(msg, '*');
+      } catch (e) {
+        console.warn('[MYNVO Parent] postMessage failed', e);
+      }
+    }
+
+    // ============= KEY SIMULATION (sending to iframe) ============
+    function simulateKeyInIframe(type, mappedKey, keyCode) {
+      if (!keyCode) return;
+
+      try {
+        const iframeWin = iframe.contentWindow;
+        const iframeDoc = iframe.contentDocument || iframeWin.document;
+
+        if (!iframeDoc) {
+          // fallback to postMessage
+          postToIframe({type: 'keyboard_event', eventType: type, key: mappedKey, keyCode});
+          return;
+        }
+
+        const event = new KeyboardEvent(type, {
+          keyCode: keyCode,
+          which: keyCode,
+          key: mappedKey,
+          bubbles: true,
+          cancelable: true
+        });
+
+        iframeDoc.dispatchEvent(event);
+        iframeWin.dispatchEvent(event);
+        if (currentCanvas) currentCanvas.dispatchEvent(event);
+        iframeDoc.querySelectorAll('canvas, #canvas, #unity-canvas').forEach(el => el.dispatchEvent(event));
+
+        console.log(`%c[MYNVO Parent] 🎯 Dispatched ${type}: ${mappedKey} (keyCode: ${keyCode})`, 'color: #7c62dc;');
+      } catch (err) {
+        console.error('[MYNVO Parent] Error dispatching event:', err);
+      }
+    }
+
+    // Interception globale des touches et mapping
+    document.addEventListener('keydown', (e) => {
+      if (isCapturingKey) return;
+
+      const key = e.key;
+      const keyMap = {
+        [config.up.toLowerCase()]: { key: 'ArrowUp', code: 38 },
+        [config.down.toLowerCase()]: { key: 'ArrowDown', code: 40 },
+        [config.left.toLowerCase()]: { key: 'ArrowLeft', code: 37 },
+        [config.right.toLowerCase()]: { key: 'ArrowRight', code: 39 },
+        [config.jump]: { key: ' ', code: 32 }
+      };
+
+      const mapped = keyMap[key.toLowerCase()];
+      if (mapped) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        if (keyStates[mapped.code]) return;
+        keyStates[mapped.code] = true;
+
+        console.log(`[MYNVO Parent] keydown: ${key} → ${mapped.key} (keyCode: ${mapped.code})`);
+
+        if (iframeReady) simulateKeyInIframe('keydown', mapped.key, mapped.code);
+        else postToIframe({ type: 'keydown', key: mapped.key, keyCode: mapped.code });
+      }
+
+      // global timer toggle key (if assigned)
+      if (config.timerKey && key.toLowerCase() === config.timerKey.toLowerCase()) {
+        toggleTimer();
+      }
+    }, true);
+
+    document.addEventListener('keyup', (e) => {
+      if (isCapturingKey) return;
+      const key = e.key;
+      const keyMap = {
+        [config.up.toLowerCase()]: { key: 'ArrowUp', code: 38 },
+        [config.down.toLowerCase()]: { key: 'ArrowDown', code: 40 },
+        [config.left.toLowerCase()]: { key: 'ArrowLeft', code: 37 },
+        [config.right.toLowerCase()]: { key: 'ArrowRight', code: 39 },
+        [config.jump]: { key: ' ', code: 32 }
+      };
+
+      const mapped = keyMap[key.toLowerCase()];
+      if (mapped) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        keyStates[mapped.code] = false;
+
+        console.log(`[MYNVO Parent] keyup: ${key} → ${mapped.key} (keyCode: ${mapped.code})`);
+
+        if (iframeReady) simulateKeyInIframe('keyup', mapped.key, mapped.code);
+        else postToIframe({ type: 'keyup', key: mapped.key, keyCode: mapped.code });
+      }
+    }, true);
+
+    // ============= FPS COUNTER =============
+    let fpsFrames = 0;
+    let fpsLastTime = performance.now();
+
+    function updateFPS() {
+      fpsFrames++;
+      const now = performance.now();
+
+      if (now - fpsLastTime >= 1000) {
+        const fps = Math.round((fpsFrames * 1000) / (now - fpsLastTime));
+        document.getElementById('fps-value').textContent = fps;
+
+        const fpsEl = document.getElementById('fps-overlay');
+        if (fps >= 55) {
+          fpsEl.style.color = '#7c62dc';
+          fpsEl.style.borderColor = '#7c62dc';
+        } else if (fps >= 30) {
+          fpsEl.style.color = '#f59e0b';
+          fpsEl.style.borderColor = '#f59e0b';
+        } else {
+          fpsEl.style.color = '#ef4444';
+          fpsEl.style.borderColor = '#ef4444';
+        }
+
+        fpsFrames = 0;
+        fpsLastTime = now;
+      }
+
+      requestAnimationFrame(updateFPS);
+    }
+    updateFPS();
+
+    // ============= FULLSCREEN =============
+    document.getElementById('fs-btn').addEventListener('click', async () => {
+      try {
+        if (iframe.requestFullscreen) await iframe.requestFullscreen();
+        else if (iframe.webkitRequestFullscreen) await iframe.webkitRequestFullscreen();
+      } catch (err) {
+        alert('Plein écran non supporté');
+      }
+    });
+
+    function toggleFullscreen(){
+      if (!document.fullscreenElement) {
+        if (iframe.requestFullscreen) iframe.requestFullscreen();
+        else iframe.webkitRequestFullscreen && iframe.webkitRequestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // ============= SETTINGS MODAL (Touches + options) ============
+    function openSettings() {
+      if (document.getElementById('mynvo-settings')) return;
+
+      const div = document.createElement('div');
+      div.id = 'mynvo-settings';
+      div.className = 'mynvo-modal';
+      div.innerHTML = `
+        <h2 style="color:#7c62dc;text-align:center;margin-bottom:14px;font-size:22px;">⚙️ Paramètres Mynvo</h2>
+
+        <div style="margin-bottom:12px;">
+          <label style="display:block;margin-bottom:8px;font-size:15px;color:#aaa;">📝 Pseudo</label>
+          <input type="text" id="set-name" value="${escapeHtml(config.name)}" style="width:100%;padding:10px;font-size:16px;background:#0a0a0a;border:2px solid #7c62dc;border-radius:8px;color:#fff;">
+        </div>
+
+        <div style="background:#0a0a0a;padding:14px;border-radius:10px;margin-bottom:12px;border:2px solid #7c62dc;">
+          <h3 style="color:#7c62dc;margin-bottom:10px;font-size:16px;">🎮 Touches de jeu</h3>
+          <p style="font-size:13px;color:#aaa;margin-bottom:10px;">Clique sur une touche puis appuie sur celle que tu veux</p>
+
+          <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:12px;margin-bottom:10px;">
+            <div>
+              <label style="display:block;margin-bottom:6px;font-size:14px;color:#aaa;">⬆️ Haut</label>
+              <div class="key-display" data-key="up">${getKeyDisplay(config.up)}</div>
+            </div>
+            <div>
+              <label style="display:block;margin-bottom:6px;font-size:14px;color:#aaa;">⬇️ Bas</label>
+              <div class="key-display" data-key="down">${getKeyDisplay(config.down)}</div>
+            </div>
+            <div>
+              <label style="display:block;margin-bottom:6px;font-size:14px;color:#aaa;">⬅️ Gauche</label>
+              <div class="key-display" data-key="left">${getKeyDisplay(config.left)}</div>
+            </div>
+            <div>
+              <label style="display:block;margin-bottom:6px;font-size:14px;color:#aaa;">➡️ Droite</label>
+              <div class="key-display" data-key="right">${getKeyDisplay(config.right)}</div>
+            </div>
+            <div style="grid-column:1/-1;">
+              <label style="display:block;margin-bottom:6px;font-size:14px;color:#aaa;">🚀 Saut</label>
+              <div class="key-display" data-key="jump">${getKeyDisplay(config.jump)}</div>
+            </div>
+          </div>
+
+          <div style="margin-top:8px;font-size:13px;color:#aaa;">
+            <label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;">
+              <input type="checkbox" id="toggle-fps" style="transform:scale(1.1);" ${config.showFPS ? 'checked' : ''}>
+              Afficher le compteur FPS
+            </label>
+            <div style="height:8px"></div>
+            <label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;">
+              <input type="checkbox" id="toggle-top3" style="transform:scale(1.1);" ${config.showTop3 ? 'checked' : ''}>
+              Afficher le TOP 3 / map
+            </label>
+          </div>
+        </div>
+
+        <div style="background:#0a0a0a;padding:14px;border-radius:10px;margin-bottom:12px;border:2px solid #7c62dc;">
+          <h3 style="color:#7c62dc;margin-bottom:10px;font-size:16px;">🔊 Son</h3>
+          <div class="mynvo-row">
+            <div class="mynvo-label">Volume</div>
+            <input type="range" id="volume-range" min="0" max="100" value="${Math.round(config.volume*100)}">
+            <div id="volume-label" style="min-width:36px;text-align:right;">${Math.round(config.volume*100)}%</div>
+          </div>
+        </div>
+
+        <div style="background:#0a0a0a;padding:14px;border-radius:10px;margin-bottom:12px;border:2px solid #7c62dc;">
+          <h3 style="color:#7c62dc;margin-bottom:10px;font-size:16px;">⏱️ Timer</h3>
+          <div class="mynvo-row">
+            <div class="mynvo-label">Touche Timer</div>
+            <div style="flex:1"><input type="text" id="timer-key-display" readonly style="width:100%;padding:8px;background:#0a0a0a;border:2px solid #7c62dc;border-radius:8px;color:#fff;text-align:center;" value="${config.timerKey||''}"></div>
+            <button id="capture-timer-key" style="margin-left:8px;padding:8px;border-radius:8px;border:2px solid #7c62dc;background:#111;cursor:pointer;">Définir</button>
+          </div>
+          <div style="font-size:13px;color:#aaa;margin-top:8px;">Appuie sur la touche choisie pour lancer/stopper le timer.</div>
+        </div>
+
+        <div style="text-align:center;margin-top:6px;">
+          <button id="close-settings" style="background:#ff4444;color:#fff;padding:10px 18px;border:none;border-radius:8px;font-size:15px;cursor:pointer;font-weight:600;">❌ Fermer</button>
+          <button id="save-settings" style="background:#7c62dc;color:#fff;padding:10px 20px;border:none;border-radius:8px;font-size:15px;cursor:pointer;margin-left:10px;font-weight:700;">✓ Enregistrer</button>
+        </div>
+
+        <p style="font-size:12px;color:#7c62dc;margin-top:12px;text-align:center;font-weight:600;">⚠️ Recharge la page (F5) après avoir changé les touches si nécessaire</p>
+      `;
+
+      document.body.appendChild(div);
+
+      let activeKeyElement = null;
+
+      function getKeyDisplay(key) {
+        if (key === ' ') return 'ESPACE';
+        return (key || '').toString().toUpperCase();
+      }
+
+      // key binding interactions
+      div.querySelectorAll('.key-display').forEach(el => {
+        el.addEventListener('click', () => {
+          if (activeKeyElement) activeKeyElement.classList.remove('active');
+          activeKeyElement = el;
+          el.classList.add('active');
+          el.textContent = '...';
+          isCapturingKey = true;
+        });
+      });
+
+      // capture timer key
+      const timerKeyInput = div.querySelector('#timer-key-display');
+      div.querySelector('#capture-timer-key').addEventListener('click', () => {
+        timerKeyInput.value = '... appuyez sur une touche';
+        isCapturingKey = true;
+        activeKeyElement = null; // we're capturing timer key now
+        const handler = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          config.timerKey = e.key;
+          timerKeyInput.value = e.key;
+          isCapturingKey = false;
+          saveConfig();
+          document.removeEventListener('keydown', handler, true);
+        };
+        document.addEventListener('keydown', handler, true);
+      });
+
+      const captureHandler = (e) => {
+        if (!activeKeyElement) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        const keyName = activeKeyElement.dataset.key;
+        const newKey = e.key;
+
+        config[keyName] = newKey;
+        activeKeyElement.textContent = getKeyDisplay(newKey);
+        activeKeyElement.classList.remove('active');
+        activeKeyElement = null;
+        isCapturingKey = false;
+      };
+
+      document.addEventListener('keydown', captureHandler, true);
+
+      // volume control
+      const volRange = div.querySelector('#volume-range');
+      const volLabel = div.querySelector('#volume-label');
+      volRange.addEventListener('input', (ev) => {
+        const v = Math.round(ev.target.value);
+        volLabel.textContent = v + '%';
+        config.volume = v / 100;
+        // send to iframe (postMessage)
+        postToIframe({type:'setVolume', volume: config.volume});
+      });
+
+      // toggles
+      const toggleFPSEl = div.querySelector('#toggle-fps');
+      const toggleTop3El = div.querySelector('#toggle-top3');
+      toggleFPSEl.addEventListener('change', () => {
+        config.showFPS = toggleFPSEl.checked;
+        document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
+        saveConfig();
+      });
+      toggleTop3El.addEventListener('change', () => {
+        config.showTop3 = toggleTop3El.checked;
+        document.getElementById('top3-overlay').style.display = config.showTop3 ? 'block' : 'none';
+        saveConfig();
+      });
+
+      document.getElementById('close-settings').onclick = () => {
+        document.removeEventListener('keydown', captureHandler, true);
+        isCapturingKey = false;
+        div.remove();
+      };
+
+      document.getElementById('save-settings').onclick = () => {
+        config.name = document.getElementById('set-name').value.trim() || 'Joueur';
+        // timer key already saved when set
+        saveConfig();
+        document.removeEventListener('keydown', captureHandler, true);
+        isCapturingKey = false;
+        alert('✓ Paramètres sauvegardés !\n\n⚠️ IMPORTANT : Recharge la page (F5) après avoir changé certaines touches si nécessaire.');
+        div.remove();
+      };
+    }
+
+    function escapeHtml(str) {
+      if (!str && str !== '') return '';
+      return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]);
     }
 
     function getKeyDisplay(key) {
-        if (!key) return "?";
-        return key.length === 1 ? key.toUpperCase() : key;
+      if (key === ' ') return 'ESPACE';
+      return (key || '').toString().toUpperCase();
     }
 
-    window.addEventListener("message", (event) => {
-        const data = event.data;
-        if (!data || typeof data !== "object") return;
-
-        if (data.type === "request_config") {
-            postToIframe({
-                type: "mynvo_config",
-                config: { volume: config.volume }
-            });
-        }
+    document.getElementById('play-link').addEventListener('click', () => {
+      document.querySelector('.game-container')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      iframe.focus();
     });
 
-    console.log("%c[MYNVO Parent] Touch system initialized!", "color:#7c62dc;font-weight:bold;");
-    console.log("%c[MYNVO Parent] Current config:", "color:#7c62dc;", config);
-</script>
+    // ============= Bottom menu close button ============
+    document.getElementById('close-bottom-menu').addEventListener('click', () => {
+      document.getElementById('bottom-menu').style.display = 'none';
+    });
 
+    // ============= SONG MENU (volume control) ============
+    function openSongMenu(){
+      if (document.getElementById('mynvo-song')) return;
+      const div = document.createElement('div');
+      div.id = 'mynvo-song';
+      div.className = 'mynvo-modal';
+      div.innerHTML = `
+        <h3 style="color:#7c62dc;margin-bottom:10px;text-align:center;">🎵 Son du jeu</h3>
+        <div class="mynvo-row"><div class="mynvo-label">Volume</div>
+          <input type="range" id="song-volume" min="0" max="100" value="${Math.round(config.volume*100)}">
+          <div id="song-volume-label" style="min-width:36px;text-align:right;">${Math.round(config.volume*100)}%</div>
+        </div>
+        <div style="text-align:center;margin-top:12px;">
+          <button id="close-song" style="background:#ff4444;color:#fff;padding:8px 14px;border:none;border-radius:8px;cursor:pointer;">Fermer</button>
+        </div>
+      `;
+      document.body.appendChild(div);
+
+      const range = div.querySelector('#song-volume');
+      const label = div.querySelector('#song-volume-label');
+      range.addEventListener('input', (e) => {
+        const v = Math.round(e.target.value);
+        label.textContent = v + '%';
+        config.volume = v/100;
+        saveConfig();
+        postToIframe({type:'setVolume', volume: config.volume});
+      });
+
+      div.querySelector('#close-song').addEventListener('click', ()=>div.remove());
+    }
+
+    // ============= MAP MENU (toggle TOP3 / position) ============
+    function openMapMenu(){
+      if (document.getElementById('mynvo-map')) return;
+      const div = document.createElement('div');
+      div.id = 'mynvo-map';
+      div.className = 'mynvo-modal';
+      div.innerHTML = `
+        <h3 style="color:#7c62dc;margin-bottom:10px;text-align:center;">🗺️ Map / TOP3</h3>
+        <div class="mynvo-row">
+          <div class="mynvo-label">Afficher TOP3</div>
+          <label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;">
+            <input id="map-show-top3" type="checkbox" ${config.showTop3 ? 'checked' : ''}>
+            Visible
+          </label>
+        </div>
+        <div class="mynvo-row">
+          <div class="mynvo-label">Position</div>
+          <select id="map-pos" style="padding:8px;border-radius:8px;background:#0a0a0a;border:2px solid #7c62dc;color:#fff;">
+            <option value="bottom-left">Bas gauche</option>
+            <option value="bottom-right">Bas droite</option>
+            <option value="top-left">Haut gauche</option>
+            <option value="top-right">Haut droite</option>
+          </select>
+        </div>
+        <div style="text-align:center;margin-top:12px;">
+          <button id="close-map" style="background:#ff4444;color:#fff;padding:8px 14px;border:none;border-radius:8px;cursor:pointer;">Fermer</button>
+        </div>
+      `;
+      document.body.appendChild(div);
+      div.querySelector('#map-pos').value = config.top3Position || 'bottom-left';
+      div.querySelector('#map-show-top3').addEventListener('change', (e)=>{
+        config.showTop3 = e.target.checked;
+        document.getElementById('top3-overlay').style.display = config.showTop3 ? 'block' : 'none';
+        saveConfig();
+      });
+      div.querySelector('#map-pos').addEventListener('change', (e)=>{
+        config.top3Position = e.target.value;
+        positionTop3(config.top3Position);
+        saveConfig();
+      });
+      div.querySelector('#close-map').addEventListener('click', ()=>div.remove());
+    }
+
+    function positionTop3(pos) {
+      const el = document.getElementById('top3-overlay');
+      el.style.top = el.style.bottom = el.style.left = el.style.right = '';
+      switch(pos) {
+        case 'bottom-left': el.style.bottom = '20px'; el.style.left = '20px'; break;
+        case 'bottom-right': el.style.bottom = '20px'; el.style.right = '20px'; break;
+        case 'top-left': el.style.top = '20px'; el.style.left = '20px'; break;
+        case 'top-right': el.style.top = '20px'; el.style.right = '20px'; break;
+      }
+    }
+
+    // ============= TIMER (parent) ============
+    let timerInterval = null;
+    let timerStart = 0;
+    function openTimerMenu(){
+      if (document.getElementById('mynvo-timer')) return;
+      const div = document.createElement('div');
+      div.id = 'mynvo-timer';
+      div.className = 'mynvo-modal';
+      div.innerHTML = `
+        <h3 style="color:#7c62dc;margin-bottom:10px;text-align:center;">⏱️ Timer</h3>
+        <div class="mynvo-row">
+          <div class="mynvo-label">Touche pour timer</div>
+          <input id="timer-key" readonly style="flex:1;padding:8px;background:#0a0a0a;border:2px solid #7c62dc;border-radius:8px;color:#fff;text-align:center;" value="${config.timerKey || ''}">
+          <button id="set-timer-key" style="margin-left:8px;padding:8px;border-radius:8px;border:2px solid #7c62dc;background:#111;cursor:pointer;">Définir</button>
+        </div>
+        <div class="mynvo-row">
+          <div class="mynvo-label">Actions</div>
+          <button id="start-timer" style="padding:8px;border-radius:8px;border:2px solid #7c62dc;background:#7c62dc;cursor:pointer;color:#000;">Démarrer</button>
+          <button id="stop-timer" style="padding:8px;border-radius:8px;border:2px solid #7c62dc;background:#ff4444;cursor:pointer;margin-left:8px;">Stop</button>
+          <button id="reset-timer" style="padding:8px;border-radius:8px;border:2px solid #7c62dc;background:#111;cursor:pointer;margin-left:8px;">Reset</button>
+        </div>
+        <div style="text-align:center;margin-top:12px;">
+          <button id="close-timer" style="background:#ff4444;color:#fff;padding:8px 14px;border:none;border-radius:8px;cursor:pointer;">Fermer</button>
+        </div>
+      `;
+      document.body.appendChild(div);
+
+      const timerKeyInput = div.querySelector('#timer-key');
+      div.querySelector('#set-timer-key').addEventListener('click', ()=>{
+        timerKeyInput.value = '... appuyez sur une touche';
+        isCapturingKey = true;
+        const handler = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          config.timerKey = e.key;
+          timerKeyInput.value = e.key;
+          isCapturingKey = false;
+          saveConfig();
+          document.removeEventListener('keydown', handler, true);
+        };
+        document.addEventListener('keydown', handler, true);
+      });
+
+      div.querySelector('#start-timer').addEventListener('click', startTimer);
+      div.querySelector('#stop-timer').addEventListener('click', stopTimer);
+      div.querySelector('#reset-timer').addEventListener('click', resetTimer);
+      div.querySelector('#close-timer').addEventListener('click', ()=>div.remove());
+    }
+
+    function formatTime(ms){
+      const total = Math.max(0, Math.floor(ms/1000));
+      const mm = String(Math.floor(total/60)).padStart(2,'0');
+      const ss = String(total%60).padStart(2,'0');
+      return mm + ':' + ss;
+    }
+
+    function startTimer(){
+      if (timerInterval) return;
+      timerStart = Date.now();
+      document.getElementById('timer-overlay').style.display = 'block';
+      timerInterval = setInterval(()=>{
+        const diff = Date.now() - timerStart;
+        document.getElementById('timer-value').textContent = formatTime(diff);
+        // optionally post to iframe
+        postToIframe({type:'timer_update', elapsed: diff});
+      }, 250);
+      config.timerRunning = true;
+      saveConfig();
+    }
+
+    function stopTimer(){
+      if (!timerInterval) return;
+      clearInterval(timerInterval);
+      timerInterval = null;
+      config.timerRunning = false;
+      saveConfig();
+    }
+
+    function resetTimer(){
+      timerStart = Date.now();
+      document.getElementById('timer-value').textContent = '00:00';
+      postToIframe({type:'timer_reset'});
+    }
+
+    function toggleTimer(){
+      if (timerInterval) { stopTimer(); document.getElementById('timer-overlay').style.display = 'none'; }
+      else startTimer();
+    }
+
+    // ============= Touches DCP (dummy but functional) ============
+    function openTouchesDCP(){
+      if (document.getElementById('mynvo-dcp')) return;
+      const div = document.createElement('div');
+      div.id = 'mynvo-dcp';
+      div.className = 'mynvo-modal';
+      div.innerHTML = `
+        <h3 style="color:#7c62dc;margin-bottom:10px;text-align:center;">🎛️ Touches DCP</h3>
+        <p style="color:#aaa;margin-bottom:10px;">Interface DCP: assigne une touche rapide (ex: pour activer un mode staff, debug, etc.).</p>
+        <div class="mynvo-row">
+          <div class="mynvo-label">Touche DCP</div>
+          <input id="dcp-key" readonly style="flex:1;padding:8px;background:#0a0a0a;border:2px solid #7c62dc;border-radius:8px;color:#fff;text-align:center;" value="">
+          <button id="set-dcp-key" style="margin-left:8px;padding:8px;border-radius:8px;border:2px solid #7c62dc;background:#111;cursor:pointer;">Définir</button>
+        </div>
+        <div style="text-align:center;margin-top:12px;">
+          <button id="close-dcp" style="background:#ff4444;color:#fff;padding:8px 14px;border:none;border-radius:8px;cursor:pointer;">Fermer</button>
+        </div>
+      `;
+      document.body.appendChild(div);
+
+      div.querySelector('#set-dcp-key').addEventListener('click', ()=>{
+        const input = div.querySelector('#dcp-key');
+        input.value = '... appuyez sur une touche';
+        isCapturingKey = true;
+        const handler = (e) => {
+          e.preventDefault(); e.stopPropagation();
+          input.value = e.key;
+          isCapturingKey = false;
+          // save to config if desired
+          config.dcpKey = e.key;
+          saveConfig();
+          document.removeEventListener('keydown', handler, true);
+        };
+        document.addEventListener('keydown', handler, true);
+      });
+
+      div.querySelector('#close-dcp').addEventListener('click', ()=>div.remove());
+    }
+
+    // ============= UI Editor (position / show hide) ============
+    function openUIEditor(){
+      if (document.getElementById('mynvo-ui')) return;
+      const div = document.createElement('div');
+      div.id = 'mynvo-ui';
+      div.className = 'mynvo-modal';
+      div.innerHTML = `
+        <h3 style="color:#7c62dc;margin-bottom:10px;text-align:center;">💻 Interface Editor</h3>
+        <div class="mynvo-row">
+          <div class="mynvo-label">Afficher FPS</div>
+          <label style="display:inline-flex;align-items:center;gap:8px;">
+            <input id="ui-show-fps" type="checkbox" ${config.showFPS ? 'checked' : ''}> Visible
+          </label>
+        </div>
+        <div class="mynvo-row">
+          <div class="mynvo-label">Position TOP3</div>
+          <select id="ui-top3-pos" style="padding:8px;border-radius:8px;background:#0a0a0a;border:2px solid #7c62dc;color:#fff;">
+            <option value="bottom-left">Bas gauche</option>
+            <option value="bottom-right">Bas droite</option>
+            <option value="top-left">Haut gauche</option>
+            <option value="top-right">Haut droite</option>
+          </select>
+        </div>
+        <div style="text-align:center;margin-top:12px;">
+          <button id="ui-save" style="background:#7c62dc;color:#000;padding:8px 14px;border:none;border-radius:8px;cursor:pointer;">Sauvegarder</button>
+          <button id="ui-close" style="background:#ff4444;color:#fff;padding:8px 14px;border:none;border-radius:8px;cursor:pointer;margin-left:8px;">Fermer</button>
+        </div>
+      `;
+      document.body.appendChild(div);
+      div.querySelector('#ui-top3-pos').value = config.top3Position || 'bottom-left';
+      div.querySelector('#ui-save').addEventListener('click', ()=>{
+        config.showFPS = !!div.querySelector('#ui-show-fps').checked;
+        config.top3Position = div.querySelector('#ui-top3-pos').value;
+        document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
+        positionTop3(config.top3Position);
+        saveConfig();
+        alert('UI sauvegardée');
+      });
+      div.querySelector('#ui-close').addEventListener('click', ()=>div.remove());
+    }
+
+    // ============= INIT APPLY SETTINGS ON LOAD ============
+    applyOverlaysFromConfig();
+
+    // ============= Message listener from iframe (optional) ============
+    window.addEventListener('message', (ev) => {
+      const data = ev.data;
+      if (!data || typeof data !== 'object') return;
+      if (data.type === 'request_config') {
+        // iframe asks for config (e.g. for volume)
+        postToIframe({type:'mynvo_config', config: {volume: config.volume}});
+      }
+      // other message handling...
+    });
+
+    // ============= small helpers ============
+    console.log('%c[MYNVO Parent] Touch system initialized!', 'color: #7c62dc; font-weight: bold;');
+    console.log('%c[MYNVO Parent] Current config:', 'color: #7c62dc;', config);
+
+  </script>
 </body>
 </html>
