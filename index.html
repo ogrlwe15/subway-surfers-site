@@ -4,18 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Subway Surfers by Mynvo - Jeu en ligne gratuit</title>
-  <meta name="description" content="Jouez à Subway Surfers version Mynvo avec TOP 3 et FPS. Jeu gratuit en ligne avec personnalisation des touches et paramètres avancés.">
-  <meta name="keywords" content="subway surfers, jeu en ligne, mynvo, jeu gratuit, subway surfers mod">
   <style>
     :root {
       --primary: #7c62dc;
-      --primary-dark: #6a50c9;
-      --primary-light: #9580e8;
-      --primary-transparent: rgba(124, 98, 220, 0.15);
       --bg-dark: #0a0a0a;
       --bg-card: rgba(30, 30, 40, 0.8);
       --text-light: #f0f0f0;
-      --text-muted: #aaa;
       --success: #00cc66;
       --danger: #ff4444;
       --warning: #ffaa00;
@@ -34,12 +28,10 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow-x: hidden;
     }
     
-    /* Header amélioré */
     header {
-      background: var(--primary-transparent);
+      background: rgba(124, 98, 220, 0.15);
       backdrop-filter: blur(12px);
       padding: 18px 40px;
       position: fixed;
@@ -48,7 +40,6 @@
       right: 0;
       z-index: 1000;
       border-bottom: 2px solid var(--primary);
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
     }
     
     .header-content {
@@ -67,57 +58,27 @@
       gap: 14px;
     }
     
-    .logo img {
-      height: 50px;
-      width: 50px;
-      border-radius: 50%;
-      border: 4px solid var(--primary);
-      box-shadow: 0 0 20px var(--primary-transparent);
-      object-fit: cover;
-    }
-    
     .logo span {
       color: var(--primary);
-      text-shadow: 0 0 10px rgba(124, 98, 220, 0.5);
     }
     
     .nav-links {
       display: flex;
-      align-items: center;
+      gap: 24px;
     }
     
     .nav-links a {
       color: #fff;
       text-decoration: none;
-      margin-left: 24px;
       font-weight: 600;
-      font-size: 17px;
-      transition: 0.2s;
+      transition: color 0.2s;
       cursor: pointer;
-      position: relative;
-      padding: 8px 0;
     }
     
     .nav-links a:hover {
       color: var(--primary);
     }
     
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--primary);
-      transition: width 0.3s;
-    }
-    
-    .nav-links a:hover::after {
-      width: 100%;
-    }
-    
-    /* Main content */
     main {
       flex: 1;
       display: flex;
@@ -133,27 +94,13 @@
       backdrop-filter: blur(20px);
       border-radius: 28px;
       padding: 40px;
-      box-shadow: 0 25px 80px rgba(124, 98, 220, 0.25);
-      overflow: hidden;
-      position: relative;
       border: 2px solid var(--primary);
-      animation: containerGlow 4s infinite alternate;
-    }
-    
-    @keyframes containerGlow {
-      0% {
-        box-shadow: 0 25px 80px rgba(124, 98, 220, 0.25);
-      }
-      100% {
-        box-shadow: 0 25px 80px rgba(124, 98, 220, 0.4);
-      }
     }
     
     .game-frame {
       position: relative;
       border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 15px 50px rgba(124, 98, 220, 0.3);
       border: 2px solid var(--primary);
     }
     
@@ -165,143 +112,50 @@
       display: block;
     }
     
-    .loading {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 10;
-      text-align: center;
-      background: rgba(0, 0, 0, 0.8);
-      padding: 30px;
-      border-radius: 15px;
-      border: 2px solid var(--primary);
+    /* CRITICAL: Overlays TOUJOURS visibles même en fullscreen */
+    #fps-overlay, #timer-overlay, #top3-overlay {
+      position: fixed !important;
+      z-index: 2147483647 !important;
+      pointer-events: none !important;
+      font-family: 'Courier New', monospace !important;
     }
     
-    .spinner {
-      width: 70px;
-      height: 70px;
-      border: 8px solid #ffffff33;
-      border-top: 8px solid var(--primary);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
+    /* Force l'affichage même dans fullscreen */
+    :fullscreen #fps-overlay,
+    :fullscreen #timer-overlay,
+    :fullscreen #top3-overlay,
+    :-webkit-full-screen #fps-overlay,
+    :-webkit-full-screen #timer-overlay,
+    :-webkit-full-screen #top3-overlay {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
     }
     
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-    
-    footer {
-      text-align: center;
-      padding: 25px;
-      font-size: 15px;
-      opacity: 0.85;
-      background: rgba(124, 98, 220, 0.08);
-      color: var(--primary);
-    }
-    
-    .fs-button {
-      position: absolute;
-      top: 18px;
-      right: 18px;
-      z-index: 200;
-      background: rgba(0, 0, 0, 0.8);
-      border: 2px solid var(--primary);
-      color: #fff;
-      padding: 10px 14px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: 700;
-      transition: all 0.3s;
-    }
-    
-    .fs-button:hover {
-      background: var(--primary);
-      color: #000;
-      transform: scale(1.05);
-    }
-    
-    /* Overlays qui restent en plein écran */
     #fps-overlay {
-      position: fixed;
-      top: 100px;
+      top: 20px;
       left: 20px;
-      z-index: 2147483647; /* Maximum z-index */
-      background: rgba(0, 0, 0, 0.95);
+      background: rgba(0, 0, 0, 0.9);
       color: var(--primary);
-      padding: 10px 18px;
+      padding: 12px 20px;
       border-radius: 12px;
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 700;
-      border: 2px solid var(--primary);
-      box-shadow: 0 0 20px rgba(124, 98, 220, 0.4);
-      font-family: system-ui, sans-serif;
-      pointer-events: none;
-      transition: all 0.3s;
+      border: 3px solid var(--primary);
+      box-shadow: 0 0 20px rgba(124, 98, 220, 0.6);
     }
     
-    #top3-overlay {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      z-index: 2147483647;
-      background: rgba(0, 0, 0, 0.98);
-      color: #fff;
-      padding: 16px 22px;
-      border-radius: 14px;
-      border: 2px solid var(--primary);
-      font-size: 14px;
-      line-height: 1.6;
-      box-shadow: 0 0 30px rgba(124, 98, 220, 0.5);
-      font-family: system-ui, sans-serif;
-      pointer-events: none;
-      min-width: 280px;
-      backdrop-filter: blur(10px);
-    }
-    
-    #top3-overlay .title {
-      color: var(--primary);
-      font-size: 16px;
-      font-weight: 900;
-      margin-bottom: 10px;
-      text-align: center;
-    }
-    
-    #top3-overlay .player {
-      margin: 6px 0;
-      padding: 6px;
-      border-radius: 8px;
-      background: rgba(124, 98, 220, 0.08);
-      transition: all 0.3s;
-    }
-    
-    #top3-overlay .player.first {
-      color: var(--primary);
-      font-weight: 700;
-      font-size: 15px;
-      background: rgba(124, 98, 220, 0.15);
-    }
-    
-    /* Timer overlay - reste en plein écran */
     #timer-overlay {
-      position: fixed;
       top: 20px;
       right: 20px;
       background: rgba(0, 0, 0, 0.9);
       color: #fff;
-      padding: 12px 16px;
+      padding: 14px 20px;
       border-radius: 12px;
-      border: 2px solid var(--primary);
-      z-index: 2147483647;
+      border: 3px solid var(--primary);
       font-weight: 700;
       font-size: 18px;
-      display: none;
-      box-shadow: 0 0 20px rgba(124, 98, 220, 0.4);
-      backdrop-filter: blur(5px);
-      pointer-events: none;
+      box-shadow: 0 0 20px rgba(124, 98, 220, 0.6);
     }
     
     #timer-overlay.running {
@@ -309,13 +163,13 @@
       animation: pulse 2s infinite;
     }
     
-    #timer-overlay.stopped {
-      border-color: var(--danger);
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(0, 204, 102, 0.6); }
+      50% { box-shadow: 0 0 30px rgba(0, 204, 102, 0.9); }
     }
     
     .timer-display {
-      font-family: 'Courier New', monospace;
-      font-size: 24px;
+      font-size: 26px;
       font-weight: bold;
       color: var(--success);
       text-shadow: 0 0 10px rgba(0, 204, 102, 0.5);
@@ -323,305 +177,91 @@
     
     .timer-status {
       font-size: 12px;
-      color: var(--text-muted);
+      color: #aaa;
       margin-top: 4px;
     }
     
-    /* Bottom menu - CACHÉ PAR DÉFAUT */
-    #bottom-menu {
-      position: fixed;
+    #top3-overlay {
       bottom: 20px;
-      right: 20px;
+      left: 20px;
       background: rgba(0, 0, 0, 0.95);
-      border: 2px solid var(--primary);
+      color: #fff;
+      padding: 18px 24px;
       border-radius: 14px;
-      padding: 14px 18px;
-      z-index: 999999;
-      color: #fff;
-      font-family: 'Segoe UI', sans-serif;
-      min-width: 260px;
-      box-shadow: 0 0 25px rgba(124, 98, 220, 0.55);
-      backdrop-filter: blur(10px);
-      transition: all 0.3s;
-      display: none;
+      border: 3px solid var(--primary);
+      font-size: 14px;
+      min-width: 300px;
+      box-shadow: 0 0 25px rgba(124, 98, 220, 0.6);
     }
     
-    #bottom-menu.visible {
-      display: block;
-    }
-    
-    .quick-btn {
-      width: 100%;
-      padding: 10px 12px;
-      background: #111;
-      border: 2px solid var(--primary);
-      border-radius: 10px;
-      color: #fff;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.15s;
-      margin-top: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .quick-btn:hover {
-      background: var(--primary);
-      color: #000;
-      transform: translateX(5px);
-    }
-    
-    /* Style pour le bouton Give Piece */
-    .give-piece-btn {
-      background: linear-gradient(135deg, #ffd700, #ffaa00);
-      color: #000;
-      border: none;
-      border-radius: 10px;
-      padding: 12px 16px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
-    }
-    
-    .give-piece-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
-    }
-    
-    /* Modal amélioré */
-    .mynvo-modal {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: var(--bg-card);
-      color: #fff;
-      padding: 24px;
-      border-radius: 16px;
-      border: 4px solid var(--primary);
-      z-index: 100000;
-      max-width: 92%;
-      width: 720px;
-      box-shadow: 0 0 60px rgba(124, 98, 220, 0.55);
-      backdrop-filter: blur(15px);
-      animation: modalAppear 0.3s ease-out;
-    }
-    
-    @keyframes modalAppear {
-      0% {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(0.9);
-      }
-      100% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-      }
-    }
-    
-    .mynvo-row {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-    
-    .mynvo-label {
-      min-width: 120px;
-      color: var(--text-muted);
-    }
-    
-    .key-display {
-      display: inline-block;
-      min-width: 50px;
-      padding: 10px 16px;
-      background: var(--bg-dark);
-      border: 2px solid var(--primary);
-      border-radius: 8px;
-      text-align: center;
-      font-weight: 700;
-      font-size: 18px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    
-    .key-display:hover {
-      border-color: var(--primary-light);
-      background: #1a1a1a;
-    }
-    
-    .key-display.active {
-      border-color: var(--success);
-      background: #1a4d1a;
-      animation: pulse 0.5s;
-    }
-    
-    @keyframes pulse {
-      0%, 100% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.05);
-      }
-    }
-    
-    /* Nouveau style pour les sections de paramètres */
-    .settings-section {
-      background: rgba(20, 20, 30, 0.7);
-      padding: 16px;
-      border-radius: 12px;
-      margin-bottom: 16px;
-      border: 1px solid rgba(124, 98, 220, 0.3);
-    }
-    
-    .settings-section h3 {
+    #top3-overlay .title {
       color: var(--primary);
+      font-size: 17px;
+      font-weight: 900;
       margin-bottom: 12px;
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      text-align: center;
     }
     
-    /* Animation de particules en arrière-plan */
-    .particles {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      overflow: hidden;
+    #top3-overlay .player {
+      margin: 8px 0;
+      padding: 8px;
+      border-radius: 8px;
+      background: rgba(124, 98, 220, 0.1);
     }
     
-    .particle {
-      position: absolute;
-      background: rgba(124, 98, 220, 0.3);
-      border-radius: 50%;
-      animation: float 15s infinite linear;
+    #top3-overlay .player.first {
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 16px;
+      background: rgba(124, 98, 220, 0.2);
     }
     
-    @keyframes float {
-      0% {
-        transform: translateY(0) translateX(0);
-        opacity: 0;
-      }
-      10% {
-        opacity: 1;
-      }
-      90% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-100vh) translateX(100px);
-        opacity: 0;
-      }
-    }
-    
-    /* Style pour les notifications */
     .notification {
       position: fixed;
-      top: 20px;
+      top: 90px;
       left: 50%;
       transform: translateX(-50%);
-      background: var(--bg-card);
+      background: rgba(20, 20, 30, 0.95);
       color: white;
-      padding: 12px 20px;
-      border-radius: 8px;
+      padding: 14px 24px;
+      border-radius: 10px;
       border-left: 4px solid var(--primary);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      z-index: 100001;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      z-index: 2147483646;
       opacity: 0;
       transition: opacity 0.3s;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
     }
     
     .notification.show {
       opacity: 1;
     }
     
-    /* Améliorations responsive */
-    @media (max-width: 1200px) {
-      .game-container {
-        padding: 30px;
-      }
-      
-      iframe {
-        height: 600px;
-      }
+    footer {
+      text-align: center;
+      padding: 25px;
+      font-size: 15px;
+      opacity: 0.85;
     }
-    
+
     @media (max-width: 768px) {
-      header {
-        padding: 14px 20px;
-      }
-      
-      .logo {
-        font-size: 24px;
-      }
-      
-      .logo img {
-        height: 40px;
-        width: 40px;
-      }
-      
-      .nav-links a {
-        margin-left: 16px;
-        font-size: 15px;
-      }
-      
-      .game-container {
-        padding: 20px;
-      }
-      
       iframe {
         height: 400px;
       }
-      
-      #bottom-menu {
-        min-width: 240px;
-        right: 10px;
-        bottom: 10px;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .header-content {
-        flex-direction: column;
-        gap: 10px;
-      }
-      
-      .nav-links {
-        width: 100%;
-        justify-content: center;
-      }
-      
-      .nav-links a {
-        margin: 0 10px;
-      }
-      
-      iframe {
-        height: 300px;
+      #fps-overlay, #timer-overlay, #top3-overlay {
+        font-size: 14px;
+        padding: 10px 14px;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Particules d'arrière-plan -->
-  <div class="particles" id="particles-container"></div>
-
   <header>
     <div class="header-content">
       <div class="logo">
-        <img src="logo.png" alt="Mynvo" onerror="this.style.display='none'">
         Subway<span>Surfers</span> by <span>Mynvo</span>
       </div>
       <div class="nav-links">
         <a id="play-link">Jouer</a>
-        <a onclick="toggleBottomMenu();return false;">Paramètres</a>
         <a href="https://discord.gg/bQTtDXmF" target="_blank">Discord</a>
       </div>
     </div>
@@ -629,19 +269,20 @@
 
   <main>
     <div class="game-container">
-      <!-- Titre supprimé -->
       <div class="game-frame">
-        <div class="loading" id="loading-ui"><div class="spinner"></div><p>Chargement du jeu...</p></div>
-        <button class="fs-button" id="fs-btn" title="Plein écran">⤢ Plein écran</button>
         <iframe id="game-iframe" src="./game/" allowfullscreen allow="autoplay; fullscreen *"></iframe>
       </div>
     </div>
   </main>
 
-  <!-- FPS Counter - RESTE EN PLEIN ÉCRAN -->
+  <!-- OVERLAYS PERMANENTS -->
   <div id="fps-overlay">🎮 FPS: <span id="fps-value">60</span></div>
 
-  <!-- TOP 3 - RESTE EN PLEIN ÉCRAN -->
+  <div id="timer-overlay">
+    <div class="timer-display"><span id="timer-value">00:00.00</span></div>
+    <div class="timer-status">Appuyez F1 pour démarrer</div>
+  </div>
+
   <div id="top3-overlay">
     <div class="title">🏆 TOP 3 NO COIN</div>
     <div class="player first">🥇 Mynvo – 13:27</div>
@@ -649,250 +290,288 @@
     <div class="player">🥉 .... – 0:00</div>
   </div>
 
-  <!-- TIMER overlay - RESTE EN PLEIN ÉCRAN -->
-  <div id="timer-overlay">
-    <div class="timer-display"><span id="timer-value">00:00.00</span></div>
-    <div class="timer-status" id="timer-status">En attente...</div>
-  </div>
-
-  <!-- Bottom menu - CACHÉ PAR DÉFAUT -->
-  <div id="bottom-menu">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-      <div style="font-size:16px;font-weight:700;color:#7c62dc;">⚙️ Menu rapide</div>
-      <button id="close-bottom-menu" style="background:#7c62dc;border:none;color:#000;font-weight:700;border-radius:8px;padding:4px 10px;cursor:pointer;">✖</button>
-    </div>
-
-    <button class="quick-btn" onclick="openKeySettings();">🎮 Touches (ZQSD)</button>
-    <button class="quick-btn" onclick="openTimerSettings();">⏱️ Timer Manuel</button>
-    <button class="quick-btn" onclick="toggleFPS();">📊 FPS (afficher/masquer)</button>
-    <button class="quick-btn" onclick="toggleFullscreen();">⤢ Plein écran</button>
-    <button class="quick-btn" onclick="openSongMenu();">🎵 Son du jeu</button>
-    <button class="quick-btn" onclick="openMapMenu();">🗺️ Map/TOP3</button>
-    <button class="quick-btn give-piece-btn" onclick="giveResources();">💰 Give Piece & Keys</button>
-  </div>
-
-  <footer>Subway Surfers by Mynvo © 2023 - Tous droits réservés</footer>
+  <footer>Subway Surfers by Mynvo © 2023</footer>
 
   <script>
-    // ============= CONFIG =============
-    let config = {
-      up: "z", down: "s", left: "q", right: "d", jump: " ", name: "Joueur",
-      showFPS: true, showTop3: true,
-      top3Position: "bottom-left",
-      volume: 1,
-      timerStartKey: "F1",
-      timerStopKey: "F2", 
-      timerResetKey: "F3",
-      timerRunning: false
-    };
-
-    // ============= GESTION DU CHARGEMENT CORRIGÉE =============
     const iframe = document.getElementById('game-iframe');
-    const loadingUI = document.getElementById('loading-ui');
-
-    // Méthode 1: Événement load normal
-    iframe.addEventListener('load', function() {
-      console.log('✅ Iframe chargée - Cache le loading');
-      hideLoading();
-    });
-
-    // Méthode 2: Fallback avec setTimeout
-    setTimeout(hideLoading, 3000);
-
-    function hideLoading() {
-      if (loadingUI.style.display !== 'none') {
-        loadingUI.style.display = 'none';
-        console.log('✅ Loading caché');
-        showNotification('🎮 Jeu chargé avec succès!', 'success');
-      }
-    }
-
-    // ============= GESTION DU MENU RAPIDE =============
-    function toggleBottomMenu() {
-      const menu = document.getElementById('bottom-menu');
-      menu.classList.toggle('visible');
-    }
-
-    document.getElementById('close-bottom-menu').addEventListener('click', function() {
-      document.getElementById('bottom-menu').classList.remove('visible');
-    });
-
-    // ============= FONCTION GIVE PIECE FONCTIONNELLE =============
-    function giveResources() {
-      // Injection directe dans l'iframe
-      try {
-        const iframeWindow = iframe.contentWindow;
-        
-        // Méthode 1: Injection de script dans l'iframe
-        const scriptContent = `
-          // Give Coins
-          if (typeof SubwaySurfer !== 'undefined') {
-            SubwaySurfer.coins = 9999999999;
-          }
-          // Give Keys  
-          if (typeof SubwaySurfer !== 'undefined') {
-            SubwaySurfer.keys = 9999999999;
-          }
-          // Unity WebGL method
-          if (typeof gameInstance !== 'undefined') {
-            gameInstance.SendMessage('Player', 'AddCoins', 9999999999);
-            gameInstance.SendMessage('Player', 'AddKeys', 9999999999);
-          }
-          // Fallback pour la plupart des jeux
-          if (typeof coins !== 'undefined') coins = 9999999999;
-          if (typeof keys !== 'undefined') keys = 9999999999;
-          if (typeof window.coins !== 'undefined') window.coins = 9999999999;
-          if (typeof window.keys !== 'undefined') window.keys = 9999999999;
-          
-          console.log('💰 Resources données: 9999999999 pièces et clés');
-        `;
-        
-        const script = iframeWindow.document.createElement('script');
-        script.textContent = scriptContent;
-        iframeWindow.document.head.appendChild(script);
-        
-        // Méthode 2: PostMessage
-        postToIframe({
-          type: 'give_resources',
-          coins: 9999999999,
-          keys: 9999999999
-        });
-        
-        showNotification(`💰 9,999,999,999 pièces & clés données!`, 'success');
-        console.log('💰 Give Piece exécuté');
-        
-      } catch (error) {
-        console.error('❌ Erreur Give Piece:', error);
-        showNotification('❌ Erreur Give Piece - Vérifiez la console', 'error');
-      }
-    }
-
-    // ============= SYSTÈME DE TOUCHES ZQSD =============
-    function setupZQSDKeys() {
-      const keyMap = {
-        'z': { key: 'ArrowUp', code: 38 },
-        'q': { key: 'ArrowLeft', code: 37 },
-        's': { key: 'ArrowDown', code: 40 },
-        'd': { key: 'ArrowRight', code: 39 },
-        ' ': { key: ' ', code: 32 }
-      };
-
-      const keyStates = {};
-
-      function handleKeyEvent(e, type) {
-        const key = e.key.toLowerCase();
-        const mapped = keyMap[key];
-        
-        if (mapped && !keyStates[mapped.code]) {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          
-          if (type === 'down') {
-            keyStates[mapped.code] = true;
-          } else {
-            keyStates[mapped.code] = false;
-          }
-
-          // Envoi à l'iframe
-          postToIframe({
-            type: 'keyboard_event',
-            eventType: type,
-            key: mapped.key,
-            keyCode: mapped.code
-          });
-
-          console.log(`🎮 ${type}: ${key} → ${mapped.key}`);
-        }
-      }
-
-      document.addEventListener('keydown', (e) => handleKeyEvent(e, 'keydown'), true);
-      document.addEventListener('keyup', (e) => handleKeyEvent(e, 'keyup'), true);
-    }
-
-    // ============= TIMER MANUEL =============
     let timerInterval = null;
     let timerStart = 0;
     let timerElapsed = 0;
     let timerActive = false;
+    let giveAttempts = 0;
+    const MAX_GIVE_ATTEMPTS = 8;
 
-    function setupTimerKeys() {
-      document.addEventListener('keydown', function(e) {
-        // Timer Start - F1
-        if (e.key === 'F1' && !timerActive) {
-          startTimer();
+    // ============= 1. GIVE AUTOMATIQUE PUISSANT =============
+    function autoGiveResources() {
+      console.log(`💰 Tentative Give #${giveAttempts + 1}...`);
+      
+      try {
+        const iframeWindow = iframe.contentWindow;
+        const iframeDoc = iframeWindow.document;
+        
+        // Méthode 1: Injection de script PUISSANT
+        const scriptElement = iframeDoc.createElement('script');
+        scriptElement.id = 'mynvo-give-script-' + giveAttempts;
+        scriptElement.textContent = `
+          (function() {
+            console.log('💰 [MYNVO] Exécution du Give...');
+            
+            // Cibler TOUTES les variables possibles
+            const targets = [
+              'coins', 'Coins', 'COINS', 'coin', 'Coin',
+              'keys', 'Keys', 'KEYS', 'key', 'Key',
+              'gold', 'Gold', 'money', 'Money',
+              'currency', 'Currency'
+            ];
+            
+            const value = 999999999;
+            let modified = 0;
+            
+            // Parcourir window
+            targets.forEach(function(target) {
+              if (typeof window[target] !== 'undefined') {
+                window[target] = value;
+                modified++;
+                console.log('✅ window.' + target + ' = ' + value);
+              }
+            });
+            
+            // Chercher dans tous les objets globaux
+            for (let key in window) {
+              try {
+                const obj = window[key];
+                if (obj && typeof obj === 'object') {
+                  targets.forEach(function(target) {
+                    if (target in obj && typeof obj[target] === 'number') {
+                      obj[target] = value;
+                      modified++;
+                      console.log('✅ window.' + key + '.' + target + ' = ' + value);
+                    }
+                  });
+                }
+              } catch(e) {}
+            }
+            
+            // Unity WebGL SendMessage
+            if (typeof gameInstance !== 'undefined') {
+              try {
+                gameInstance.SendMessage('GameManager', 'AddCoins', value);
+                gameInstance.SendMessage('GameManager', 'AddKeys', value);
+                gameInstance.SendMessage('PlayerData', 'AddCoins', value);
+                gameInstance.SendMessage('PlayerData', 'AddKeys', value);
+                modified += 4;
+                console.log('✅ Unity gameInstance messages envoyés');
+              } catch(e) {
+                console.warn('Unity SendMessage error:', e);
+              }
+            }
+            
+            // Recherche dans localStorage
+            try {
+              for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && (key.includes('coin') || key.includes('key') || key.includes('save'))) {
+                  try {
+                    const data = JSON.parse(localStorage.getItem(key));
+                    if (data && typeof data === 'object') {
+                      targets.forEach(function(target) {
+                        if (target in data) {
+                          data[target] = value;
+                          modified++;
+                        }
+                      });
+                      localStorage.setItem(key, JSON.stringify(data));
+                      console.log('✅ localStorage.' + key + ' modifié');
+                    }
+                  } catch(e) {}
+                }
+              }
+            } catch(e) {
+              console.warn('localStorage error:', e);
+            }
+            
+            console.log('💰 [MYNVO] Give terminé: ' + modified + ' modifications');
+            window.mynvoGiveSuccess = modified > 0;
+          })();
+        `;
+        
+        iframeDoc.head.appendChild(scriptElement);
+        
+        // Méthode 2: PostMessage
+        iframeWindow.postMessage({
+          type: 'mynvo_give',
+          coins: 999999999,
+          keys: 999999999,
+          timestamp: Date.now()
+        }, '*');
+        
+        // Méthode 3: Direct window modification (backup)
+        setTimeout(() => {
+          try {
+            iframeWindow.coins = 999999999;
+            iframeWindow.keys = 999999999;
+            iframeWindow.Coins = 999999999;
+            iframeWindow.Keys = 999999999;
+            console.log('💰 Direct window modification effectuée');
+          } catch(e) {}
+        }, 100);
+        
+        giveAttempts++;
+        
+        // Check si succès
+        setTimeout(() => {
+          if (iframeWindow.mynvoGiveSuccess) {
+            console.log('✅ Give réussi!');
+            showNotification('💰 999,999,999 pièces & clés données avec succès!', 'success');
+          } else if (giveAttempts < MAX_GIVE_ATTEMPTS) {
+            console.log('⚠️ Give incomplet, retry...');
+            setTimeout(autoGiveResources, 2000);
+          }
+        }, 500);
+        
+      } catch (error) {
+        console.error('❌ Erreur Give:', error);
+        if (giveAttempts < MAX_GIVE_ATTEMPTS) {
+          setTimeout(autoGiveResources, 2000);
         }
-        // Timer Stop - F2
-        else if (e.key === 'F2' && timerActive) {
-          stopTimer();
+      }
+    }
+
+    // Déclencher le give
+    iframe.addEventListener('load', () => {
+      console.log('✅ Iframe chargée');
+      giveAttempts = 0;
+      
+      // Premier give immédiat
+      setTimeout(autoGiveResources, 1000);
+      
+      // Gives de retry toutes les 3 secondes
+      let retryCount = 0;
+      const retryInterval = setInterval(() => {
+        if (retryCount++ < 5) {
+          autoGiveResources();
+        } else {
+          clearInterval(retryInterval);
+          console.log('✅ Séquence de Give terminée');
         }
-        // Timer Reset - F3
+      }, 3000);
+    });
+
+    // ============= 2. TOUCHES ZQSD FORCÉES =============
+    const keyMapping = {
+      'z': { key: 'ArrowUp', code: 'ArrowUp', keyCode: 38 },
+      'q': { key: 'ArrowLeft', code: 'ArrowLeft', keyCode: 37 },
+      's': { key: 'ArrowDown', code: 'ArrowDown', keyCode: 40 },
+      'd': { key: 'ArrowRight', code: 'ArrowRight', keyCode: 39 },
+      ' ': { key: ' ', code: 'Space', keyCode: 32 }
+    };
+
+    function setupZQSDKeys() {
+      ['keydown', 'keyup'].forEach(eventType => {
+        // Capturer en phase de capture (true)
+        window.addEventListener(eventType, (e) => {
+          const key = e.key.toLowerCase();
+          const mapped = keyMapping[key];
+          
+          if (mapped) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            
+            // Créer événement avec tous les paramètres
+            const newEvent = new KeyboardEvent(eventType, {
+              key: mapped.key,
+              code: mapped.code,
+              keyCode: mapped.keyCode,
+              which: mapped.keyCode,
+              bubbles: true,
+              cancelable: true,
+              composed: true
+            });
+            
+            try {
+              // Envoyer à l'iframe de multiples façons
+              iframe.contentWindow.document.dispatchEvent(newEvent);
+              iframe.contentWindow.dispatchEvent(newEvent);
+              iframe.contentDocument.dispatchEvent(newEvent);
+              
+              // PostMessage backup
+              iframe.contentWindow.postMessage({
+                type: 'keyboard_event',
+                eventType: eventType,
+                key: mapped.key,
+                keyCode: mapped.keyCode
+              }, '*');
+              
+              console.log(`🎮 ${eventType}: ${key} → ${mapped.key}`);
+            } catch (err) {
+              console.warn('Dispatch error:', err);
+            }
+          }
+        }, true);
+      });
+      
+      console.log('✅ Touches ZQSD configurées');
+    }
+
+    // ============= 3. TIMER MANUEL =============
+    function setupTimer() {
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'F1') {
+          e.preventDefault();
+          if (!timerActive) startTimer();
+        }
+        else if (e.key === 'F2') {
+          e.preventDefault();
+          if (timerActive) stopTimer();
+        }
         else if (e.key === 'F3') {
+          e.preventDefault();
           resetTimer();
         }
       });
     }
 
     function startTimer() {
-      if (timerActive) return;
-      
       timerStart = Date.now() - timerElapsed;
       timerActive = true;
       
-      const timerEl = document.getElementById('timer-overlay');
-      timerEl.style.display = 'block';
-      timerEl.classList.remove('stopped');
-      timerEl.classList.add('running');
-      
-      document.getElementById('timer-status').textContent = 'En cours...';
+      document.getElementById('timer-overlay').classList.add('running');
+      document.querySelector('.timer-status').textContent = 'En cours...';
       
       timerInterval = setInterval(() => {
         timerElapsed = Date.now() - timerStart;
         document.getElementById('timer-value').textContent = formatTime(timerElapsed);
       }, 10);
       
-      showNotification("▶️ Timer démarré (F1=Start, F2=Stop, F3=Reset)", "success");
+      showNotification('▶️ Timer démarré (F2=Stop, F3=Reset)', 'success');
     }
 
     function stopTimer() {
-      if (!timerActive) return;
-      
       clearInterval(timerInterval);
-      timerInterval = null;
       timerActive = false;
-      
-      const timerEl = document.getElementById('timer-overlay');
-      timerEl.classList.remove('running');
-      timerEl.classList.add('stopped');
-      
-      document.getElementById('timer-status').textContent = 'Arrêté';
-      showNotification("⏸️ Timer arrêté", "warning");
+      document.getElementById('timer-overlay').classList.remove('running');
+      document.querySelector('.timer-status').textContent = 'Arrêté';
+      showNotification('⏸️ Timer arrêté', 'warning');
     }
 
     function resetTimer() {
       clearInterval(timerInterval);
-      timerInterval = null;
       timerActive = false;
       timerElapsed = 0;
-      
-      const timerEl = document.getElementById('timer-overlay');
-      timerEl.style.display = 'none';
-      timerEl.classList.remove('running', 'stopped');
-      
       document.getElementById('timer-value').textContent = '00:00.00';
-      document.getElementById('timer-status').textContent = 'En attente...';
-      showNotification("🔄 Timer réinitialisé", "info");
+      document.getElementById('timer-overlay').classList.remove('running');
+      document.querySelector('.timer-status').textContent = 'Appuyez F1';
+      showNotification('🔄 Timer réinitialisé', 'info');
     }
 
     function formatTime(ms) {
-      const total = Math.max(0, ms);
-      const minutes = Math.floor(total / 60000);
-      const seconds = Math.floor((total % 60000) / 1000);
-      const centiseconds = Math.floor((total % 1000) / 10);
-      
+      const minutes = Math.floor(ms / 60000);
+      const seconds = Math.floor((ms % 60000) / 1000);
+      const centiseconds = Math.floor((ms % 1000) / 10);
       return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(centiseconds).padStart(2, '0')}`;
     }
 
-    // ============= FPS COUNTER =============
+    // ============= 4. FPS COUNTER =============
     let fpsFrames = 0;
     let fpsLastTime = performance.now();
     
@@ -904,7 +583,6 @@
         const fps = Math.round((fpsFrames * 1000) / (now - fpsLastTime));
         document.getElementById('fps-value').textContent = fps;
         
-        // Changement de couleur selon les FPS
         const fpsEl = document.getElementById('fps-overlay');
         if (fps >= 55) {
           fpsEl.style.color = '#7c62dc';
@@ -923,235 +601,55 @@
       
       requestAnimationFrame(updateFPS);
     }
-    updateFPS();
-
-    function toggleFPS() {
-      config.showFPS = !config.showFPS;
-      document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
-      saveConfig();
-      showNotification(config.showFPS ? "📊 FPS affiché" : "📊 FPS masqué", "info");
-    }
 
     // ============= NOTIFICATIONS =============
-    function showNotification(message, type = "info") {
+    function showNotification(message, type = 'info') {
       const notification = document.createElement('div');
       notification.className = 'notification';
-      notification.innerHTML = `<span>${message}</span>`;
+      notification.textContent = message;
       
-      if (type === "error") {
-        notification.style.borderLeftColor = "var(--danger)";
-      } else if (type === "success") {
-        notification.style.borderLeftColor = "var(--success)";
-      } else if (type === "warning") {
-        notification.style.borderLeftColor = "var(--warning)";
-      }
+      const colors = {
+        success: '#00cc66',
+        warning: '#ffaa00',
+        error: '#ff4444',
+        info: '#7c62dc'
+      };
+      notification.style.borderLeftColor = colors[type] || colors.info;
       
       document.body.appendChild(notification);
       
-      setTimeout(() => {
-        notification.classList.add('show');
-      }, 10);
-      
+      setTimeout(() => notification.classList.add('show'), 10);
       setTimeout(() => {
         notification.classList.remove('show');
-        setTimeout(() => {
-          if (notification.parentNode) {
-            notification.parentNode.removeChild(notification);
-          }
-        }, 300);
-      }, 3000);
-    }
-
-    // ============= FONCTIONS EXISTANTES =============
-    function applyOverlaysFromConfig() {
-      document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
-      document.getElementById('top3-overlay').style.display = config.showTop3 ? 'block' : 'none';
-      positionTop3(config.top3Position);
-      document.getElementById('fps-value').textContent = '60';
-    }
-
-    function postToIframe(msg) {
-      try {
-        iframe.contentWindow.postMessage(msg, '*');
-      } catch (e) {
-        console.warn('[MYNVO Parent] postMessage failed', e);
-      }
-    }
-
-    function positionTop3(pos) {
-      const el = document.getElementById('top3-overlay');
-      el.style.top = el.style.bottom = el.style.left = el.style.right = '';
-      switch(pos) {
-        case 'bottom-left': el.style.bottom = '20px'; el.style.left = '20px'; break;
-        case 'bottom-right': el.style.bottom = '20px'; el.style.right = '20px'; break;
-        case 'top-left': el.style.top = '20px'; el.style.left = '20px'; break;
-        case 'top-right': el.style.top = '20px'; el.style.right = '20px'; break;
-      }
-    }
-
-    // Fullscreen
-    document.getElementById('fs-btn').addEventListener('click', async () => {
-      try {
-        if (iframe.requestFullscreen) await iframe.requestFullscreen();
-        else if (iframe.webkitRequestFullscreen) await iframe.webkitRequestFullscreen();
-      } catch (err) {
-        alert('Plein écran non supporté');
-      }
-    });
-
-    function toggleFullscreen(){
-      if (!document.fullscreenElement) {
-        if (iframe.requestFullscreen) iframe.requestFullscreen();
-        else iframe.webkitRequestFullscreen && iframe.webkitRequestFullscreen();
-      } else {
-        document.exitFullscreen();
-      }
+        setTimeout(() => notification.remove(), 300);
+      }, 4000);
     }
 
     // ============= INITIALISATION =============
-    document.addEventListener('DOMContentLoaded', function() {
-      initParticles();
+    document.addEventListener('DOMContentLoaded', () => {
       setupZQSDKeys();
-      setupTimerKeys();
+      setupTimer();
+      updateFPS();
       
-      try {
-        const saved = localStorage.getItem("mynvoConfig");
-        if (saved) config = {...config, ...JSON.parse(saved)};
-      } catch(e) {}
+      console.log('%c🎮 MYNVO SYSTEM READY!', 'color: #7c62dc; font-weight: bold; font-size: 16px;');
+      console.log('%c💰 Give automatique: ACTIF', 'color: #00cc66; font-size: 14px;');
+      console.log('%c⌨️  Touches: ZQSD + Espace', 'color: #7c62dc; font-size: 14px;');
+      console.log('%c⏱️  Timer: F1=Start | F2=Stop | F3=Reset', 'color: #7c62dc; font-size: 14px;');
+      console.log('%c📊 FPS & Timer: Toujours visibles', 'color: #7c62dc; font-size: 14px;');
       
-      applyOverlaysFromConfig();
+      // Message de bienvenue
+      setTimeout(() => {
+        showNotification('🎮 Bienvenue! Système MYNVO initialisé avec succès', 'success');
+        setTimeout(() => {
+          showNotification('💰 Give automatique en cours...', 'info');
+        }, 2000);
+      }, 1000);
     });
-
-    function initParticles() {
-      const container = document.getElementById('particles-container');
-      const particleCount = 30;
-      
-      for (let i = 0; i < particleCount; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        
-        const size = Math.random() * 5 + 2;
-        particle.style.width = `${size}px`;
-        particle.style.height = `${size}px`;
-        
-        particle.style.left = `${Math.random() * 100}%`;
-        particle.style.top = `${Math.random() * 100}%`;
-        
-        particle.style.animationDuration = `${Math.random() * 20 + 10}s`;
-        particle.style.animationDelay = `${Math.random() * 5}s`;
-        
-        container.appendChild(particle);
-      }
-    }
-
-    // ============= FONCTIONS DE SAUVEGARDE =============
-    function saveConfig() {
-      localStorage.setItem("mynvoConfig", JSON.stringify(config));
-    }
-
-    // ============= FONCTIONS DES MODALS =============
-    function openKeySettings() {
-      if (document.getElementById('mynvo-keys')) return;
-      
-      const div = document.createElement('div');
-      div.id = 'mynvo-keys';
-      div.className = 'mynvo-modal';
-      div.innerHTML = `
-        <h3 style="color:#7c62dc;margin-bottom:10px;text-align:center;">🎮 Configuration des Touches</h3>
-        
-        <div class="settings-section">
-          <h3>🎯 Touches de Jeu</h3>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Haut (Z)</div>
-            <div class="key-display" data-key="up">Z</div>
-          </div>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Bas (S)</div>
-            <div class="key-display" data-key="down">S</div>
-          </div>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Gauche (Q)</div>
-            <div class="key-display" data-key="left">Q</div>
-          </div>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Droite (D)</div>
-            <div class="key-display" data-key="right">D</div>
-          </div>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Saut (Espace)</div>
-            <div class="key-display" data-key="jump">ESPACE</div>
-          </div>
-        </div>
-
-        <div style="text-align:center;margin-top:12px;">
-          <button onclick="closeKeySettings()" style="background:#ff4444;color:#fff;padding:8px 14px;border:none;border-radius:8px;cursor:pointer;">Fermer</button>
-        </div>
-      `;
-      
-      document.body.appendChild(div);
-    }
-
-    function closeKeySettings() {
-      const modal = document.getElementById('mynvo-keys');
-      if (modal) modal.remove();
-    }
-
-    function openTimerSettings() {
-      if (document.getElementById('mynvo-timer-settings')) return;
-      
-      const div = document.createElement('div');
-      div.id = 'mynvo-timer-settings';
-      div.className = 'mynvo-modal';
-      div.innerHTML = `
-        <h3 style="color:#7c62dc;margin-bottom:10px;text-align:center;">⏱️ Configuration du Timer</h3>
-        
-        <div class="settings-section">
-          <h3>🎮 Touches du Timer</h3>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Démarrer</div>
-            <div class="key-display">F1</div>
-          </div>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Arrêter</div>
-            <div class="key-display">F2</div>
-          </div>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Réinitialiser</div>
-            <div class="key-display">F3</div>
-          </div>
-        </div>
-
-        <div style="text-align:center;margin-top:12px;">
-          <button onclick="closeTimerSettings()" style="background:#ff4444;color:#fff;padding:8px 14px;border:none;border-radius:8px;cursor:pointer;">Fermer</button>
-        </div>
-      `;
-      
-      document.body.appendChild(div);
-    }
-
-    function closeTimerSettings() {
-      const modal = document.getElementById('mynvo-timer-settings');
-      if (modal) modal.remove();
-    }
-
-    // Fonctions abrégées pour les autres modals
-    function openSongMenu() {
-      showNotification("🎵 Ouverture des paramètres audio...", "info");
-    }
-
-    function openMapMenu() {
-      showNotification("🗺️ Ouverture des paramètres de map...", "info");
-    }
 
     document.getElementById('play-link').addEventListener('click', () => {
-      document.querySelector('.game-container')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      document.querySelector('.game-container').scrollIntoView({ behavior: 'smooth' });
       iframe.focus();
     });
-
-    console.log('%c[MYNVO Parent] Système initialisé!', 'color: #7c62dc; font-weight: bold;');
-    console.log('🎮 Touches: ZQSD + Espace');
-    console.log('⏱️ Timer: F1=Start, F2=Stop, F3=Reset');
-    console.log('💰 Give Piece disponible dans le menu Paramètres');
   </script>
 </body>
 </html>
