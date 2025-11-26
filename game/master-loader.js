@@ -37,150 +37,184 @@ sdkScript.onload = function() {
 document.body.appendChild(sdkScript);
 
 // =============== MYNVO PATCH - Gestion des touches personnalisées ===============
-console.log("%c[MYNVO] Touch remapping system loaded", "color: #00ff00; font-weight: bold;");
+console.log("%c[MYNVO GAME] Touch remapping system loaded", "color: #00ff00; font-weight: bold;");
 
-// Réception des messages depuis le parent (index.html)
+// État des touches pressées (pour éviter les répétitions)
+const keysPressed = {};
+
+// Réception des messages depuis le parent
 window.addEventListener("message", (e) => {
     const data = e.data;
     if (!data || !data.type) return;
 
     // Gestion keydown
     if (data.type === "keydown") {
-        console.log("[MYNVO] Keydown received:", data.key, "keyCode:", data.keyCode);
+        const key = data.key;
+        const keyCode = data.keyCode;
         
-        // Créer un événement clavier complet avec key ET keyCode
-        const event = new KeyboardEvent("keydown", {
-            key: data.key,
-            keyCode: data.keyCode || getKeyCodeFromKey(data.key),
-            code: getCodeFromKey(data.key),
-            which: data.keyCode || getKeyCodeFromKey(data.key),
+        // Éviter les répétitions
+        if (keysPressed[keyCode]) return;
+        keysPressed[keyCode] = true;
+        
+        console.log("%c[MYNVO GAME] ⬇️ Keydown:", "color: #00ff00;", key, "keyCode:", keyCode);
+        
+        // Méthode 1: Dispatcher avec keyCode (compatible vieux navigateurs)
+        const event1 = new KeyboardEvent("keydown", {
+            keyCode: keyCode,
+            which: keyCode,
+            bubbles: true,
+            cancelable: true
+        });
+        
+        // Méthode 2: Dispatcher avec key moderne
+        const event2 = new KeyboardEvent("keydown", {
+            key: key,
+            code: getCodeFromKeyCode(keyCode),
+            keyCode: keyCode,
+            which: keyCode,
             bubbles: true,
             cancelable: true,
             composed: true
         });
         
-        // Dispatch sur document ET window pour compatibilité Unity
-        document.dispatchEvent(event);
-        window.dispatchEvent(event);
+        // Dispatcher sur TOUS les éléments possibles
+        document.dispatchEvent(event1);
+        document.dispatchEvent(event2);
+        window.dispatchEvent(event1);
+        window.dispatchEvent(event2);
         
-        // Trouver le canvas Unity et dispatcher aussi dessus
+        // Canvas Unity
         const canvas = document.querySelector("canvas");
         if (canvas) {
-            canvas.dispatchEvent(event);
+            canvas.dispatchEvent(event1);
+            canvas.dispatchEvent(event2);
         }
+        
+        // Tous les éléments Unity possibles
+        document.querySelectorAll("#canvas, #unity-canvas, [id*='canvas']").forEach(el => {
+            el.dispatchEvent(event1);
+            el.dispatchEvent(event2);
+        });
     }
 
     // Gestion keyup
     if (data.type === "keyup") {
-        console.log("[MYNVO] Keyup received:", data.key, "keyCode:", data.keyCode);
+        const key = data.key;
+        const keyCode = data.keyCode;
         
-        const event = new KeyboardEvent("keyup", {
-            key: data.key,
-            keyCode: data.keyCode || getKeyCodeFromKey(data.key),
-            code: getCodeFromKey(data.key),
-            which: data.keyCode || getKeyCodeFromKey(data.key),
+        keysPressed[keyCode] = false;
+        
+        console.log("%c[MYNVO GAME] ⬆️ Keyup:", "color: #ff6b6b;", key, "keyCode:", keyCode);
+        
+        const event1 = new KeyboardEvent("keyup", {
+            keyCode: keyCode,
+            which: keyCode,
+            bubbles: true,
+            cancelable: true
+        });
+        
+        const event2 = new KeyboardEvent("keyup", {
+            key: key,
+            code: getCodeFromKeyCode(keyCode),
+            keyCode: keyCode,
+            which: keyCode,
             bubbles: true,
             cancelable: true,
             composed: true
         });
         
-        document.dispatchEvent(event);
-        window.dispatchEvent(event);
+        document.dispatchEvent(event1);
+        document.dispatchEvent(event2);
+        window.dispatchEvent(event1);
+        window.dispatchEvent(event2);
         
         const canvas = document.querySelector("canvas");
         if (canvas) {
-            canvas.dispatchEvent(event);
+            canvas.dispatchEvent(event1);
+            canvas.dispatchEvent(event2);
         }
+        
+        document.querySelectorAll("#canvas, #unity-canvas, [id*='canvas']").forEach(el => {
+            el.dispatchEvent(event1);
+            el.dispatchEvent(event2);
+        });
     }
 });
 
-// Helper: Convertir key string en keyCode (pour compatibilité)
-function getKeyCodeFromKey(key) {
-    const keyCodeMap = {
-        'ArrowUp': 38,
-        'ArrowDown': 40,
-        'ArrowLeft': 37,
-        'ArrowRight': 39,
-        ' ': 32,
-        'Space': 32,
-        'w': 87, 'W': 87,
-        'a': 65, 'A': 65,
-        's': 83, 'S': 83,
-        'd': 68, 'D': 68,
-        'z': 90, 'Z': 90,
-        'q': 81, 'Q': 81
-    };
-    return keyCodeMap[key] || 0;
-}
-
-// Helper: Convertir key string en code (pour KeyboardEvent.code)
-function getCodeFromKey(key) {
+// Helper: Convertir keyCode en code
+function getCodeFromKeyCode(keyCode) {
     const codeMap = {
-        'ArrowUp': 'ArrowUp',
-        'ArrowDown': 'ArrowDown',
-        'ArrowLeft': 'ArrowLeft',
-        'ArrowRight': 'ArrowRight',
-        ' ': 'Space',
-        'Space': 'Space',
-        'w': 'KeyW', 'W': 'KeyW',
-        'a': 'KeyA', 'A': 'KeyA',
-        's': 'KeyS', 'S': 'KeyS',
-        'd': 'KeyD', 'D': 'KeyD',
-        'z': 'KeyZ', 'Z': 'KeyZ',
-        'q': 'KeyQ', 'Q': 'KeyQ'
+        38: 'ArrowUp',
+        40: 'ArrowDown',
+        37: 'ArrowLeft',
+        39: 'ArrowRight',
+        32: 'Space',
+        87: 'KeyW',
+        65: 'KeyA',
+        83: 'KeyS',
+        68: 'KeyD',
+        90: 'KeyZ',
+        81: 'KeyQ'
     };
-    return codeMap[key] || '';
+    return codeMap[keyCode] || '';
 }
 
-// Notification au parent que le loader est prêt
+// Attendre que Unity soit chargé
 window.addEventListener("load", () => {
-    console.log("%c[MYNVO] Game loaded and ready!", "color: #ffd700; font-weight: bold; font-size: 14px;");
+    console.log("%c[MYNVO GAME] ✅ Game loaded!", "color: #ffd700; font-weight: bold;");
     
-    // Envoyer un message au parent pour confirmer le chargement
+    // Envoyer confirmation au parent
     if (window.parent && window.parent !== window) {
         window.parent.postMessage({ type: "mynvo_game_loaded" }, "*");
     }
     
-    // Attendre que le canvas Unity soit créé
+    // Attendre le canvas Unity
+    let canvasFound = false;
     const checkCanvas = setInterval(() => {
         const canvas = document.querySelector("canvas");
-        if (canvas) {
-            console.log("%c[MYNVO] Unity canvas detected!", "color: #00ff00; font-weight: bold;");
+        if (canvas && !canvasFound) {
+            canvasFound = true;
+            console.log("%c[MYNVO GAME] 🎮 Unity canvas detected!", "color: #00ff00; font-weight: bold;");
             clearInterval(checkCanvas);
             
-            // Focus sur le canvas pour garantir la réception des événements
+            // Focus sur le canvas
             canvas.setAttribute("tabindex", "1");
             canvas.focus();
             
-            // Re-focus périodiquement pour éviter la perte de focus
-            setInterval(() => {
-                if (document.activeElement !== canvas) {
-                    canvas.focus();
-                }
-            }, 1000);
+            // Logger pour debug
+            canvas.addEventListener("keydown", (e) => {
+                console.log("%c[MYNVO GAME] 🎯 Canvas received keydown:", "color: #58a6ff;", e.keyCode);
+            });
+            
+            canvas.addEventListener("keyup", (e) => {
+                console.log("%c[MYNVO GAME] 🎯 Canvas received keyup:", "color: #58a6ff;", e.keyCode);
+            });
         }
     }, 100);
+    
+    // Timeout de sécurité
+    setTimeout(() => clearInterval(checkCanvas), 10000);
 });
 
-// Debug: Logger tous les événements clavier reçus (à commenter en production)
+// DEBUG: Logger tous les événements natifs (pour vérifier)
 if (window.location.href.includes("debug")) {
     document.addEventListener("keydown", (e) => {
-        console.log("[DEBUG] Native keydown:", {
+        console.log("[DEBUG GAME] Native keydown:", {
             key: e.key,
             keyCode: e.keyCode,
             code: e.code,
             which: e.which
         });
-    });
+    }, true);
     
     document.addEventListener("keyup", (e) => {
-        console.log("[DEBUG] Native keyup:", {
+        console.log("[DEBUG GAME] Native keyup:", {
             key: e.key,
             keyCode: e.keyCode,
             code: e.code,
             which: e.which
         });
-    });
+    }, true);
 }
 
-console.log("%c[MYNVO] Master loader initialized successfully ✓", "color: #58a6ff; font-weight: bold;");
+console.log("%c[MYNVO GAME] 🚀 Master loader initialized - Waiting for postMessage...", "color: #58a6ff; font-weight: bold;");
