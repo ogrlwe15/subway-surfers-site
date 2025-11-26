@@ -30,12 +30,12 @@
     .key-display:hover{border-color:#ffd700;background:#444;}
     .key-display.active{border-color:#00ff00;background:#1a4d1a;animation:pulse 0.5s;}
     @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
+    .key-display[data-key="jump"]{min-width:80px;}
     #fps-overlay{position:fixed;top:100px;left:20px;z-index:999999;background:rgba(0,0,0,0.85);color:#22c55e;padding:10px 18px;border-radius:12px;font-size:18px;font-weight:700;border:2px solid #22c55e;box-shadow:0 0 20px rgba(34,197,94,0.3);font-family:system-ui,sans-serif;pointer-events:none;}
     #top3-overlay{position:fixed;bottom:20px;left:20px;z-index:999999;background:rgba(0,0,0,0.9);color:#fff;padding:16px 22px;border-radius:14px;border:2px solid #ffd700;font-size:14px;line-height:1.6;box-shadow:0 0 30px rgba(255,215,0,0.4);font-family:system-ui,sans-serif;pointer-events:none;min-width:280px;}
     #top3-overlay .title{color:#ffd700;font-size:16px;font-weight:900;margin-bottom:10px;text-align:center;}
     #top3-overlay .player{margin:6px 0;padding:6px;border-radius:8px;background:rgba(255,255,255,0.05);}
     #top3-overlay .player.first{color:#ffd700;font-weight:700;font-size:15px;}
-    /* Bouton de reprise */
     #resume-btn{position:fixed;bottom:20px;right:20px;z-index:999999;background:#ffd700;color:#000;padding:12px 20px;border:none;border-radius:12px;font-weight:700;cursor:pointer;font-size:16px;box-shadow:0 0 20px rgba(255,215,0,0.6);}
     #resume-btn:hover{background:#ffed4e;}
   </style>
@@ -48,7 +48,7 @@
         Subway<span>Surfers</span> by <span>Mynvo</span>
       </div>
       <div class="nav-links">
-        <a id="play-link">J unanswered</a>
+        <a id="play-link">Jouer</a>
         <a onclick="openSettings();return false;">Paramètres</a>
       </div>
     </div>
@@ -64,7 +64,7 @@
     </div>
   </main>
 
-  <!-- FPS Counter -->
+  <!-- FPS -->
   <div id="fps-overlay">FPS: <span id="fps-value">60</span></div>
 
   <!-- TOP 3 -->
@@ -75,22 +75,18 @@
     <div class="player">.... – 0:00</div>
   </div>
 
-  <!-- Bouton de reprise -->
+  <!-- Bouton reprise -->
   <button id="resume-btn">Reprendre (après respawn)</button>
 
   <footer>Subway Surfers by Mynvo</footer>
 
   <script>
     // ============= CONFIG =============
-    let config = {
-      up: "z", down: "s", left: "q", right: "d", jump: " ", name: "Joueur"
-    };
-   
+    let config = { up: "z", down: "s", left: "q", right: "d", jump: " ", name: "Joueur" };
     try {
       const saved = localStorage.getItem("mynvoConfig");
-      if (saved) config = {...config, ...JSON.parse(saved)};
+      if (saved) config = { ...config, ...JSON.parse(saved) };
     } catch(e) {}
-   
     function saveConfig() {
       localStorage.setItem("mynvoConfig", JSON.stringify(config));
       console.log("Config sauvegardée:", config);
@@ -98,313 +94,188 @@
 
     let isCapturingKey = false;
     const iframe = document.getElementById('game-iframe');
-
-    // ============= MAPPING TOUCHES → KEYCODES =============
-    function getKeyCode(key) {
-      const map = {
-        'ArrowUp': 38, 'ArrowDown': 40, 'ArrowLeft': 37, 'ArrowRight': 39,
-        ' ': 32, 'z': 90, 'Z': 90, 'q': 81, 'Q': 81,
-        's': 83, 'S': 83, 'd': 68, 'D': 68,
-        'w': 87, 'W': 87, 'a': 65, 'A': 65
-      };
-      return map[key] || 0;
-    }
-
-    // ============= INJECTION DIRECTE DANS L'IFRAME =============
     let iframeReady = false;
     let keyStates = {};
-    let currentCanvas = null;
+    let lastCanvas = null;
 
-    iframe.addEventListener('load', () => {
-      document.getElementById('loading-ui').style.display = 'none';
-      console.log('%c[MYNVO Parent] Iframe loaded!', 'color: #00ff00; font-weight: bold;');
-     
-      setTimeout(() => {
-        try {
-          const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-          if (iframeDoc) {
-            iframeReady = true;
-            console.log('%c[MYNVO Parent] Iframe accessible! Direct injection mode.', 'color: #00ff00; font-weight: bold;');
-           
-            setInterval(() => {
-              const canvas = iframeDoc.querySelector('canvas');
-              if (canvas && canvas !== currentCanvas) {
-                currentCanvas = canvas;
-                console.log('%c[MYNVO Parent] Unity canvas detected/updated!', 'color: #00ff00; font-weight: bold;');
-              }
-            }, 500);
-          }
-        } catch (err) {
-          console.warn('%c[MYNVO Parent] Cannot access iframe (CORS). Using postMessage fallback...', 'color: #ff6b6b;', err);
-          iframeReady = false;
-        }
-      }, 2000);
-    });
+    // ============= MAPPING KEYCODES =============
+    const KEY_MAP = { 'ArrowUp': 38, 'ArrowDown': 40, 'ArrowLeft': 37, 'ArrowRight': 39, ' ': 32 };
 
-    // ============= SYSTÈME DE TOUCHES =============
-    function simulateKeyInIframe(type, mappedKey, keyCode) {
-      if (!keyCode) return;
-     
+    // ============= SIMULATION D'ÉVÉNEMENTS =============
+    function simulateKey(type, key, code) {
+      if (!iframeReady) return;
       try {
-        const iframeWin = iframe.contentWindow;
-        const iframeDoc = iframe.contentDocument || iframeWin.document;
-       
-        if (!iframeDoc) return;
+        const doc = iframe.contentDocument;
+        if (!doc) return;
 
-        const event = new KeyboardEvent(type, {
-          keyCode: keyCode,
-          which: keyCode,
-          key: mappedKey,
-          bubbles: true,
-          cancelable: true
+        const ev = new KeyboardEvent(type, {
+          key, keyCode: code, which: code, code: key === ' ' ? 'Space' : `Key${key.toUpperCase()}`, bubbles: true, cancelable: true, composed: true
         });
 
-        iframeDoc.dispatchEvent(event);
-        iframeWin.dispatchEvent(event);
-       
-        const canvas = iframeDoc.querySelector('canvas');
-        if (canvas) canvas.dispatchEvent(event);
-       
-        iframeDoc.querySelectorAll('canvas, #canvas, #unity-canvas').forEach(el => {
-          el.dispatchEvent(event);
-        });
-
-        console.log(`%c[MYNVO Parent] Dispatched ${type}: ${mappedKey} (keyCode: ${keyCode})`, 'color: #58a6ff;');
-       
-      } catch (err) {
-        console.error('[MYNVO Parent] Error dispatching event:', err);
-      }
+        [doc, iframe.contentWindow].forEach(el => el && el.dispatchEvent(ev));
+        const canvas = doc.querySelector('canvas');
+        if (canvas) canvas.dispatchEvent(ev);
+        doc.querySelectorAll('canvas, #canvas, #unity-canvas').forEach(el => el && el.dispatchEvent(ev));
+      } catch(e) {}
     }
 
-    document.addEventListener('keydown', (e) => {
+    // ============= INPUTS ZQSD =============
+    document.addEventListener('keydown', e => {
       if (isCapturingKey) return;
-     
-      const key = e.key;
-      const keyMap = {
-        [config.up.toLowerCase()]: { key: 'ArrowUp', code: 38 },
-        [config.down.toLowerCase()]: { key: 'ArrowDown', code: 40 },
-        [config.left.toLowerCase()]: { key: 'ArrowLeft', code: 37 },
-        [config.right.toLowerCase()]: { key: 'ArrowRight', code: 39 },
-        [config.jump]: { key: ' ', code: 32 }
-      };
-      const mapped = keyMap[key.toLowerCase()];
-      if (mapped) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-       
-        if (keyStates[mapped.code]) return;
-        keyStates[mapped.code] = true;
-       
-        console.log(`[MYNVO Parent] keydown: ${key} → ${mapped.key} (keyCode: ${mapped.code})`);
-       
-        if (iframeReady) {
-          simulateKeyInIframe('keydown', mapped.key, mapped.code);
-        } else {
-          iframe.contentWindow.postMessage({
-            type: 'keydown',
-            key: mapped.key,
-            keyCode: mapped.code
-          }, '*');
-        }
-      }
+      const k = e.key.toLowerCase();
+      const map = { [config.up]: 'ArrowUp', [config.down]: 'ArrowDown', [config.left]: 'ArrowLeft', [config.right]: 'ArrowRight', [config.jump]: ' ' };
+      const target = map[k];
+      if (!target || keyStates[target]) return;
+      e.preventDefault(); e.stopPropagation();
+      keyStates[target] = true;
+      simulateKey('keydown', target, KEY_MAP[target]);
     }, true);
 
-    document.addEventListener('keyup', (e) => {
+    document.addEventListener('keyup', e => {
       if (isCapturingKey) return;
-     
-      const key = e.key;
-      const keyMap = {
-        [config.up.toLowerCase()]: { key: 'ArrowUp', code: 38 },
-        [config.down.toLowerCase()]: { key: 'ArrowDown', code: 40 },
-        [config.left.toLowerCase()]: { key: 'ArrowLeft', code: 37 },
-        [config.right.toLowerCase()]: { key: 'ArrowRight', code: 39 },
-        [config.jump]: { key: ' ', code: 32 }
-      };
-      const mapped = keyMap[key.toLowerCase()];
-      if (mapped) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-       
-        keyStates[mapped.code] = false;
-       
-        console.log(`[MYNVO Parent] keyup: ${key} → ${mapped.key} (keyCode: ${mapped.code})`);
-       
-        if (iframeReady) {
-          simulateKeyInIframe('keyup', mapped.key, mapped.code);
-        } else {
-          iframe.contentWindow.postMessage({
-            type: 'keyup',
-            key: mapped.key,
-            keyCode: mapped.code
-          }, '*');
-        }
-      }
+      const k = e.key.toLowerCase();
+      const map = { [config.up]: 'ArrowUp', [config.down]: 'ArrowDown', [config.left]: 'ArrowLeft', [config.right]: 'ArrowRight', [config.jump]: ' ' };
+      const target = map[k];
+      if (!target) return;
+      keyStates[target] = false;
+      simulateKey('keyup', target, KEY_MAP[target]);
     }, true);
 
-    // ============= FPS COUNTER =============
-    let fpsFrames = 0;
-    let fpsLastTime = performance.now();
-   
+    // ============= FPS =============
+    let fpsFrames = 0, fpsLastTime = performance.now();
     function updateFPS() {
       fpsFrames++;
       const now = performance.now();
-     
       if (now - fpsLastTime >= 1000) {
         const fps = Math.round((fpsFrames * 1000) / (now - fpsLastTime));
         document.getElementById('fps-value').textContent = fps;
-       
-        const fpsEl = document.getElementById('fps-overlay');
-        if (fps >= 55) {
-          fpsEl.style.color = '#22c55e';
-          fpsEl.style.borderColor = '#22c55e';
-        } else if (fps >= 30) {
-          fpsEl.style.color = '#f59e0b';
-          fpsEl.style.borderColor = '#f59e0b';
-        } else {
-          fpsEl.style.color = '#ef4444';
-          fpsEl.style.borderColor = '#ef4444';
-        }
-       
-        fpsFrames = 0;
-        fpsLastTime = now;
+        const el = document.getElementById('fps-overlay');
+        const color = fps >= 55 ? '#22c55e' : fps >= 30 ? '#f59e0b' : '#ef4444';
+        el.style.color = el.style.borderColor = color;
+        fpsFrames = 0; fpsLastTime = now;
       }
-     
       requestAnimationFrame(updateFPS);
     }
     updateFPS();
 
     // ============= FULLSCREEN =============
-    document.getElementById('fs-btn').addEventListener('click', async () => {
-      try {
-        if (iframe.requestFullscreen) await iframe.requestFullscreen();
-        else if (iframe.webkitRequestFullscreen) await iframe.webkitRequestFullscreen();
-      } catch (err) {
-        alert('Plein écran non supporté');
-      }
-    });
+    document.getElementById('fs-btn').onclick = () => {
+      iframe.requestFullscreen?.() || iframe.webkitRequestFullscreen?.();
+    };
 
-    // ============= REFOCUS AUTOMATIQUE APRÈS RESPAWN =============
+    // ============= FIX ULTIME : FOCUS + CLIC AUTO APRÈS RESPAWN =============
     setInterval(() => {
       try {
-        const doc = iframe.contentDocument || iframe.contentWindow.document;
-        const canvas = doc?.querySelector('canvas');
-        if (canvas) {
-          canvas.focus();
-          iframe.contentWindow.postMessage({ type: "refocus" }, "*");
+        const doc = iframe.contentDocument;
+        if (!doc) return;
+        const canvas = doc.querySelector('canvas');
+        if (!canvas) return;
+
+        canvas.setAttribute('tabindex', '1');
+        canvas.focus();
+
+        if (canvas !== lastCanvas) {
+          lastCanvas = canvas;
+          console.log('%c[RESPAWN DÉTECTÉ] Clic auto sur canvas!', 'color: #ff00ff; font-weight: bold;');
+          setTimeout(() => {
+            canvas.click();
+            canvas.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+            canvas.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+          }, 600);
         }
       } catch(e) {}
-    }, 1500);
+    }, 500);
 
-    // Bouton reprise
-    document.getElementById('resume-btn').addEventListener('click', () => {
+    // ============= BOUTON REPRENDRE =============
+    document.getElementById('resume-btn').onclick = () => {
       try {
         const canvas = iframe.contentDocument?.querySelector('canvas');
         if (canvas) {
+          canvas.click();
           canvas.focus();
-          alert('Reprise activée ! Appuie sur ZQSD pour jouer.');
+          alert('Reprise forcée ! ZQSD activés.');
+        } else {
+          alert('Le jeu n\'est pas encore chargé...');
         }
       } catch(e) {
-        alert('Clique dans le jeu d\'abord !');
+        alert('Attends que le jeu charge...');
       }
-    });
+    };
 
-    // ============= SETTINGS MODAL =============
+    // ============= CHARGEMENT IFRAME =============
+    iframe.onload = () => {
+      document.getElementById('loading-ui').style.display = 'none';
+      setTimeout(() => { iframeReady = true; }, 3000);
+    };
+
+    // ============= PARAMÈTRES =============
     function openSettings() {
       if (document.getElementById('mynvo-settings')) return;
-     
       const div = document.createElement('div');
       div.id = 'mynvo-settings';
-      div.style = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#111;color:#fff;padding:30px 35px;border-radius:16px;border:4px solid #ffd700;z-index:999999;max-width:90%;box-shadow:0 0 80px rgba(0,0,0,0.9);';
-     
+      div.style = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#111;color:#fff;padding:30px;border-radius:16px;border:4px solid #ffd700;z-index:999999;max-width:90%;box-shadow:0 0 80px #0009;';
       div.innerHTML = `
-        <h2 style="color:#ffd700;text-align:center;margin-bottom:20px;font-size:24px;">Paramètres Mynvo</h2>
-       
-        <div style="margin-bottom:20px;">
-          <label style="display:block;margin-bottom:8px;font-size:15px;">Pseudo</label>
-          <input type="text" id="set-name" value="${escapeHtml(config.name)}" style="width:100%;padding:12px;font-size:16px;background:#222;border:2px solid #444;border-radius:10px;color:#fff;">
-        </div>
-       
-        <div style="background:#1a1a1a;padding:20px;border-radius:12px;margin-bottom:20px;">
-          <h3 style="color:#ffd700;margin-bottom:15px;font-size:18px;">Touches de jeu</h3>
-          <p style="font-size:13px;color:#aaa;margin-bottom:15px;">Clique sur une touche puis appuie sur celle que tu veux</p>
-         
-          <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:15px;">
-            <div><label style="display:block;margin-bottom:8px;font-size:14px;">Haut</label><div class="key-display" data-key="up">${getKeyDisplay(config.up)}</div></div>
-            <div><label style="display:block;margin-bottom:8px;font-size:14px;">Bas</label><div class="key-display" data-key="down">${getKeyDisplay(config.down)}</div></div>
-            <div><label style="display:block;margin-bottom:8px;font-size:14px;">Gauche</label><div class="key-display" data-key="left">${getKeyDisplay(config.left)}</div></div>
-            <div><label style="display:block;margin-bottom:8px;font-size:14px;">Droite</label><div class="key-display" data-key="right">${getKeyDisplay(config.right)}</div></div>
-            <div style="grid-column:1/-1;"><label style="display:block;margin-bottom:8px;font-size:14px;">Saut</label><div class="key-display" data-key="jump">${getKeyDisplay(config.jump)}</div></div>
+        <h2 style="color:#ffd700;text-align:center;margin-bottom:20px;">Paramètres Mynvo</h2>
+        <div style="margin-bottom:20px;"><label style="display:block;margin-bottom:8px;">Pseudo</label><input id="set-name" value="${config.name}" style="width:100%;padding:10px;background:#222;border:2px solid #444;border-radius:8px;color:#fff;"></div>
+        <div style="background:#1a1a1a;padding:15px;border-radius:12px;">
+          <h3 style="color:#ffd700;margin-bottom:10px;">Touches</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div><label>Haut</label><div class="key-display" data-key="up">${config.up === ' ' ? 'ESPACE' : config.up.toUpperCase()}</div></div>
+            <div><label>Bas</label><div class="key-display" data-key="down">${config.down.toUpperCase()}</div></div>
+            <div><label>Gauche</label><div class="key-display" data-key="left">${config.left.toUpperCase()}</div></div>
+            <div><label>Droite</label><div class="key-display" data-key="right">${config.right.toUpperCase()}</div></div>
+            <div style="grid-column:1/-1;"><label>Saut</label><div class="key-display" data-key="jump">${config.jump === ' ' ? 'ESPACE' : config.jump.toUpperCase()}</div></div>
           </div>
         </div>
-       
-        <div style="text-align:center;">
-          <button id="close-settings" style="background:#ff4444;color:#fff;padding:12px 24px;border:none;border-radius:10px;font-size:16px;cursor:pointer;font-weight:600;">Fermer</button>
-          <button id="save-settings" style="background:#00ff00;color:#000;padding:12px 28px;border:none;border-radius:10px;font-size:16px;cursor:pointer;margin-left:12px;font-weight:700;">Enregistrer</button>
+        <div style="text-align:center;margin-top:15px;">
+          <button id="close-settings" style="background:#ff4444;color:#fff;padding:10px 20px;border:none;border-radius:8px;cursor:pointer;">Fermer</button>
+          <button id="save-settings" style="background:#00ff00;color:#000;padding:10px 25px;border:none;border-radius:8px;margin-left:10px;cursor:pointer;">Enregistrer</button>
         </div>
-        <p style="font-size:12px;color:#ffd700;margin-top:15px;text-align:center;font-weight:600;">Recharge la page (F5) après avoir changé les touches</p>
+        <p style="font-size:12px;color:#ffd700;margin-top:10px;text-align:center;">Recharge (F5) après changement</p>
       `;
-     
       document.body.appendChild(div);
-      let activeKeyElement = null;
-     
-      function getKeyDisplay(key) {
-        if (key === ' ') return 'ESPACE';
-        return key.toUpperCase();
-      }
-     
+
+      let active = null;
       div.querySelectorAll('.key-display').forEach(el => {
-        el.addEventListener('click', () => {
-          if (activeKeyElement) activeKeyElement.classList.remove('active');
-          activeKeyElement = el;
-          el.classList.add('active');
-          el.textContent = '...';
-          isCapturingKey = true;
-        });
+        el.onclick = () => {
+          if (active) active.classList.remove('active');
+          active = el; el.classList.add('active'); el.textContent = '...'; isCapturingKey = true;
+        };
       });
-     
-      const captureHandler = (e) => {
-        if (!activeKeyElement) return;
+
+      const handler = e => {
+        if (!active) return;
         e.preventDefault();
-        e.stopPropagation();
-        const keyName = activeKeyElement.dataset.key;
-        const newKey = e.key;
-        config[keyName] = newKey;
-        activeKeyElement.textContent = getKeyDisplay(newKey);
-        activeKeyElement.classList.remove('active');
-        activeKeyElement = null;
-        isCapturingKey = false;
+        const key = e.key;
+        config[active.dataset.key] = key;
+        active.textContent = key === ' ' ? 'ESPACE' : key.toUpperCase();
+        active.classList.remove('active');
+        active = null; isCapturingKey = false;
       };
-     
-      document.addEventListener('keydown', captureHandler, true);
-     
-      document.getElementById('close-settings').onclick = () => {
-        document.removeEventListener('keydown', captureHandler, true);
-        isCapturingKey = false;
-        div.remove();
+      document.addEventListener('keydown', handler, true);
+
+      div.querySelector('#close-settings').onclick = () => {
+        document.removeEventListener('keydown', handler, true);
+        isCapturingKey = false; div.remove();
       };
-     
-      document.getElementById('save-settings').onclick = () => {
+
+      div.querySelector('#save-settings').onclick = () => {
         config.name = document.getElementById('set-name').value.trim() || 'Joueur';
         saveConfig();
-        document.removeEventListener('keydown', captureHandler, true);
+        document.removeEventListener('keydown', handler, true);
         isCapturingKey = false;
-        alert('Paramètres sauvegardés !\n\nIMPORTANT : Recharge la page (F5) pour que les nouvelles touches fonctionnent.');
+        alert('Sauvegardé ! Recharge (F5) pour les touches.');
         div.remove();
       };
     }
 
-    function escapeHtml(str) {
-      if (!str && str !== '') return '';
-      return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]);
-    }
-
-    document.getElementById('play-link').addEventListener('click', () => {
-      document.querySelector('.game-container')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // ============= INIT =============
+    document.getElementById('play-link').onclick = () => {
+      document.querySelector('.game-container').scrollIntoView({ behavior: 'smooth' });
       iframe.focus();
-    });
+    };
 
-    console.log('%c[MYNVO Parent] Touch system initialized!', 'color: #58a6ff; font-weight: bold;');
-    console.log('%c[MYNVO Parent] Current config:', 'color: #ffd700;', config);
+    console.log('%c[MYNVO] ZQSD activé – Focus + clic auto après respawn', 'color: #00ff00; font-weight: bold;');
   </script>
 </body>
 </html>
