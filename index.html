@@ -785,55 +785,72 @@
       console.log('✅ Touches ZQSD configurées');
     }
 
-    // ============= SYSTÈME GIVE INTELLIGENT CORRIGÉ =============
+    // ============= SYSTÈME GIVE SPÉCIFIQUE SUBWAY SURFERS =============
     let giveInProgress = false;
-    let giveAttempts = 0;
-    const MAX_GIVE_ATTEMPTS = 3;
 
     function intelligentAutoGive() {
       if (giveInProgress) return;
       giveInProgress = true;
       
-      console.log('💰 Give automatique intelligent démarré...');
+      console.log('💰 Give automatique Subway Surfers démarré...');
       
-      // Séquence de Give progressive
-      setTimeout(() => executeGive("auto"), 500);
-      setTimeout(() => executeGive("auto"), 2000);
-      setTimeout(() => executeGive("auto"), 4000);
+      // Attendre que Unity soit complètement initialisé
+      setTimeout(() => executeSubwaySurfersGive("auto"), 3000);
+      setTimeout(() => executeSubwaySurfersGive("auto"), 6000);
       
       setTimeout(() => {
         giveInProgress = false;
-        console.log('✅ Séquence Give automatique terminée');
-      }, 6000);
+        console.log('✅ Séquence Give Subway Surfers terminée');
+      }, 9000);
     }
 
-    // ============= FONCTION GIVE UNIFIÉE ET CORRECTE =============
-    function executeGive(mode = "manual") {
-      console.log(`💰 Give ${mode} exécution #${giveAttempts + 1}...`);
-      giveAttempts++;
+    // ============= FONCTION GIVE SPÉCIFIQUE SUBWAY SURFERS =============
+    function executeSubwaySurfersGive(mode = "manual") {
+      console.log(`🎯 Give Subway Surfers ${mode} exécution...`);
       
       try {
         const iframeWindow = iframe.contentWindow;
-        const amount = 9999999; // Réduit pour éviter les overflow
+        const amount = 99999;
         
-        // MÉTHODE 1: Unity SendMessage avec les BONS GameObjects
+        // ATTENDRE que Unity soit complètement chargé
+        if (!iframeWindow.unityGame) {
+          console.log('⏳ Unity pas encore chargé, retry...');
+          if (mode === "manual") showNotification('⏳ Unity pas encore chargé, réessayez', 'warning');
+          return;
+        }
+
+        // MÉTHODE 1: Poki Bridge (CRITIQUE)
         try {
-          // GameObjects Unity standards pour Subway Surfers
-          const unityObjects = [
+          if (iframeWindow.pokiBridge) {
+            // Utiliser le bridge Poki pour communiquer avec Unity
+            iframeWindow.unityGame.SendMessage(iframeWindow.pokiBridge, "AddCoins", amount);
+            iframeWindow.unityGame.SendMessage(iframeWindow.pokiBridge, "AddKeys", amount);
+            console.log('🎯 PokiBridge messages envoyés');
+          }
+        } catch(e) {}
+
+        // MÉTHODE 2: GameObjects Unity standards Subway Surfers
+        try {
+          const subwayObjects = [
             'GameManager', 'PlayerController', 'Player', 
-            'GameController', 'ScoreManager', 'CoinManager',
-            'PlayerData', 'DataManager', 'Inventory', 'MainManager'
+            'HUDController', 'ScoreManager', 'CoinManager',
+            'PlayerData', 'DataManager', 'InventoryManager',
+            'MainManager', 'CurrencyManager', 'RewardManager',
+            'PokiBridge'  // Spécifique à l'intégration Poki
           ];
           
-          const unityMethods = ['AddCoins', 'AddMoney', 'AddCurrency', 'SetCoins', 'AddKeys', 'SetKeys'];
+          const subwayMethods = [
+            'AddCoins', 'AddCoins', 'AddMoney', 'AddCurrency', 
+            'SetCoins', 'AddKeys', 'SetKeys', 'AddReward',
+            'OnCoinCollected', 'CollectCoin', 'AddCollectible',
+            'GiveCoins', 'GiveKeys'  // Méthodes potentielles de give
+          ];
           
-          unityObjects.forEach(obj => {
-            unityMethods.forEach(method => {
+          subwayObjects.forEach(obj => {
+            subwayMethods.forEach(method => {
               try {
-                if (iframeWindow.gameInstance && iframeWindow.gameInstance.SendMessage) {
-                  iframeWindow.gameInstance.SendMessage(obj, method, amount);
-                  console.log(`✅ Unity: ${obj}.${method}(${amount})`);
-                }
+                iframeWindow.unityGame.SendMessage(obj, method, amount);
+                console.log(`🎯 Unity: ${obj}.${method}(${amount})`);
               } catch(e) {}
             });
           });
@@ -841,125 +858,98 @@
           console.warn('Unity SendMessage échoué:', e);
         }
         
-        // MÉTHODE 2: Module Emscripten (pour WebGL Unity)
+        // MÉTHODE 3: Module Emscripten
         try {
           if (iframeWindow.Module && iframeWindow.Module.SendMessage) {
             iframeWindow.Module.SendMessage('GameManager', 'AddCoins', amount);
-            iframeWindow.Module.SendMessage('Player', 'AddCoins', amount);
-            iframeWindow.Module.SendMessage('GameManager', 'AddKeys', amount);
-            console.log('✅ Module.SendMessage exécuté');
+            iframeWindow.Module.SendMessage('PlayerController', 'AddCoins', amount);
+            iframeWindow.Module.SendMessage('CoinManager', 'AddCoins', amount);
+            console.log('🎯 Module.SendMessage exécuté');
           }
-        } catch(e) {
-          console.warn('Module.SendMessage échoué:', e);
-        }
+        } catch(e) {}
         
-        // MÉTHODE 3: Injection script ciblée
-        const scriptContent = `
-          try {
-            // Cibles Subway Surfers spécifiques
-            const targets = {
-              coins: ['coins', 'Coins', 'COINS', 'coin', 'Coin', 'money', 'Money', 'gold', 'Gold'],
-              keys: ['keys', 'Keys', 'KEYS', 'key', 'Key']
-            };
-            
-            let modifications = 0;
-            const value = ${amount};
-            
-            // Recherche dans window
-            targets.coins.forEach(target => {
-              if (typeof window[target] === 'number') {
-                window[target] = value;
-                modifications++;
-                console.log('💰 window.' + target + ' = ' + value);
-              }
-            });
-            
-            targets.keys.forEach(target => {
-              if (typeof window[target] === 'number') {
-                window[target] = value;
-                modifications++;
-                console.log('🔑 window.' + target + ' = ' + value);
-              }
-            });
-            
-            // Recherche dans les objets globaux
-            for (let key in window) {
-              try {
-                if (window[key] && typeof window[key] === 'object') {
-                  const obj = window[key];
-                  targets.coins.forEach(target => {
-                    if (obj[target] !== undefined && typeof obj[target] === 'number') {
-                      obj[target] = value;
-                      modifications++;
-                      console.log('💰 window.' + key + '.' + target + ' = ' + value);
-                    }
-                  });
-                  targets.keys.forEach(target => {
-                    if (obj[target] !== undefined && typeof obj[target] === 'number') {
-                      obj[target] = value;
-                      modifications++;
-                      console.log('🔑 window.' + key + '.' + target + ' = ' + value);
-                    }
-                  });
+        // MÉTHODE 4: Injection script AVEC Poki Bridge
+        const subwayScript = `
+            try {
+                console.log('🎯 Début Give Subway Surfers avec Poki Bridge...');
+                
+                // Variables globales Subway Surfers
+                const targets = {
+                    coins: ['coins', 'Coins', 'COINS', 'coin', 'Coin', 'currentCoins', 'totalCoins'],
+                    keys: ['keys', 'Keys', 'KEYS', 'key', 'Key', 'currentKeys', 'totalKeys']
+                };
+                
+                let modifications = 0;
+                const value = ${amount};
+                
+                // Recherche dans les objets Unity
+                if (window.unityGame && window.pokiBridge) {
+                    console.log('✅ Unity et PokiBridge détectés');
+                    
+                    // Essayer via PokiBridge
+                    try {
+                        window.unityGame.SendMessage(window.pokiBridge, "AddCoins", value);
+                        window.unityGame.SendMessage(window.pokiBridge, "AddKeys", value);
+                        modifications += 2;
+                        console.log('🎯 PokiBridge Give exécuté');
+                    } catch(e) {}
                 }
-              } catch(e) {}
+                
+                // Recherche standard
+                for (const [type, targetList] of Object.entries(targets)) {
+                    targetList.forEach(target => {
+                        if (typeof window[target] === 'number') {
+                            window[target] = value;
+                            modifications++;
+                            console.log('💰 window.' + target + ' = ' + value);
+                        }
+                    });
+                }
+                
+                console.log('✅ Give Subway terminé: ' + modifications + ' modifications');
+                window.mynvoSubwayGiveCompleted = true;
+                window.mynvoSubwayGiveCount = modifications;
+                
+            } catch(error) {
+                console.error('❌ Erreur Give Subway:', error);
+                window.mynvoSubwayGiveCompleted = false;
             }
-            
-            console.log('✅ Give terminé: ' + modifications + ' modifications');
-            
-            // Signal de succès
-            window.mynvoGiveCompleted = true;
-            window.mynvoGiveCount = modifications;
-            
-          } catch(error) {
-            console.error('❌ Erreur Give:', error);
-            window.mynvoGiveCompleted = false;
-          }
         `;
         
         const script = iframeWindow.document.createElement('script');
-        script.textContent = scriptContent;
+        script.textContent = subwayScript;
         iframeWindow.document.head.appendChild(script);
         
-        // MÉTHODE 4: PostMessage
-        iframeWindow.postMessage({
-          type: 'mynvo_give_resources',
-          coins: amount,
-          keys: amount,
-          mode: mode,
-          timestamp: Date.now()
-        }, '*');
-        
-        // Vérification du succès
+        // Vérification
         setTimeout(() => {
           try {
-            if (iframeWindow.mynvoGiveCompleted) {
-              const count = iframeWindow.mynvoGiveCount || 0;
-              console.log(`✅ Give ${mode} réussi: ${count} modifications`);
+            if (iframeWindow.mynvoSubwayGiveCompleted) {
+              const count = iframeWindow.mynvoSubwayGiveCount || 0;
+              console.log(`🎯 Give ${mode} réussi: ${count} modifications`);
               if (mode === "manual") {
-                showNotification(`💰 ${amount.toLocaleString()} pièces & clés ajoutées! (${count} modifs)`, 'success');
+                showNotification(`💰 ${amount.toLocaleString()} pièces/clés ajoutées!`, 'success');
               }
             } else if (mode === "manual") {
-              showNotification('⚠️ Give exécuté (vérifiez le jeu)', 'warning');
+              showNotification('⚠️ Give exécuté - Redémarrez si besoin', 'warning');
             }
           } catch(e) {
             if (mode === "manual") {
-              showNotification('✅ Give exécuté', 'info');
+              showNotification('✅ Give Subway exécuté', 'info');
             }
           }
-        }, 1000);
+        }, 1500);
         
       } catch (error) {
-        console.error('❌ Erreur Give:', error);
+        console.error('❌ Erreur Give Subway:', error);
         if (mode === "manual") {
-          showNotification('❌ Erreur lors du Give', 'error');
+          showNotification('❌ Erreur Give Subway', 'error');
         }
       }
     }
 
-    // ============= FONCTION GIVE BOUTON (SIMPLIFIÉE) =============
+    // ============= FONCTION GIVE BOUTON =============
     function giveResources() {
-      executeGive("manual");
+      executeSubwaySurfersGive("manual");
     }
 
     // ============= TIMER MANUEL (GARDÉ INTACT) =============
