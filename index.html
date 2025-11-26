@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -36,6 +35,20 @@
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
+    }
+    
+    /* Cacher l'interface du jeu Subway Surfers */
+    #unity-container * {
+      display: none !important;
+    }
+    
+    #unity-container canvas {
+      display: block !important;
+    }
+    
+    .webgl-content, .template-wrap, .unity-footer, 
+    #unity-footer, #unity-loading-bar, .unity-loading-bar {
+      display: none !important;
     }
     
     /* Header amélioré */
@@ -208,7 +221,7 @@
       position: absolute;
       top: 18px;
       right: 18px;
-      z-index: 200;
+      z-index: 2147483647;
       background: rgba(0, 0, 0, 0.8);
       border: 2px solid var(--primary);
       color: #fff;
@@ -230,7 +243,7 @@
       position: fixed;
       top: 100px;
       left: 20px;
-      z-index: 2147483647; /* Maximum z-index */
+      z-index: 2147483647;
       background: rgba(0, 0, 0, 0.95);
       color: var(--primary);
       padding: 10px 18px;
@@ -284,7 +297,7 @@
       background: rgba(124, 98, 220, 0.15);
     }
     
-    /* Timer overlay - reste en plein écran */
+    /* Timer overlay */
     #timer-overlay {
       position: fixed;
       top: 20px;
@@ -335,7 +348,7 @@
       }
     }
     
-    /* Bottom menu - CACHÉ PAR DÉFAUT */
+    /* Bottom menu */
     #bottom-menu {
       position: fixed;
       bottom: 20px;
@@ -344,7 +357,7 @@
       border: 2px solid var(--primary);
       border-radius: 14px;
       padding: 14px 18px;
-      z-index: 999999;
+      z-index: 2147483647;
       color: #fff;
       font-family: 'Segoe UI', sans-serif;
       min-width: 260px;
@@ -379,7 +392,6 @@
       transform: translateX(5px);
     }
     
-    /* Style pour le bouton Give Piece */
     .give-piece-btn {
       background: linear-gradient(135deg, #ffd700, #ffaa00);
       color: #000;
@@ -397,7 +409,7 @@
       box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
     }
     
-    /* Animation de particules en arrière-plan */
+    /* Animation de particules */
     .particles {
       position: fixed;
       top: 0;
@@ -432,7 +444,7 @@
       }
     }
     
-    /* Style pour les notifications */
+    /* Notifications */
     .notification {
       position: fixed;
       top: 20px;
@@ -444,7 +456,7 @@
       border-radius: 8px;
       border-left: 4px solid var(--primary);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      z-index: 100001;
+      z-index: 2147483647;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -458,13 +470,11 @@
   </style>
 </head>
 <body>
-  <!-- Particules d'arrière-plan -->
   <div class="particles" id="particles-container"></div>
 
   <header>
     <div class="header-content">
       <div class="logo">
-        <!-- Logo corrigé sans erreur 404 -->
         <div style="height:50px;width:50px;border-radius:50%;border:4px solid #7c62dc;background:linear-gradient(135deg,#7c62dc,#9580e8);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:bold;color:white;">M</div>
         Subway<span>Surfers</span> by <span>Mynvo</span>
       </div>
@@ -481,16 +491,14 @@
       <div class="game-frame">
         <div class="loading" id="loading-ui"><div class="spinner"></div><p>Chargement du jeu...</p></div>
         <button class="fs-button" id="fs-btn" title="Plein écran">⤢ Plein écran</button>
-        <!-- Iframe corrigée sans erreur allow -->
-        <iframe id="game-iframe" src="./game/" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        <!-- Jeu Unity direct -->
+        <div id="unity-container" style="width: 100%; height: 720px;"></div>
       </div>
     </div>
   </main>
 
-  <!-- FPS Counter - RESTE EN PLEIN ÉCRAN -->
   <div id="fps-overlay">🎮 FPS: <span id="fps-value">60</span></div>
 
-  <!-- TOP 3 - RESTE EN PLEIN ÉCRAN -->
   <div id="top3-overlay">
     <div class="title">🏆 TOP 3 NO COIN</div>
     <div class="player first">🥇 Mynvo – 13:27</div>
@@ -498,186 +506,207 @@
     <div class="player">🥉 .... – 0:00</div>
   </div>
 
-  <!-- TIMER overlay - RESTE EN PLEIN ÉCRAN -->
   <div id="timer-overlay">
     <div class="timer-display"><span id="timer-value">00:00.00</span></div>
     <div class="timer-status" id="timer-status">En attente...</div>
   </div>
 
-  <!-- Bottom menu - CACHÉ PAR DÉFAUT -->
   <div id="bottom-menu">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
       <div style="font-size:16px;font-weight:700;color:#7c62dc;">⚙️ Menu rapide</div>
       <button id="close-bottom-menu" style="background:#7c62dc;border:none;color:#000;font-weight:700;border-radius:8px;padding:4px 10px;cursor:pointer;">✖</button>
     </div>
 
-    <button class="quick-btn" onclick="showNotification('🎮 Touches ZQSD activées!', 'success')">🎮 Touches ZQSD</button>
+    <button class="quick-btn" onclick="enableZQSD();">🎮 Activer ZQSD</button>
     <button class="quick-btn" onclick="openTimerSettings();">⏱️ Timer (F1/F2/F3)</button>
     <button class="quick-btn" onclick="toggleFPS();">📊 FPS (afficher/masquer)</button>
     <button class="quick-btn" onclick="toggleFullscreen();">⤢ Plein écran</button>
-    <button class="quick-btn give-piece-btn" onclick="giveResources();">💰 Give Piece & Keys</button>
+    <button class="quick-btn give-piece-btn" onclick="giveResources();">💰 Give Coins & Keys</button>
   </div>
 
   <footer>Subway Surfers by Mynvo © 2023 - Tous droits réservés</footer>
 
   <script>
-    // ============= CONFIG =============
-    let config = {
-      showFPS: true,
-      showTop3: true
+    // ============= CONFIGURATION UNITY =============
+    window.config = {
+      loader: 'unity',
+      debug: false,
+      maxRatio: 16 / 9,
+      minRatio: 9 / 16,
+      title: 'Subway Surfers: San Francisco',
+      unityVersion: '2019.4.18f1',
+      unityWebglBuildUrl: 'Build/SanFrancisco/SanFrancisco.json',
+      fileSize: 35
     };
 
-    // ============= GESTION DU CHARGEMENT CORRIGÉE =============
-    const iframe = document.getElementById('game-iframe');
-    const loadingUI = document.getElementById('loading-ui');
+    // ============= INITIALISATION UNITY =============
+    function loadUnityGame() {
+      const script = document.createElement('script');
+      script.src = 'UnityLoader.2019.2.js';
+      script.onload = function() {
+        window.unityGame = UnityLoader.instantiate('unity-container', 'Build/SanFrancisco/SanFrancisco.json', {
+          onProgress: UnityProgress,
+          Module: {
+            onRuntimeInitialized: function() {
+              console.log('✅ Unity Game Loaded');
+              hideLoading();
+              setupEnhancedZQSD();
+              showNotification('🎮 Jeu chargé - ZQSD activé!', 'success');
+              cleanGameUI(); // Nettoyer l'interface du jeu
+            }
+          }
+        });
+      };
+      document.body.appendChild(script);
+    }
 
-    // Événement load sans erreur
-    iframe.addEventListener('load', function() {
-      console.log('✅ Iframe chargée - Cache le loading');
-      setTimeout(hideLoading, 1000);
-    });
-
-    // Fallback
-    setTimeout(hideLoading, 5000);
-
-    function hideLoading() {
-      if (loadingUI.style.display !== 'none') {
-        loadingUI.style.display = 'none';
-        console.log('✅ Loading caché');
-        showNotification('🎮 Jeu chargé avec succès!', 'success');
-        
-        // Injection automatique des ressources
-        setTimeout(giveResources, 2000);
+    function UnityProgress(gameInstance, progress) {
+      const loadingUI = document.getElementById('loading-ui');
+      if (!loadingUI) return;
+      
+      if (progress === 1) {
+        loadingUI.querySelector('p').textContent = 'Initialisation...';
+      } else {
+        const percent = Math.round(progress * 100);
+        loadingUI.querySelector('p').textContent = `Chargement... ${percent}%`;
       }
     }
 
-    // ============= SYSTÈME DE TOUCHES ZQSD FONCTIONNEL =============
-    function setupZQSDKeys() {
-      const keyMap = {
-        'z': { key: 'ArrowUp', code: 38, type: 'keydown' },
-        'q': { key: 'ArrowLeft', code: 37, type: 'keydown' },
-        's': { key: 'ArrowDown', code: 40, type: 'keydown' },
-        'd': { key: 'ArrowRight', code: 39, type: 'keydown' },
-        ' ': { key: ' ', code: 32, type: 'keydown' }
-      };
-
-      document.addEventListener('keydown', function(e) {
-        const key = e.key.toLowerCase();
-        const mapped = keyMap[key];
-        
-        if (mapped) {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          
-          console.log(`🎮 ZQSD: ${key} → ${mapped.key}`);
-          
-          // Envoi à l'iframe
-          try {
-            const event = new KeyboardEvent('keydown', {
-              key: mapped.key,
-              keyCode: mapped.code,
-              which: mapped.code,
-              bubbles: true,
-              cancelable: true
-            });
-            
-            iframe.contentWindow.dispatchEvent(event);
-            iframe.contentDocument.dispatchEvent(event);
-            
-            // Cibler le canvas Unity
-            const canvas = iframe.contentDocument.querySelector('canvas');
-            if (canvas) {
-              canvas.dispatchEvent(event);
-              canvas.focus();
-            }
-          } catch (error) {
-            console.log('Envoi direct à iframe échoué, utilisation postMessage');
-          }
-        }
-      }, true);
-
-      // Gestion keyup aussi
-      document.addEventListener('keyup', function(e) {
-        const key = e.key.toLowerCase();
-        const mapped = keyMap[key];
-        
-        if (mapped) {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          
-          try {
-            const event = new KeyboardEvent('keyup', {
-              key: mapped.key,
-              keyCode: mapped.code,
-              which: mapped.code,
-              bubbles: true,
-              cancelable: true
-            });
-            
-            iframe.contentWindow.dispatchEvent(event);
-            iframe.contentDocument.dispatchEvent(event);
-            
-            const canvas = iframe.contentDocument.querySelector('canvas');
-            if (canvas) {
-              canvas.dispatchEvent(event);
-            }
-          } catch (error) {
-            console.log('Keyup échoué');
-          }
-        }
-      }, true);
+    function hideLoading() {
+      const loadingUI = document.getElementById('loading-ui');
+      if (loadingUI) {
+        loadingUI.style.display = 'none';
+      }
     }
 
-    // ============= FONCTION GIVE PIECE FONCTIONNELLE =============
-    function giveResources() {
-      showNotification('💰 Injection des ressources...', 'info');
-      
-      // Injection multiple pour maximiser les chances
+    // ============= NETTOYAGE INTERFACE JEU =============
+    function cleanGameUI() {
       setTimeout(() => {
         try {
-          // Méthode 1: PostMessage
-          postToIframe({
-            type: 'give_resources',
-            coins: 9999999999,
-            keys: 9999999999
+          // Cacher les éléments Unity indésirables
+          const elementsToHide = [
+            '.webgl-content',
+            '.template-wrap', 
+            '.unity-footer',
+            '#unity-footer',
+            '#unity-loading-bar',
+            '.unity-loading-bar'
+          ];
+          
+          elementsToHide.forEach(selector => {
+            const el = document.querySelector(selector);
+            if (el) {
+              el.style.display = 'none';
+              el.style.visibility = 'hidden';
+              el.style.opacity = '0';
+            }
           });
           
-          // Méthode 2: Injection directe
-          const scriptContent = `
-            try {
-              // Unity WebGL
-              if (typeof gameInstance !== 'undefined') {
-                gameInstance.SendMessage('Player', 'AddCoins', 9999999999);
-                gameInstance.SendMessage('Player', 'AddKeys', 9999999999);
-              }
-              // Variables globales
-              if (typeof coins !== 'undefined') coins = 9999999999;
-              if (typeof keys !== 'undefined') keys = 9999999999;
-              if (typeof window.coins !== 'undefined') window.coins = 9999999999;
-              if (typeof window.keys !== 'undefined') window.keys = 9999999999;
-              console.log('💰 Resources injectées: 9999999999');
-            } catch(e) {
-              console.log('💰 Injection échouée:', e);
-            }
-          `;
+          // Garder seulement le canvas visible
+          const canvas = document.querySelector('canvas');
+          if (canvas) {
+            canvas.style.display = 'block';
+            canvas.style.visibility = 'visible';
+          }
           
-          const script = document.createElement('script');
-          script.textContent = scriptContent;
-          document.head.appendChild(script);
-          
-          showNotification('💰 9,999,999,999 pièces & clés injectées!', 'success');
         } catch (error) {
-          showNotification('❌ Erreur injection', 'error');
+          console.log('Nettoyage UI échoué:', error);
         }
       }, 1000);
     }
 
-    function postToIframe(msg) {
+    // ============= SYSTÈME ZQSD FONCTIONNEL =============
+    let zqsdEnabled = false;
+
+    function setupEnhancedZQSD() {
+      if (zqsdEnabled) return;
+      
+      const keyMap = {
+        'z': 'w',
+        'q': 'a',
+        's': 's', 
+        'd': 'd',
+        ' ': ' '
+      };
+
+      document.addEventListener('keydown', function(e) {
+        if (!zqsdEnabled) return;
+        
+        const key = e.key.toLowerCase();
+        if (keyMap[key]) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          
+          // Envoyer directement la touche au jeu Unity
+          sendKeyToUnity(keyMap[key], 'keydown');
+        }
+      }, true);
+
+      document.addEventListener('keyup', function(e) {
+        if (!zqsdEnabled) return;
+        
+        const key = e.key.toLowerCase();
+        if (keyMap[key]) {
+          e.preventDefault();
+          sendKeyToUnity(keyMap[key], 'keyup');
+        }
+      }, true);
+      
+      zqsdEnabled = true;
+    }
+
+    function sendKeyToUnity(key, type) {
       try {
-        iframe.contentWindow.postMessage(msg, '*');
-      } catch (e) {
-        console.warn('postMessage failed', e);
+        // Trouver le canvas Unity
+        const canvas = document.querySelector('#unity-container canvas');
+        if (!canvas) return;
+        
+        // Créer l'événement
+        const event = new KeyboardEvent(type, {
+          key: key,
+          code: `Key${key.toUpperCase()}`,
+          keyCode: key.charCodeAt(0),
+          which: key.charCodeAt(0),
+          bubbles: true,
+          cancelable: true
+        });
+        
+        canvas.dispatchEvent(event);
+        canvas.focus();
+      } catch (error) {
+        console.log('Envoi touche échoué:', error);
       }
+    }
+
+    function enableZQSD() {
+      setupEnhancedZQSD();
+      showNotification('🎮 Contrôles ZQSD activés!', 'success');
+    }
+
+    // ============= SYSTÈME GIVE COINS/KEYS =============
+    function giveResources() {
+      showNotification('💰 Injection des ressources...', 'info');
+      
+      // Méthode directe via l'instance Unity
+      setTimeout(() => {
+        try {
+          if (window.unityGame && window.unityGame.SendMessage) {
+            // Essayer différentes méthodes d'injection
+            window.unityGame.SendMessage('GameManager', 'AddCoins', 999999);
+            window.unityGame.SendMessage('GameManager', 'AddKeys', 999);
+            window.unityGame.SendMessage('Player', 'AddCoins', 999999);
+            window.unityGame.SendMessage('Player', 'AddKeys', 999);
+            window.unityGame.SendMessage('MainPlayer', 'AddCoins', 999999);
+            window.unityGame.SendMessage('MainPlayer', 'AddKeys', 999);
+            
+            showNotification('💰 999,999 pièces & 999 clés injectées!', 'success');
+          } else {
+            showNotification('❌ Impossible d\'injecter les ressources', 'error');
+          }
+        } catch (error) {
+          showNotification('❌ Erreur lors de l\'injection', 'error');
+        }
+      }, 500);
     }
 
     // ============= TIMER MANUEL =============
@@ -792,9 +821,9 @@
     updateFPS();
 
     function toggleFPS() {
-      config.showFPS = !config.showFPS;
-      document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
-      showNotification(config.showFPS ? "📊 FPS affiché" : "📊 FPS masqué", "info");
+      const fpsEl = document.getElementById('fps-overlay');
+      fpsEl.style.display = fpsEl.style.display === 'none' ? 'block' : 'none';
+      showNotification(fpsEl.style.display === 'none' ? "📊 FPS masqué" : "📊 FPS affiché", "info");
     }
 
     // ============= NOTIFICATIONS =============
@@ -839,18 +868,20 @@
 
     // ============= FULLSCREEN =============
     document.getElementById('fs-btn').addEventListener('click', async () => {
+      const container = document.querySelector('.game-frame');
       try {
-        if (iframe.requestFullscreen) await iframe.requestFullscreen();
-        else if (iframe.webkitRequestFullscreen) await iframe.webkitRequestFullscreen();
+        if (container.requestFullscreen) await container.requestFullscreen();
+        else if (container.webkitRequestFullscreen) await container.webkitRequestFullscreen();
       } catch (err) {
         alert('Plein écran non supporté');
       }
     });
 
     function toggleFullscreen(){
+      const container = document.querySelector('.game-frame');
       if (!document.fullscreenElement) {
-        if (iframe.requestFullscreen) iframe.requestFullscreen();
-        else iframe.webkitRequestFullscreen && iframe.webkitRequestFullscreen();
+        if (container.requestFullscreen) container.requestFullscreen();
+        else container.webkitRequestFullscreen && container.webkitRequestFullscreen();
       } else {
         document.exitFullscreen();
       }
@@ -859,13 +890,13 @@
     // ============= INITIALISATION =============
     document.addEventListener('DOMContentLoaded', function() {
       initParticles();
-      setupZQSDKeys();
       setupTimerKeys();
+      loadUnityGame(); // Charger le jeu Unity directement
       
       console.log('%c[MYNVO] Système initialisé!', 'color: #7c62dc; font-weight: bold;');
-      console.log('🎮 Touches ZQSD activées');
+      console.log('🎮 ZQSD: Activable via le menu');
+      console.log('💰 Give Coins/Keys: Bouton dans le menu');
       console.log('⏱️ Timer: F1=Start, F2=Stop, F3=Reset');
-      console.log('💰 Give Piece automatique au chargement');
     });
 
     function initParticles() {
@@ -890,24 +921,13 @@
       }
     }
 
-    // ============= FONCTIONS DES MODALS =============
     function openTimerSettings() {
       showNotification("⏱️ Timer: F1=Start, F2=Stop, F3=Reset", "info");
     }
 
     document.getElementById('play-link').addEventListener('click', () => {
       document.querySelector('.game-container')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      iframe.focus();
     });
-
-    // Force le focus sur l'iframe pour les touches
-    setInterval(() => {
-      try {
-        iframe.contentWindow.focus();
-        const canvas = iframe.contentDocument?.querySelector('canvas');
-        if (canvas) canvas.focus();
-      } catch(e) {}
-    }, 1000);
   </script>
 </body>
 </html>
