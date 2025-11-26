@@ -74,166 +74,161 @@
   <footer>Subway Surfers by Mynvo</footer>
 
   <script>
+    // ======= CONFIG =======
     let config = { up: "z", down: "s", left: "q", right: "d", jump: " ", name: "Joueur" };
-    try { const saved = localStorage.getItem("mynvoConfig"); if(saved) config = {...config,...JSON.parse(saved)} } catch(e){}
+    try { const saved = localStorage.getItem("mynvoConfig"); if(saved) config={...config,...JSON.parse(saved)} } catch(e){}
 
-    function saveConfig(){ localStorage.setItem("mynvoConfig", JSON.stringify(config)); console.log("✅ Config sauvegardée:", config); }
+    function saveConfig(){ localStorage.setItem("mynvoConfig",JSON.stringify(config)); console.log("✅ Config sauvegardée:",config); }
 
-    let isCapturingKey = false;
+    let isCapturingKey=false;
     const iframe = document.getElementById('game-iframe');
     let iframeReady = false;
     let keyStates = {};
     let currentCanvas = null;
 
-    function getKeyCode(key){
-      const map = {'ArrowUp':38,'ArrowDown':40,'ArrowLeft':37,'ArrowRight':39,' ':32,'z':90,'Z':90,'q':81,'Q':81,'s':83,'S':83,'d':68,'D':68,'w':87,'W':87,'a':65,'A':65};
-      return map[key]||0;
-    }
+    // ======= UTILS =======
+    function getKeyCode(key){ const map={'ArrowUp':38,'ArrowDown':40,'ArrowLeft':37,'ArrowRight':39,' ':32,'z':90,'Z':90,'q':81,'Q':81,'s':83,'S':83,'d':68,'D':68,'w':87,'W':87,'a':65,'A':65}; return map[key]||0; }
+    function escapeHtml(str){ if(!str && str!=='') return ''; return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]); }
 
-    function simulateKeyInIframe(type,mappedKey,keyCode){
-      if(!keyCode) return;
-      try{
-        const iframeWin = iframe.contentWindow;
-        const iframeDoc = iframe.contentDocument||iframeWin.document;
-        if(!iframeDoc) return;
-        const event = new KeyboardEvent(type,{keyCode:keyCode,which:keyCode,key:mappedKey,bubbles:true,cancelable:true});
-        iframeDoc.dispatchEvent(event);
-        iframeWin.dispatchEvent(event);
-        if(currentCanvas) currentCanvas.dispatchEvent(event);
-        iframeDoc.querySelectorAll('canvas, #canvas, #unity-canvas').forEach(el=>el.dispatchEvent(event));
-      }catch(err){console.error('[MYNVO Parent] Error dispatching event:',err);}
-    }
-
-    function focusUnityCanvas(){ if(currentCanvas){try{currentCanvas.focus({preventScroll:true})}catch(e){} } }
-
+    // ======= IFRAME LOAD =======
     iframe.addEventListener('load',()=>{
       document.getElementById('loading-ui').style.display='none';
+      console.log('%c[MYNVO Parent] Iframe loaded!','color:#00ff00;font-weight:bold;');
       setTimeout(()=>{
         try{
           const iframeWin = iframe.contentWindow;
           const iframeDoc = iframe.contentDocument||iframeWin.document;
-          if(iframeDoc){
-            iframeReady=true;
-            iframeDoc.addEventListener('pointerdown',focusUnityCanvas,true);
-            iframeDoc.addEventListener('mousedown',focusUnityCanvas,true);
-            setInterval(()=>{
-              const canvas=iframeDoc.querySelector('canvas');
-              if(canvas&&canvas!==currentCanvas) currentCanvas=canvas;
-            },500);
-          }
-        }catch(err){iframeReady=false;}
+          if(iframeDoc){ iframeReady=true; console.log('%c[MYNVO Parent] ✅ Iframe accessible! Direct injection mode.','color:#00ff00;font-weight:bold;'); }
+        } catch(err){ console.warn('%c[MYNVO Parent] ⚠️ Cannot access iframe (CORS). Using postMessage fallback...', 'color:#ff6b6b;', err); iframeReady=false; }
       },2000);
     });
 
-    document.addEventListener('keydown',(e)=>{
+    // ======= CANVAS WATCHER =======
+    function updateCanvasReference(){
+      try{
+        const iframeWin=iframe.contentWindow;
+        const iframeDoc=iframe.contentDocument||iframeWin.document;
+        if(!iframeDoc) return;
+        const canvas = iframeDoc.querySelector('canvas');
+        if(canvas && canvas!==currentCanvas){
+          currentCanvas=canvas;
+          console.log('%c[MYNVO Parent] 🎮 Canvas détecté ou mis à jour !','color:#00ff00;font-weight:bold;');
+          canvas.focus({preventScroll:true});
+          canvas.addEventListener('pointerdown',()=>canvas.focus({preventScroll:true}));
+          canvas.addEventListener('mousedown',()=>canvas.focus({preventScroll:true}));
+        }
+      } catch(e){}
+    }
+    setInterval(updateCanvasReference,200);
+
+    // ======= SIMULATE KEYS =======
+    function simulateKeyInIframe(type,mappedKey,keyCode){
+      if(!keyCode) return;
+      try{
+        if(currentCanvas){
+          const ev = new KeyboardEvent(type,{keyCode:keyCode,which:keyCode,key:mappedKey,bubbles:true,cancelable:true});
+          currentCanvas.dispatchEvent(ev);
+        } else if(iframeReady){
+          const iframeWin=iframe.contentWindow;
+          const iframeDoc=iframe.contentDocument||iframeWin.document;
+          iframeDoc.dispatchEvent(new KeyboardEvent(type,{keyCode:keyCode,which:keyCode,key:mappedKey,bubbles:true,cancelable:true}));
+        } else {
+          iframe.contentWindow.postMessage({type:keyCode?'keydown':'keyup',key:mappedKey,keyCode:keyCode},'*');
+        }
+      } catch(e){ console.error(e); }
+    }
+
+    // ======= KEY LISTENERS =======
+    function handleKeyEvent(e, type){
       if(isCapturingKey) return;
-      const key=e.key.toLowerCase();
-      const keyMap={[config.up.toLowerCase()]:{key:'ArrowUp',code:38},[config.down.toLowerCase()]:{key:'ArrowDown',code:40},[config.left.toLowerCase()]:{key:'ArrowLeft',code:37},[config.right.toLowerCase()]:{key:'ArrowRight',code:39},[config.jump]:{key:' ',code:32}};
-      const mapped=keyMap[key];
+      const keyMap = {[config.up.toLowerCase()]:{key:'ArrowUp',code:38},[config.down.toLowerCase()]:{key:'ArrowDown',code:40},[config.left.toLowerCase()]:{key:'ArrowLeft',code:37},[config.right.toLowerCase()]:{key:'ArrowRight',code:39},[config.jump]:{key:' ',code:32}};
+      const mapped = keyMap[e.key.toLowerCase()];
       if(mapped){
         e.preventDefault(); e.stopImmediatePropagation();
-        if(keyStates[mapped.code]) return;
-        keyStates[mapped.code]=true;
-        if(iframeReady) simulateKeyInIframe('keydown',mapped.key,mapped.code);
-        else iframe.contentWindow.postMessage({type:'keydown',key:mapped.key,keyCode:mapped.code},'*');
+        if(type==='keydown' && keyStates[mapped.code]) return;
+        keyStates[mapped.code]=type==='keydown';
+        simulateKeyInIframe(type,mapped.key,mapped.code);
       }
-    },true);
+    }
+    document.addEventListener('keydown', e=>handleKeyEvent(e,'keydown'),true);
+    document.addEventListener('keyup', e=>handleKeyEvent(e,'keyup'),true);
 
-    document.addEventListener('keyup',(e)=>{
-      if(isCapturingKey) return;
-      const key=e.key.toLowerCase();
-      const keyMap={[config.up.toLowerCase()]:{key:'ArrowUp',code:38},[config.down.toLowerCase()]:{key:'ArrowDown',code:40},[config.left.toLowerCase()]:{key:'ArrowLeft',code:37},[config.right.toLowerCase()]:{key:'ArrowRight',code:39},[config.jump]:{key:' ',code:32}};
-      const mapped=keyMap[key];
-      if(mapped){
-        e.preventDefault(); e.stopImmediatePropagation();
-        keyStates[mapped.code]=false;
-        if(iframeReady) simulateKeyInIframe('keyup',mapped.key,mapped.code);
-        else iframe.contentWindow.postMessage({type:'keyup',key:mapped.key,keyCode:mapped.code},'*');
-      }
-    },true);
-
+    // ======= FPS =======
     let fpsFrames=0,fpsLastTime=performance.now();
     function updateFPS(){
-      fpsFrames++; const now=performance.now();
+      fpsFrames++;
+      const now=performance.now();
       if(now-fpsLastTime>=1000){
         const fps=Math.round((fpsFrames*1000)/(now-fpsLastTime));
-        document.getElementById('fps-value').textContent=fps;
-        const fpsEl=document.getElementById('fps-overlay');
-        if(fps>=55){fpsEl.style.color='#22c55e';fpsEl.style.borderColor='#22c55e';}
-        else if(fps>=30){fpsEl.style.color='#f59e0b';fpsEl.style.borderColor='#f59e0b';}
-        else{fpsEl.style.color='#ef4444';fpsEl.style.borderColor='#ef4444';}
+        const fpsEl=document.getElementById('fps-value'); fpsEl.textContent=fps;
+        const el=document.getElementById('fps-overlay');
+        if(fps>=55){el.style.color='#22c55e';el.style.borderColor='#22c55e';} 
+        else if(fps>=30){el.style.color='#f59e0b';el.style.borderColor='#f59e0b';} 
+        else{el.style.color='#ef4444';el.style.borderColor='#ef4444';}
         fpsFrames=0; fpsLastTime=now;
       }
       requestAnimationFrame(updateFPS);
     }
     updateFPS();
 
+    // ======= FULLSCREEN =======
     document.getElementById('fs-btn').addEventListener('click',async()=>{
-      try{if(iframe.requestFullscreen) await iframe.requestFullscreen(); else if(iframe.webkitRequestFullscreen) await iframe.webkitRequestFullscreen();}
-      catch(err){alert('Plein écran non supporté');}
+      try{ if(iframe.requestFullscreen) await iframe.requestFullscreen(); else if(iframe.webkitRequestFullscreen) await iframe.webkitRequestFullscreen(); }
+      catch(err){ alert('Plein écran non supporté'); }
     });
 
-    function escapeHtml(str){if(!str&&str!=='') return ''; return String(str).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]);}
-
+    // ======= SETTINGS =======
     function openSettings(){
       if(document.getElementById('mynvo-settings')) return;
       const div=document.createElement('div');
       div.id='mynvo-settings';
       div.style='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#111;color:#fff;padding:30px 35px;border-radius:16px;border:4px solid #ffd700;z-index:999999;max-width:90%;box-shadow:0 0 80px rgba(0,0,0,0.9);';
-      div.innerHTML=`
-        <h2 style="color:#ffd700;text-align:center;margin-bottom:20px;font-size:24px;">⚙️ Paramètres Mynvo</h2>
-        <div style="margin-bottom:20px;">
-          <label style="display:block;margin-bottom:8px;font-size:15px;">📝 Pseudo</label>
-          <input type="text" id="set-name" value="${escapeHtml(config.name)}" style="width:100%;padding:12px;font-size:16px;background:#222;border:2px solid #444;border-radius:10px;color:#fff;">
-        </div>
+      function getKeyDisplay(k){return k===' '?'ESPACE':k.toUpperCase();}
+      div.innerHTML=`<h2 style="color:#ffd700;text-align:center;margin-bottom:20px;font-size:24px;">⚙️ Paramètres Mynvo</h2>
+        <div style="margin-bottom:20px;"><label style="display:block;margin-bottom:8px;font-size:15px;">📝 Pseudo</label><input type="text" id="set-name" value="${escapeHtml(config.name)}" style="width:100%;padding:12px;font-size:16px;background:#222;border:2px solid #444;border-radius:10px;color:#fff;"></div>
         <div style="background:#1a1a1a;padding:20px;border-radius:12px;margin-bottom:20px;">
-          <h3 style="color:#ffd700;margin-bottom:15px;font-size:18px;">🎮 Touches de jeu</h3>
-          <p style="font-size:13px;color:#aaa;margin-bottom:15px;">Clique sur une touche puis appuie sur celle que tu veux</p>
-          <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:15px;">
-            <div><label style="display:block;margin-bottom:8px;font-size:14px;">⬆️ Haut</label><div class="key-display" data-key="up">${config.up.toUpperCase()===' '?"ESPACE":config.up.toUpperCase()}</div></div>
-            <div><label style="display:block;margin-bottom:8px;font-size:14px;">⬇️ Bas</label><div class="key-display" data-key="down">${config.down.toUpperCase()===' '?"ESPACE":config.down.toUpperCase()}</div></div>
-            <div><label style="display:block;margin-bottom:8px;font-size:14px;">⬅️ Gauche</label><div class="key-display" data-key="left">${config.left.toUpperCase()===' '?"ESPACE":config.left.toUpperCase()}</div></div>
-            <div><label style="display:block;margin-bottom:8px;font-size:14px;">➡️ Droite</label><div class="key-display" data-key="right">${config.right.toUpperCase()===' '?"ESPACE":config.right.toUpperCase()}</div></div>
-            <div style="grid-column:1/-1;"><label style="display:block;margin-bottom:8px;font-size:14px;">🚀 Saut</label><div class="key-display" data-key="jump">${config.jump.toUpperCase()===' '?"ESPACE":config.jump.toUpperCase()}</div></div>
-          </div>
-        </div>
+        <h3 style="color:#ffd700;margin-bottom:15px;font-size:18px;">🎮 Touches de jeu</h3><p style="font-size:13px;color:#aaa;margin-bottom:15px;">Clique sur une touche puis appuie sur celle que tu veux</p>
+        <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:15px;">
+        <div><label style="display:block;margin-bottom:8px;font-size:14px;">⬆️ Haut</label><div class="key-display" data-key="up">${getKeyDisplay(config.up)}</div></div>
+        <div><label style="display:block;margin-bottom:8px;font-size:14px;">⬇️ Bas</label><div class="key-display" data-key="down">${getKeyDisplay(config.down)}</div></div>
+        <div><label style="display:block;margin-bottom:8px;font-size:14px;">⬅️ Gauche</label><div class="key-display" data-key="left">${getKeyDisplay(config.left)}</div></div>
+        <div><label style="display:block;margin-bottom:8px;font-size:14px;">➡️ Droite</label><div class="key-display" data-key="right">${getKeyDisplay(config.right)}</div></div>
+        <div style="grid-column:1/-1;"><label style="display:block;margin-bottom:8px;font-size:14px;">🚀 Saut</label><div class="key-display" data-key="jump">${getKeyDisplay(config.jump)}</div></div>
+        </div></div>
         <div style="text-align:center;">
-          <button id="close-settings" style="background:#ff4444;color:#fff;padding:12px 24px;border:none;border-radius:10px;font-size:16px;cursor:pointer;font-weight:600;">❌ Fermer</button>
-          <button id="save-settings" style="background:#00ff00;color:#000;padding:12px 28px;border:none;border-radius:10px;font-size:16px;cursor:pointer;margin-left:12px;font-weight:700;">✓ Enregistrer</button>
+        <button id="close-settings" style="background:#ff4444;color:#fff;padding:12px 24px;border:none;border-radius:10px;font-size:16px;cursor:pointer;font-weight:600;">❌ Fermer</button>
+        <button id="save-settings" style="background:#00ff00;color:#000;padding:12px 28px;border:none;border-radius:10px;font-size:16px;cursor:pointer;margin-left:12px;font-weight:700;">✓ Enregistrer</button>
         </div>
         <p style="font-size:12px;color:#ffd700;margin-top:15px;text-align:center;font-weight:600;">⚠️ Recharge la page (F5) après avoir changé les touches</p>
       `;
       document.body.appendChild(div);
-
       let activeKeyElement=null;
-      div.querySelectorAll('.key-display').forEach(el=>{el.addEventListener('click',()=>{if(activeKeyElement) activeKeyElement.classList.remove('active');activeKeyElement=el;el.classList.add('active');el.textContent='...';isCapturingKey=true;});});
-
-      const captureHandler=e=>{
+      div.querySelectorAll('.key-display').forEach(el=>{
+        el.addEventListener('click',()=>{
+          if(activeKeyElement) activeKeyElement.classList.remove('active');
+          activeKeyElement=el; el.classList.add('active'); el.textContent='...'; isCapturingKey=true;
+        });
+      });
+      const captureHandler=(e)=>{
         if(!activeKeyElement) return;
         e.preventDefault(); e.stopPropagation();
         const keyName=activeKeyElement.dataset.key;
         const newKey=e.key;
         config[keyName]=newKey;
-        activeKeyElement.textContent=newKey===' '?"ESPACE":newKey.toUpperCase();
-        activeKeyElement.classList.remove('active');
-        activeKeyElement=null;
-        isCapturingKey=false;
+        activeKeyElement.textContent=getKeyDisplay(newKey);
+        activeKeyElement.classList.remove('active'); activeKeyElement=null; isCapturingKey=false;
       };
-
       document.addEventListener('keydown',captureHandler,true);
-
-      document.getElementById('close-settings').onclick=()=>{document.removeEventListener('keydown',captureHandler,true);isCapturingKey=false;div.remove();}
-      document.getElementById('save-settings').onclick=()=>{config.name=document.getElementById('set-name').value.trim()||'Joueur';saveConfig();document.removeEventListener('keydown',captureHandler,true);isCapturingKey=false;alert('✓ Paramètres sauvegardés !\n\n⚠️ IMPORTANT : Recharge la page (F5) pour que les nouvelles touches fonctionnent.');div.remove();}
+      document.getElementById('close-settings').onclick=()=>{document.removeEventListener('keydown',captureHandler,true);isCapturingKey=false;div.remove();};
+      document.getElementById('save-settings').onclick=()=>{
+        config.name=document.getElementById('set-name').value.trim()||'Joueur'; saveConfig();
+        document.removeEventListener('keydown',captureHandler,true); isCapturingKey=false;
+        alert('✓ Paramètres sauvegardés !\n\n⚠️ IMPORTANT : Recharge la page (F5) pour que les nouvelles touches fonctionnent.'); div.remove();
+      };
     }
 
-    document.getElementById('play-link').addEventListener('click',()=>{document.querySelector('.game-container')?.scrollIntoView({behavior:'smooth',block:'center'});iframe.focus();});
-
-    console.log('%c[MYNVO Parent] Touch system initialized!','color: #58a6ff; font-weight: bold;'); 
-    console.log('%c[MYNVO Parent] Current config:','color: #ffd700;', config);
-
-    // Focus parent lors du clic sur iframe (sécurité)
-    iframe.addEventListener('pointerdown',focusUnityCanvas,true);
-    iframe.addEventListener('mousedown',focusUnityCanvas,true);
+    document.getElementById('play-link').addEventListener('click',()=>{ document.querySelector('.game-container')?.scrollIntoView({behavior:'smooth',block:'center'}); iframe.focus(); });
+    console.log('%c[MYNVO Parent] Touch system initialized!','color:#58a6ff;font-weight:bold;'); console.log('%c[MYNVO Parent] Current config:','color:#ffd700;',config);
   </script>
 </body>
 </html>
