@@ -70,7 +70,7 @@
     let config = JSON.parse(localStorage.getItem("mynvoConfig")) || defaultConfig;
     function saveConfig(){ localStorage.setItem("mynvoConfig", JSON.stringify(config)); }
 
-    // === TOUCHES ZQSD ===
+    // === REMAP TOUCHES ===
     const keyMap = { [config.up.toLowerCase()]:38, [config.down.toLowerCase()]:40, [config.left.toLowerCase()]:37, [config.right.toLowerCase()]:39, [config.jump.toLowerCase()]:32 };
     document.addEventListener("keydown", e => { const code = keyMap[e.key.toLowerCase()]; if(code){ e.preventDefault(); document.querySelector("iframe").contentWindow.postMessage({type:"key",code,event:"down"},"*");}});
     document.addEventListener("keyup",   e => { const code = keyMap[e.key.toLowerCase()]; if(code){ e.preventDefault(); document.querySelector("iframe").contentWindow.postMessage({type:"key",code,event:"up"},"*");}});
@@ -81,76 +81,100 @@
       const script = iframe.contentDocument.createElement("script");
       script.textContent = `
         (() => {
-          // Timer simple qui se remet à zéro à la mort
+          // TIMER (démarre dès le premier mouvement, reset à la mort)
           const timerDiv = document.createElement("div");
-          timerDiv.style.cssText = "position:fixed;top:15px;left:15px;z-index:999999;background:#0d1117;color:#22c55e;padding:12px 20px;border-radius:12px;font-weight:bold;font-size:18px;border:2px solid #22c55e;box-shadow:0 0 20px #22c55e33;";
+          timerDiv.style.cssText = "position:fixed;top:15px;left:15px;z-index:999999;background:#0d1117;color:#22c55e;padding:14px 24px;border-radius:12px;font-weight:bold;font-size:20px;border:3px solid #22c55e;box-shadow:0 0 25px #22c55e44;";
           timerDiv.textContent = "0:00";
           document.body.appendChild(timerDiv);
 
           let startTime = 0;
           let timerInterval = null;
-          function startTimer(){ startTime = Date.now(); timerInterval = setInterval(()=>{ const s = Math.floor((Date.now()-startTime)/1000); const m = Math.floor(s/60); timerDiv.textContent = m+":"+(s%60).toString().padStart(2,"0"); }, 100); }
-          function resetTimer(){ clearInterval(timerInterval); timerDiv.textContent = "0:00"; }
+          let gameStarted = false;
+
+          function startTimer() {
+            if (gameStarted) return;
+            gameStarted = true;
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+              const elapsed = Math.floor((Date.now() - startTime) / 1000);
+              const mins = Math.floor(elapsed / 60);
+              const secs = (elapsed % 60).toString().padStart(2, "0");
+              timerDiv.textContent = mins + ":" + secs;
+            }, 100);
+          }
+
+          function resetTimer() {
+            gameStarted = false;
+            clearInterval(timerInterval);
+            timerDiv.textContent = "0:00";
+          }
 
           // FPS
           const fpsDiv = document.createElement("div");
-          fpsDiv.style.cssText = "position:fixed;top:15px;right:15px;z-index:999999;background:#0d1117;color:#58a6ff;padding:8px 14px;border-radius:12px;font-weight:bold;border:1px solid #30363d;";
+          fpsDiv.style.cssText = "position:fixed;top:15px;right:15px;z-index:999999;background:#0d1117;color:#58a6ff;padding:8px 14px;border-radius:12px;font-weight:bold;";
           fpsDiv.textContent = "FPS: --";
           document.body.appendChild(fpsDiv);
           let last = performance.now(), frames = 0;
           const updateFPS = () => { frames++; const now = performance.now(); if(now-last>=1000){ fpsDiv.textContent="FPS: "+Math.round(frames*1000/(now-last)); frames=0; last=now; } requestAnimationFrame(updateFPS); };
           updateFPS();
 
-          // Leaderboard manuel (édite ici quand tu veux)
+          // Leaderboard manuel (change ici quand tu veux)
           const leaderboard = document.createElement("div");
-          leaderboard.style.cssText = "position:fixed;bottom:15px;left:15px;z-index:999999;background:#0d1117;color:#c9d1d9;padding:12px 20px;border-radius:12px;font-weight:bold;border:2px solid #ffd700;box-shadow:0 0 20px #ffd70033;";
+          leaderboard.style.cssText = "position:fixed;bottom:15px;left:15px;z-index:999999;background:#0d1117;color:#c9d1d9;padding:14px 22px;border-radius:12px;font-weight:bold;border:3px solid #ffd700;box-shadow:0 0 25px #ffd70044;font-size:16px;";
           leaderboard.innerHTML = "TROPHÉE TOP 3<br>1. Mynvo - 15:42<br>2. Shadow - 11:08<br>3. Ghost - 8:19";
           document.body.appendChild(leaderboard);
 
-          // Touches ZQSD
+          // Indication touches
           const touches = document.createElement("div");
           touches.textContent = "ZQSD | SPACE";
           touches.style.cssText = "position:fixed;bottom:15px;right:15px;z-index:999999;background:#0d1117;color:#58a6ff;padding:8px 16px;border-radius:12px;font-weight:bold;border:1px solid #30363d;";
           document.body.appendChild(touches);
 
-          // Détection début / mort
-          let previousScore = 0;
+          // Détection départ et mort via le score
+          let lastScore = 0;
           setInterval(() => {
-            const scoreEl = document.querySelector("[class*='score'], [id*='score']");
+            const scoreEl = document.querySelector("[class*='score'], [id*='score'], [class*='Score']");
             if (!scoreEl) return;
-            const currentScore = parseInt(scoreEl.textContent.replace(/[^0-9]/g,"")) || 0;
-            if (currentScore < previousScore - 100) resetTimer(); // mort détectée
-            if (currentScore > previousScore + 50 && currentScore > 100) startTimer(); // partie commencée
-            previousScore = currentScore;
-          }, 500);
+            const scoreText = scoreEl.textContent.replace(/[^0-9]/g, "");
+            const currentScore = scoreText ? parseInt(scoreText) : 0;
+
+            // Début de partie détecté
+            if (currentScore > 100 && lastScore <= 100) startTimer();
+
+            // Mort détectée (score retombe brutalement)
+            if (currentScore < lastScore - 200) resetTimer();
+
+            lastScore = currentScore;
+          }, 300);
         })();
       `;
       iframe.contentDocument.head.appendChild(script);
     });
 
-    // === PARAMÈTRES ===
+    // === FENÊTRE PARAMÈTRES (gros champs bien visibles) ===
     function openSettings(){
       if(document.getElementById("mynvo-settings")) return;
       const div = document.createElement("div");
       div.id = "mynvo-settings";
-      div.style = "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#0d1117;color:white;padding:30px;border-radius:20px;border:3px solid #ffd700;z-index:999999;max-width:90%;box-shadow:0 0 50px #000;";
+      div.style = "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#0d1117;color:white;padding:40px;border-radius:20px;border:4px solid #ffd700;z-index:999999;max-width:90%;box-shadow:0 0 60px #000;";
       div.innerHTML = `
-        <h2 style="color:#ffd700;text-align:center;margin-bottom:20px;">Paramètres MYNVO</h2>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;max-width:400px;margin:0 auto;">
-          <div><label>Pseudo</label><input value="${config.name}" id="set-name" style="width:100%;padding:8px;margin-top:5px;background:#21262d;border:1px solid #30363d;border-radius:8px;color:white;"></div>
-          <div><label>Haut</label><input maxlength=1 value="${config.up}" id="set-up"></div>
-          <div><label>Bas</label><input maxlength=1 value="${config.down}" id="set-down"></div>
-          <div><label>Gauche</label><input maxlength=1 value="${config.left}" id="set-left"></div>
-          <div><label>Droite</label><input maxlength=1 value="${config.right}" id="set-right"></div>
-          <div><label>Saut</label><input value="${config.jump === ' ' ? 'SPACE' : config.jump}" id="set-jump"></div>
+        <h2 style="color:#ffd700;text-align:center;margin-bottom:30px;font-size:28px;">Paramètres MYNVO</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:500px;margin:0 auto;font-size:18px;">
+          <div><label style="display:block;margin-bottom:8px;">Pseudo</label><input value="${config.name}" id="set-name" style="width:100%;padding:14px;font-size:18px;background:#21262d;border:2px solid #30363d;border-radius:12px;color:white;"></div>
+          <div><label style="display:block;margin-bottom:8px;">Haut</label><input maxlength=1 value="${config.up}" id="set-up" style="width:100%;padding:14px;font-size:18px;background:#21262d;border:2px solid #30363d;border-radius:12px;color:white;text-align:center;"></div>
+          <div><label style="display:block;margin-bottom:8px;">Bas</label><input maxlength=1 value="${config.down}" id="set-down" style="width:100%;padding:14px;font-size:18px;background:#21262d;border:2px solid #30363d;border-radius:12px;color:white;text-align:center;"></div>
+          <div><label style="display:block;margin-bottom:8px;">Gauche</label><input maxlength=1 value="${config.left}" id="set-left" style="width:100%;padding:14px;font-size:18px;background:#21262d;border:2px solid #30363d;border-radius:12px;color:white;text-align:center;"></div>
+          <div><label style="display:block;margin-bottom:8px;">Droite</label><input maxlength=1 value="${config.right}" id="set-right" style="width:100%;padding:14px;font-size:18px;background:#21262d;border:2px solid #30363d;border-radius:12px;color:white;text-align:center;"></div>
+          <div><label style="display:block;margin-bottom:8px;">Saut</label><input value="${config.jump === ' ' ? 'SPACE' : config.jump}" id="set-jump" style="width:100%;padding:14px;font-size:18px;background:#21262d;border:2px solid #30363d;border-radius:12px;color:white;text-align:center;"></div>
         </div>
-        <div style="text-align:center;margin-top:20px;">
-          <button onclick="this.closest('#mynvo-settings').remove()" style="background:#ef4444;color:white;padding:10px 20px;border:none;border-radius:8px;cursor:pointer;">Fermer</button>
-          <button onclick="saveMynvoSettings()" style="background:#22c55e;color:white;padding:10px 30px;border:none;border-radius:8px;cursor:pointer;margin-left:10px;">Enregistrer</button>
+        <div style="text-align:center;margin-top:30px;">
+          <button onclick="this.closest('#mynvo-settings').remove()" style="background:#ef4444;color:white;padding:14px 28px;border:none;border-radius:12px;cursor:pointer;font-size:18px;">Fermer</button>
+          <button onclick="saveMynvoSettings()" style="background:#22c55e;color:white;padding:14px 40px;border:none;border-radius:12px;cursor:pointer;margin-left:20px;font-size:18px;">Enregistrer</button>
         </div>
       `;
       document.body.appendChild(div);
     }
+
     function saveMynvoSettings(){
       config.name = document.getElementById("set-name").value || "Joueur";
       config.up = document.getElementById("set-up").value || "z";
@@ -159,7 +183,7 @@
       config.right = document.getElementById("set-right").value || "d";
       config.jump = document.getElementById("set-jump").value.toUpperCase() === "SPACE" ? " " : document.getElementById("set-jump").value;
       saveConfig();
-      alert("Sauvegardé ! Recharge la page pour appliquer.");
+      alert("Sauvegardé ! Recharge la page pour que les touches soient appliquées.");
       document.getElementById("mynvo-settings").remove();
     }
   </script>
