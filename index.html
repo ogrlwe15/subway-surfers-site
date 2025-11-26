@@ -1,143 +1,34 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Subway Surfers by Mynvo - NO COIN + Leaderboard Mondial</title>
-  <meta name="description" content="Subway Surfers avec mode NO COIN, leaderboard mondial, touches custom et FPS counter - Créé par Mynvo"/>
-  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subway Surfers by Mynvo</title>
+  <meta name="description" content="Subway Surfers + Mode NO COIN + Leaderboard mondial - Créé par Mynvo">
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      color: white;
-      overflow-x: hidden;
+    body { 
+      font-family: 'Segoe UI', sans-serif; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+      color: white; min-height: 100vh; display: flex; flex-direction: column;
     }
-    header {
-      background: rgba(0,0,0,0.3);
-      backdrop-filter: blur(10px);
-      padding: 20px 40px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-      position: relative;
-      z-index: 10;
-    }
-    .header-content {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .logo img {
-      height: 60px;
-      filter: drop-shadow(0 2px 10px rgba(0,0,0,0.5));
-    }
-    .logo span {
-      font-size: 28px;
-      font-weight: 900;
-      margin-left: 12px;
-      color: #ffd700;
-    }
-    .creator {
-      font-size: 14px;
-      opacity: 0.8;
-    }
-    main { flex: 1; padding: 20px; }
-    .game-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      background: rgba(0,0,0,0.3);
-      backdrop-filter: blur(20px);
-      border-radius: 24px;
-      padding: 40px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-      position: relative;
-    }
-    .game-header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    .game-header h1 {
-      font-size: 52px;
-      font-weight: 900;
-      margin-bottom: 15px;
-      text-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    }
-    .game-frame {
-      position: relative;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-    }
-    .game-frame iframe {
-      width: 100%;
-      height: 720px;
-      border: none;
-    }
-    .loading {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%,-50%);
-      text-align: center;
-      z-index: 5;
-    }
-    .spinner {
-      width: 60px; height: 60px;
-      border: 6px solid rgba(255,255,255,0.3);
-      border-top-color: #ffd700;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
-    }
+    header { background: rgba(0,0,0,0.3); backdrop-filter: blur(10px); padding: 20px 40px; }
+    .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 32px; font-weight: 900; display:flex; align-items:center; gap:12px; }
+    .logo img { height: 48px; border-radius: 50%; border: 3px solid #ffd700; }
+    .logo span { color: #ffd700; }
+    .nav-links a { color: white; text-decoration: none; margin-left: 20px; font-weight: 600; }
+    .nav-links a:hover { text-decoration: underline; }
+    main { flex: 1; padding: 40px 20px; }
+    .game-container { max-width: 1300px; margin: 0 auto; background: rgba(0,0,0,0.3); backdrop-filter: blur(20px); border-radius: 24px; padding: 40px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+    h1 { font-size: 52px; text-align: center; margin-bottom: 20px; text-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+    .game-frame { position:relative; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+    iframe { width: 100%; height: 720px; border: none; }
+    .loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align:center; z-index:2; }
+    .spinner { width:60px; height:60px; border:6px solid #ffffff33; border-top-color:#ffd700; border-radius:50%; animation:spin 1s linear infinite; margin-bottom:20px; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* MYNVO UI IN-GAME */
-    #mynvo-ui {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 9999;
-      font-family: system-ui;
-    }
-    #fps-counter, #coin-indicator, #key-display, #mynvo-leaderboard {
-      position: absolute;
-      background: #0d1117;
-      padding: 10px 18px;
-      border-radius: 12px;
-      font-weight: bold;
-      pointer-events: auto;
-      cursor: pointer;
-    }
-    #fps-counter { top: 15px; left: 15px; border: 2px solid #22c55e; color: #22c55e; }
-    #coin-indicator { top: 80px; left: 15px; border: 2px solid #22c55e; color: #22c55e; }
-    #key-display { bottom: 15px; right: 15px; background: #0d1117; color: #58a6ff; border: 1px solid #30363d; box-shadow: 0 0 15px #58a6ff33; }
-    #mynvo-leaderboard { bottom: 20px; left: 20px; width: 320px; border: 2px solid #58a6ff; }
-
-    /* Touches config panel */
-    #key-config {
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%,-50%) scale(0);
-      background: #0d1117;
-      padding: 25px;
-      border-radius: 16px;
-      border: 2px solid #58a6ff;
-      z-index: 99999;
-      transition: all 0.3s;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-    }
-    #key-config.show { transform: translate(-50%,-50%) scale(1); }
-    #key-config input { width: 50px; height: 40px; text-align: center; background: #21262d; color: white; border: 1px solid #30363d; border-radius: 8px; }
-    #key-config button { margin-top: 15px; padding: 10px 20px; background: #58a6ff; color: white; border: none; border-radius: 10px; cursor: pointer; }
-
-    footer { background: rgba(0,0,0,0.3); backdrop-filter: blur(10px); padding: 30px; text-align: center; }
-    @media (max-width: 768px) {
-      .game-frame iframe { height: 500px; }
-      .game-header h1 { font-size: 36px; }
-    }
+    footer { text-align:center; padding:30px; opacity:0.8; font-size:14px; }
+    .credit { color:#ffd700; font-weight:bold; }
   </style>
 </head>
 <body>
@@ -145,206 +36,239 @@
   <header>
     <div class="header-content">
       <div class="logo">
-        <img src="https://i.ibb.co/5Tp9Y3k/mynvo-logo.png" alt="Logo Mynvo">
-        <span>Mynvo</span>
+        <img src="logo.png" alt="Mynvo">
+        Subway<span>Surfers</span> by <span class="credit">Mynvo</span>
       </div>
-      <div class="creator">Créé par Mynvo</div>
+      <div class="nav-links">
+        <a href="#game">Jouer</a>
+        <a href="#settings" onclick="openSettings()">⚙️ Paramètres</a>
+      </div>
     </div>
   </header>
 
   <main>
     <div class="game-container">
-      <div class="game-header">
-        <h1>Subway Surfers - NO COIN CHALLENGE</h1>
-        <p>Mode NO COIN + Leaderboard mondial + Touches custom + FPS</p>
-      </div>
-
+      <h1>Subway Surfers – Mode NO COIN + Leaderboard Mondial</h1>
       <div class="game-frame">
         <div class="loading">
           <div class="spinner"></div>
           <p>Chargement du jeu...</p>
         </div>
-        <iframe src="https://yell0wsuit.page/assets/games/subway-surfers-unity/index.html"
-                allowfullscreen
-                onload="document.querySelector('.loading').style.display='none'; initMynvo()"></iframe>
-
-        <!-- MYNVO UI OVERLAY -->
-        <div id="mynvo-ui">
-          <div id="fps-counter">FPS: <span id="fps-value">0</span></div>
-          <div id="coin-indicator" style="opacity:0">NO COIN | <span id="run-timer">0:00</span><br><small>Record: <span id="best-time">0:00</span></small></div>
-          <div id="key-display">ZQSD | SPACE</div>
-          <div id="mynvo-leaderboard">
-            <div style="text-align:center;color:#58a6ff;font-weight:bold;margin-bottom:8px;">LEADERBOARD MONDIAL</div>
-            <div id="leaderboard-content">Chargement...</div>
-          </div>
-        </div>
+        <iframe src="game/index.html" allowfullscreen onload="this.parentElement.querySelector('.loading').style.display='none'"></iframe>
       </div>
+      <p style="text-align:center; margin-top:30px; font-size:18px;">
+        Toutes les fonctionnalités MYNVO (NO COIN, leaderboard, touches perso, FPS) sont <strong>intégrées directement</strong> – aucune extension à installer !
+      </p>
     </div>
   </main>
 
-  <!-- PANNEAU CONFIG TOUCHES -->
-  <div id="key-config">
-    <h3 style="color:#58a6ff;text-align:center;margin-bottom:15px;">Configuration des touches</h3>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-      <label>Haut ← <input id="cfg-up" maxlength="1"></label>
-      <label>Bas ← <input id="cfg-down" maxlength="1"></label>
-      <label>Gauche ← <input id="cfg-left" maxlength="1"></label>
-      <label>Droite ← <input id="cfg-right" maxlength="1"></label>
-      <label>Saut ← <input id="cfg-jump" placeholder="SPACE"></label>
-    </div>
-    <div style="text-align:center;margin-top:15px;">
-      <button onclick="saveKeys()">Enregistrer</button>
-      <button onclick="document.getElementById('key-config').classList.remove('show')" style="background:#444;margin-left:10px;">Fermer</button>
-    </div>
-  </div>
-
   <footer>
-    <div>© 2025 Subway Surfers by Mynvo — Tous les droits du jeu appartiennent à SYBO & Kiloo</div>
+    © 2024 Subway Surfers by Mynvo – Jeu original © SYBO & Kiloo
   </footer>
 
+  <!-- TOUT LE CODE MYNVO INTÉGRÉ (ex-extension) -->
   <script>
-    // ==================== MYNVO CORE (tout intégré) ====================
-    const FIREBASE_URL = "https://mynvo-nocoin-default-rtdb.europe-west1.firebasedatabase.app/leaderboard.json";
+    // === CONFIG JOUEUR (localStorage) ===
+    const defaultConfig = { up:"z", down:"s", left:"q", right:"d", jump:" ", name:"Joueur", fps:true };
+    let config = JSON.parse(localStorage.getItem("mynvoConfig")) || defaultConfig;
+    function saveConfig(){ localStorage.setItem("mynvoConfig", JSON.stringify(config)); }
 
-    // Config touches
-    const defaultKeys = { up: "z", down: "s", left: "q", right: "d", jump: " " };
-    let keys = { ...defaultKeys };
-    const loadKeys = () => {
-      const saved = localStorage.getItem("mynvo-keys");
-      if (saved) keys = JSON.parse(saved);
-      updateKeyDisplay();
-      applyKeyMapping();
-    };
-    const saveKeys = () => {
-      keys.up = document.getElementById("cfg-up").value || "z";
-      keys.down = document.getElementById("cfg-down").value || "s";
-      keys.left = document.getElementById("cfg-left").value || "q";
-      keys.right = document.getElementById("cfg-right").value || "d";
-      keys.jump = document.getElementById("cfg-jump").value || " ";
-      localStorage.setItem("mynvo-keys", JSON.stringify(keys));
-      updateKeyDisplay();
-      applyKeyMapping();
-      alert("Touches enregistrées !");
-    };
-    const updateKeyDisplay = () => {
-      const k = keys;
-      document.getElementById("key-display").textContent = 
-        `${k.left.toUpperCase()}${k.up.toUpperCase()}${k.down.toUpperCase()}${k.right.toUpperCase()} | ${k.jump===" "?"SPACE":k.jump.toUpperCase()}`;
-    };
-
-    // Redirection touches vers iframe
-    const applyKeyMapping = () => {
-      document.onkeydown = document.onkeyup = e => {
-        const map = {
-          [keys.up.toLowerCase()]: 38,
-          [keys.down.toLowerCase()]: 40,
-          [keys.left.toLowerCase()]: 37,
-          [keys.right.toLowerCase()]: 39,
-          [keys.jump.toLowerCase()]: 32
-        };
-        const code = map[e.key.toLowerCase()];
-        if (!code) return;
+    // === REDIRECTION TOUCHES ===
+    const keyMap = { [config.up.toLowerCase()]:38, [config.down.toLowerCase()]:40, [config.left.toLowerCase()]:37, [config.right.toLowerCase()]:39, [config.jump.toLowerCase()]:32 };
+    document.addEventListener("keydown", e => {
+      const code = keyMap[e.key.toLowerCase()];
+      if(code){
         e.preventDefault();
         const iframe = document.querySelector("iframe");
-        if (iframe && iframe.contentWindow) {
-          iframe.contentWindow.postMessage({type: "key", keyCode: code, eventType: e.type}, "*");
-        }
-      };
-    };
-
-    // FPS Counter
-    let fpsEnabled = true;
-    let last = performance.now(), frames = 0;
-    const updateFPS = () => {
-      if (!fpsEnabled) { requestAnimationFrame(updateFPS); return; }
-      frames++;
-      const now = performance.now();
-      if (now - last >= 1000) {
-        document.getElementById("fps-value").textContent = frames;
-        frames = 0; last = now;
+        if(iframe) iframe.contentWindow.postMessage({type:"key", code, event:"down"}, "*");
       }
-      requestAnimationFrame(updateFPS);
-    };
-    document.getElementById("fps-counter").onclick = () => {
-      fpsEnabled = !fpsEnabled;
-      document.getElementById("fps-counter").style.borderColor = fpsEnabled ? "#22c55e" : "#666";
-    };
-
-    // Leaderboard
-    const updateLeaderboard = async () => {
-      try {
-        const res = await fetch(FIREBASE_URL);
-        const data = await res.json();
-        if (!data) { document.getElementById("leaderboard-content").innerHTML = "Aucun record"; return; }
-        const entries = Object.values(data).sort((a,b)=>b.time-a.time).slice(0,3);
-        const html = entries.map((e,i) => 
-          `<div style="display:flex;align-items:center;gap:12px;margin:8px 0;">
-            <div style="width:30px;height:30px;background:#ffd700;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#333;font-weight:bold;">${i+1}</div>
-            <img src="${e.avatar||'https://cdn.discordapp.com/embed/avatars/0.png'}" width="30" height="30" style="border-radius:50%;">
-            <div><b>${e.name}</b><br><small>${Math.floor(e.time/60)}:${(e.time%60).toString().padStart(2,"0")}</small></div>
-          </div>`).join("");
-        document.getElementById("leaderboard-content").innerHTML = html || "Aucun record";
-      } catch(e) { document.getElementById("leaderboard-content").innerHTML = "Erreur réseau"; }
-    };
-
-    // NO COIN Logic (simplifiée mais très efficace)
-    let gameRunning = false, runStart = 0, noCoinTime = 0, bestNoCoin = 0, startCoins = 0;
-    const sendRecord = async (time) => {
-      const name = localStorage.getItem("mynvo-name") || prompt("Ton pseudo pour le leaderboard ?", "Joueur") || "Anonyme";
-      if (name) localStorage.setItem("mynvo-name", name);
-      await fetch(FIREBASE_URL.replace(".json",".json"), {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({name, avatar: "https://cdn.discordapp.com/embed/avatars/0.png", time, timestamp: Date.now()})
-      });
-      updateLeaderboard();
-    };
-
-    const gameLoop = () => {
-      const scoreEls = [...document.querySelectorAll("iframe")[0]?.contentDocument?.querySelectorAll("div,span") || []]
-        .filter(el => /^\d+$/.test(el.textContent.trim()) && parseInt(el.textContent) < 999999);
-      if (scoreEls.length === 0) return requestAnimationFrame(gameLoop);
-
-      const coins = parseInt(scoreEls[0].textContent);
-      if (!gameRunning && coins > 10) {
-        gameRunning = true; runStart = Date.now(); startCoins = coins;
-        document.getElementById("coin-indicator").style.opacity = 1;
+    });
+    document.addEventListener("keyup", e => {
+      const code = keyMap[e.key.toLowerCase()];
+      if(code){
+        e.preventDefault();
+        const iframe = document.querySelector("iframe");
+        if(iframe) iframe.contentWindow.postMessage({type:"key", code, event:"up"}, "*");
       }
-      if (gameRunning) {
-        const elapsed = Math.floor((Date.now() - runStart)/1000);
-        document.getElementById("run-timer").textContent = `${Math.floor(elapsed/60)}:${(elapsed%60).toString().padStart(2,"0")}`;
-        if (coins === startCoins && elapsed > bestNoCoin) {
-          bestNoCoin = elapsed;
-          document.getElementById("best-time").textContent = `${Math.floor(bestNoCoin/60)}:${(bestNoCoin%60).toString().padStart(2,"0")}`;
-        }
-        if (coins > startCoins && bestNoCoin >= 5) {
-          document.getElementById("coin-indicator").innerHTML = `PIÈCE COLLECTÉE !<br><small>Temps NO COIN: ${Math.floor(bestNoCoin/60)}:${(bestNoCoin%60).toString().padStart(2,"0")}</small>`;
-          document.getElementById("coin-indicator").style.borderColor = "#ef4444";
-          sendRecord(bestNoCoin);
-          setTimeout(() => { document.getElementById("coin-indicator").style.opacity = 0; }, 4000);
-          gameRunning = false;
-        }
-      }
-      requestAnimationFrame(gameLoop);
-    };
+    });
 
-    // Init
-    function initMynvo() {
-      loadKeys();
-      updateFPS();
-      updateLeaderboard();
-      setInterval(updateLeaderboard, 8000);
-      gameLoop();
+    // === INJECTION DANS L'IFRAME ===
+    document.querySelector("iframe").addEventListener("load", () => {
+      const iframe = document.querySelector("iframe");
+      const script = iframe.contentDocument.createElement("script");
+      script.textContent = \`
+        (() => {
+          console.log("%cMYNVO ACTIVÉ – TOP3 MONDIAL + NO COIN", "color:#58a6ff;font-size:22px;font-weight:bold");
+          function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return \`\${mins}:\${secs.toString().padStart(2, '0')}\`;
+          }
+          const FIREBASE_URL = "https://mynvo-nocoin-default-rtdb.europe-west1.firebasedatabase.app";
+          const firebaseGet = async () => {
+            try {
+              const res = await fetch(\`\${FIREBASE_URL}/leaderboard.json\`);
+              if (!res.ok) return null;
+              return await res.json();
+            } catch (e) {
+              return null;
+            }
+          };
+          const firebasePost = async (name, time) => {
+            try {
+              const res = await fetch(\`\${FIREBASE_URL}/leaderboard.json\`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, time, timestamp: Date.now() })
+              });
+              if (!res.ok) return null;
+              return await res.json();
+            } catch (e) {
+              return null;
+            }
+          };
+          window.addEventListener("message", e => {
+            if (e.data.type === "key") {
+              const eventType = e.data.event === "down" ? "keydown" : "keyup";
+              const ke = new KeyboardEvent(eventType, { keyCode: e.data.code, bubbles: true });
+              document.dispatchEvent(ke);
+            }
+          });
+          const wait = setInterval(() => {
+            const canvas = document.querySelector("canvas");
+            if (!canvas) return;
+            clearInterval(wait);
+            const touches = document.createElement("div");
+            touches.textContent = "ZQSD | SPACE";
+            touches.style.cssText = "position:fixed;bottom:15px;right:15px;z-index:999999999;background:#0d1117;color:#58a6ff;padding:8px 16px;border-radius:12px;font-weight:bold;border:1px solid #30363d;box-shadow:0 0 15px #58a6ff33;pointer-events:none;font-size:14px;";
+            document.body.appendChild(touches);
+            const fpsCounter = document.createElement("div");
+            fpsCounter.id = "fps-counter";
+            fpsCounter.style.cssText = "position:fixed;top:15px;left:15px;z-index:999999999;background:#0d1117;color:#22c55e;padding:10px 18px;border-radius:12px;font-weight:bold;border:1px solid #30363d;box-shadow:0 0 15px #22c55e33;cursor:pointer;pointer-events:auto;";
+            fpsCounter.textContent = "FPS: --";
+            fpsCounter.onclick = () => fpsCounter.style.display = fpsCounter.style.display === "none" ? "block" : "none";
+            document.body.appendChild(fpsCounter);
+            let lastTime = performance.now();
+            let frameCount = 0;
+            const updateFPS = () => {
+              frameCount++;
+              const now = performance.now();
+              if (now - lastTime >= 1000) {
+                fpsCounter.textContent = \`FPS: \${Math.round(frameCount / ((now - lastTime) / 1000))}\`;
+                frameCount = 0;
+                lastTime = now;
+              }
+              requestAnimationFrame(updateFPS);
+            };
+            updateFPS();
+            const leaderboard = document.createElement("div");
+            leaderboard.style.cssText = "position:fixed;bottom:15px;left:15px;z-index:999999999;background:#0d1117;color:#c9d1d9;padding:12px 20px;border-radius:12px;font-weight:bold;border:1px solid #30363d;box-shadow:0 0 15px #ffd70033;max-height:200px;overflow-y:auto;";
+            leaderboard.innerHTML = "🏆 TOP 3<br>Chargement...";
+            document.body.appendChild(leaderboard);
+            const updateLeaderboard = async () => {
+              const data = await firebaseGet();
+              if (!data) return;
+              const scores = Object.values(data || {}).sort((a, b) => b.time - a.time).slice(0, 3);
+              leaderboard.innerHTML = "🏆 TOP 3<br>" + scores.map((s, i) => \`\${i + 1}. \${s.name} - \${formatTime(s.time)}\`).join("<br>");
+            };
+            updateLeaderboard();
+            setInterval(updateLeaderboard, 10000);
+            const coinIndicator = document.createElement("div");
+            coinIndicator.style.cssText = "position:fixed;top:15px;left:15px;z-index:999999999;background:#0d1117;color:#22c55e;padding:12px 20px;border-radius:12px;font-weight:bold;border:1px solid #30363d;box-shadow:0 0 15px #22c55e33;transition:opacity 0.5s;opacity:0;";
+            document.body.appendChild(coinIndicator);
+            let isGameRunning = false;
+            let gameStartTime = 0;
+            let bestNoCoinTime = 0;
+            let hasCollectedCoin = false;
+            let runStartCoinCount = 0;
+            let previousCoinCount = 0;
+            let timerInterval = null;
+            const checkGame = () => {
+              const scoreElements = document.querySelectorAll("[class*='score'], [id*='score'], [class*='coin'], [id*='coin']");
+              let currentCoinCount = 0;
+              scoreElements.forEach(el => {
+                const text = el.textContent.trim();
+                if (/^\\d+$/.test(text)) currentCoinCount = parseInt(text);
+              });
+              if (currentCoinCount > previousCoinCount && !isGameRunning) {
+                isGameRunning = true;
+                gameStartTime = Date.now();
+                bestNoCoinTime = 0;
+                hasCollectedCoin = false;
+                runStartCoinCount = currentCoinCount;
+                coinIndicator.style.opacity = "1";
+                coinIndicator.style.color = "#22c55e";
+                coinIndicator.style.borderColor = "#22c55e";
+                coinIndicator.innerHTML = 'NO COIN | <span id="run-timer">0:00</span><br><small style="font-size:11px;color:#58a6ff;">Record: <span id="best-time">0:00</span></small>';
+                timerInterval = setInterval(() => {
+                  if (!isGameRunning) {
+                    clearInterval(timerInterval);
+                    return;
+                  }
+                  const elapsed = Math.floor((Date.now() - gameStartTime) / 1000);
+                  document.getElementById('run-timer').textContent = formatTime(elapsed);
+                  if (currentCoinCount === runStartCoinCount && elapsed > bestNoCoinTime) {
+                    bestNoCoinTime = elapsed;
+                    document.getElementById('best-time').textContent = formatTime(bestNoCoinTime);
+                  }
+                }, 1000);
+              }
+              if (isGameRunning && currentCoinCount > runStartCoinCount && !hasCollectedCoin) {
+                hasCollectedCoin = true;
+                coinIndicator.style.borderColor = '#ef4444';
+                coinIndicator.style.color = '#ef4444';
+                coinIndicator.innerHTML = '❌ PIÈCE COLLECTÉE !<br><small style="font-size:11px;color:#58a6ff;">Temps avant: ' + formatTime(bestNoCoinTime) + '</small>';
+                if (bestNoCoinTime >= 5) firebasePost("${config.name}", bestNoCoinTime);
+              }
+              if (isGameRunning && previousCoinCount > currentCoinCount + 50) {
+                if (!hasCollectedCoin && bestNoCoinTime >= 5) firebasePost("${config.name}", bestNoCoinTime);
+                isGameRunning = false;
+                clearInterval(timerInterval);
+                setTimeout(() => coinIndicator.style.opacity = '0', 3000);
+              }
+              previousCoinCount = currentCoinCount;
+            };
+            setInterval(checkGame, 100);
+          }, 100);
+        })();
+      \`;
+      iframe.contentDocument.head.appendChild(script);
+    });
 
-      // Ouvrir config touches sur clic droit du bandeau
-      document.getElementById("key-display").ondblclick = () => {
-        document.getElementById("cfg-up").value = keys.up;
-        document.getElementById("cfg-down").value = keys.down;
-        document.getElementById("cfg-left").value = keys.left;
-        document.getElementById("cfg-right").value = keys.right;
-        document.getElementById("cfg-jump").value = keys.jump === " " ? "" : keys.jump;
-        document.getElementById("key-config").classList.add("show");
-      };
+    // === FENÊTRE PARAMÈTRES ===
+    function openSettings(){
+      if(document.getElementById("mynvo-settings")) return;
+      const div = document.createElement("div");
+      div.id = "mynvo-settings";
+      div.style = "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#0d1117;color:white;padding:30px;border-radius:20px;border:3px solid #ffd700;z-index:999999;max-width:90%;box-shadow:0 0 50px #000;";
+      div.innerHTML = `
+        <h2 style="color:#ffd700;text-align:center;margin-bottom:20px;">Paramètres MYNVO</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;max-width:400px;margin:0 auto;">
+          <div><label>Pseudo</label><input value="${config.name}" id="set-name" style="width:100%;padding:8px;margin-top:5px;background:#21262d;border:1px solid #30363d;border-radius:8px;color:white;"></div>
+          <div><label>Haut</label><input maxlength=1 value="${config.up}" id="set-up"></div>
+          <div><label>Bas</label><input maxlength=1 value="${config.down}" id="set-down"></div>
+          <div><label>Gauche</label><input maxlength=1 value="${config.left}" id="set-left"></div>
+          <div><label>Droite</label><input maxlength=1 value="${config.right}" id="set-right"></div>
+          <div><label>Saut</label><input value="${config.jump === ' ' ? 'SPACE' : config.jump}" id="set-jump"></div>
+        </div>
+        <div style="text-align:center;margin-top:20px;">
+          <button onclick="this.closest('#mynvo-settings').remove()" style="background:#ef4444;color:white;padding:10px 20px;border:none;border-radius:8px;cursor:pointer;">Fermer</button>
+          <button onclick="saveMynvoSettings()" style="background:#22c55e;color:white;padding:10px 30px;border:none;border-radius:8px;cursor:pointer;margin-left:10px;">Enregistrer</button>
+        </div>
+      `;
+      document.body.appendChild(div);
+    }
+
+    function saveMynvoSettings(){
+      config.name = document.getElementById("set-name").value || "Joueur";
+      config.up = document.getElementById("set-up").value || "z";
+      config.down = document.getElementById("set-down").value || "s";
+      config.left = document.getElementById("set-left").value || "q";
+      config.right = document.getElementById("set-right").value || "d";
+      config.jump = document.getElementById("set-jump").value.toUpperCase() === "SPACE" ? " " : document.getElementById("set-jump").value;
+      saveConfig();
+      alert("Sauvegardé ! Recharge la page pour appliquer.");
+      document.getElementById("mynvo-settings").remove();
     }
   </script>
 </body>
