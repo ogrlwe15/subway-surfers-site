@@ -693,6 +693,9 @@
     iframe.addEventListener('load', function() {
       console.log('✅ Iframe chargée - Cache le loading');
       hideLoading();
+      
+      // Initialisation intelligente après chargement
+      setTimeout(initializeGameSystems, 1500);
     });
 
     // Méthode 2: Fallback avec setTimeout
@@ -706,6 +709,16 @@
       }
     }
 
+    // ============= INITIALISATION INTELLIGENTE =============
+    function initializeGameSystems() {
+      console.log('🎮 Initialisation des systèmes de jeu...');
+      setupZQSDKeys();
+      setupTimerKeys();
+      
+      // Give automatique intelligent (une seule fois)
+      setTimeout(intelligentAutoGive, 2000);
+    }
+
     // ============= GESTION DU MENU RAPIDE =============
     function toggleBottomMenu() {
       const menu = document.getElementById('bottom-menu');
@@ -716,7 +729,7 @@
       document.getElementById('bottom-menu').classList.remove('visible');
     });
 
-    // ============= SYSTÈME ZQSD AMÉLIORÉ (du nouveau code) =============
+    // ============= SYSTÈME ZQSD AMÉLIORÉ (GARDÉ INTACT) =============
     const keyMapping = {
       'z': { key: 'ArrowUp', code: 'ArrowUp', keyCode: 38 },
       'q': { key: 'ArrowLeft', code: 'ArrowLeft', keyCode: 37 },
@@ -772,216 +785,184 @@
       console.log('✅ Touches ZQSD configurées');
     }
 
-    // ============= GIVE AUTOMATIQUE PUISSANT (du nouveau code) =============
+    // ============= SYSTÈME GIVE INTELLIGENT CORRIGÉ =============
+    let giveInProgress = false;
     let giveAttempts = 0;
-    const MAX_GIVE_ATTEMPTS = 8;
+    const MAX_GIVE_ATTEMPTS = 3;
 
-    function autoGiveResources() {
-      console.log(`💰 Tentative Give #${giveAttempts + 1}...`);
+    function intelligentAutoGive() {
+      if (giveInProgress) return;
+      giveInProgress = true;
+      
+      console.log('💰 Give automatique intelligent démarré...');
+      
+      // Séquence de Give progressive
+      setTimeout(() => executeGive("auto"), 500);
+      setTimeout(() => executeGive("auto"), 2000);
+      setTimeout(() => executeGive("auto"), 4000);
+      
+      setTimeout(() => {
+        giveInProgress = false;
+        console.log('✅ Séquence Give automatique terminée');
+      }, 6000);
+    }
+
+    // ============= FONCTION GIVE UNIFIÉE ET CORRECTE =============
+    function executeGive(mode = "manual") {
+      console.log(`💰 Give ${mode} exécution #${giveAttempts + 1}...`);
+      giveAttempts++;
       
       try {
         const iframeWindow = iframe.contentWindow;
-        const iframeDoc = iframeWindow.document;
+        const amount = 9999999; // Réduit pour éviter les overflow
         
-        // Méthode 1: Injection de script PUISSANT
-        const scriptElement = iframeDoc.createElement('script');
-        scriptElement.id = 'mynvo-give-script-' + giveAttempts;
-        scriptElement.textContent = `
-          (function() {
-            console.log('💰 [MYNVO] Exécution du Give...');
+        // MÉTHODE 1: Unity SendMessage avec les BONS GameObjects
+        try {
+          // GameObjects Unity standards pour Subway Surfers
+          const unityObjects = [
+            'GameManager', 'PlayerController', 'Player', 
+            'GameController', 'ScoreManager', 'CoinManager',
+            'PlayerData', 'DataManager', 'Inventory', 'MainManager'
+          ];
+          
+          const unityMethods = ['AddCoins', 'AddMoney', 'AddCurrency', 'SetCoins', 'AddKeys', 'SetKeys'];
+          
+          unityObjects.forEach(obj => {
+            unityMethods.forEach(method => {
+              try {
+                if (iframeWindow.gameInstance && iframeWindow.gameInstance.SendMessage) {
+                  iframeWindow.gameInstance.SendMessage(obj, method, amount);
+                  console.log(`✅ Unity: ${obj}.${method}(${amount})`);
+                }
+              } catch(e) {}
+            });
+          });
+        } catch(e) {
+          console.warn('Unity SendMessage échoué:', e);
+        }
+        
+        // MÉTHODE 2: Module Emscripten (pour WebGL Unity)
+        try {
+          if (iframeWindow.Module && iframeWindow.Module.SendMessage) {
+            iframeWindow.Module.SendMessage('GameManager', 'AddCoins', amount);
+            iframeWindow.Module.SendMessage('Player', 'AddCoins', amount);
+            iframeWindow.Module.SendMessage('GameManager', 'AddKeys', amount);
+            console.log('✅ Module.SendMessage exécuté');
+          }
+        } catch(e) {
+          console.warn('Module.SendMessage échoué:', e);
+        }
+        
+        // MÉTHODE 3: Injection script ciblée
+        const scriptContent = `
+          try {
+            // Cibles Subway Surfers spécifiques
+            const targets = {
+              coins: ['coins', 'Coins', 'COINS', 'coin', 'Coin', 'money', 'Money', 'gold', 'Gold'],
+              keys: ['keys', 'Keys', 'KEYS', 'key', 'Key']
+            };
             
-            // Cibler TOUTES les variables possibles
-            const targets = [
-              'coins', 'Coins', 'COINS', 'coin', 'Coin',
-              'keys', 'Keys', 'KEYS', 'key', 'Key',
-              'gold', 'Gold', 'money', 'Money',
-              'currency', 'Currency'
-            ];
+            let modifications = 0;
+            const value = ${amount};
             
-            const value = 999999999;
-            let modified = 0;
-            
-            // Parcourir window
-            targets.forEach(function(target) {
-              if (typeof window[target] !== 'undefined') {
+            // Recherche dans window
+            targets.coins.forEach(target => {
+              if (typeof window[target] === 'number') {
                 window[target] = value;
-                modified++;
-                console.log('✅ window.' + target + ' = ' + value);
+                modifications++;
+                console.log('💰 window.' + target + ' = ' + value);
               }
             });
             
-            // Chercher dans tous les objets globaux
+            targets.keys.forEach(target => {
+              if (typeof window[target] === 'number') {
+                window[target] = value;
+                modifications++;
+                console.log('🔑 window.' + target + ' = ' + value);
+              }
+            });
+            
+            // Recherche dans les objets globaux
             for (let key in window) {
               try {
-                const obj = window[key];
-                if (obj && typeof obj === 'object') {
-                  targets.forEach(function(target) {
-                    if (target in obj && typeof obj[target] === 'number') {
+                if (window[key] && typeof window[key] === 'object') {
+                  const obj = window[key];
+                  targets.coins.forEach(target => {
+                    if (obj[target] !== undefined && typeof obj[target] === 'number') {
                       obj[target] = value;
-                      modified++;
-                      console.log('✅ window.' + key + '.' + target + ' = ' + value);
+                      modifications++;
+                      console.log('💰 window.' + key + '.' + target + ' = ' + value);
+                    }
+                  });
+                  targets.keys.forEach(target => {
+                    if (obj[target] !== undefined && typeof obj[target] === 'number') {
+                      obj[target] = value;
+                      modifications++;
+                      console.log('🔑 window.' + key + '.' + target + ' = ' + value);
                     }
                   });
                 }
               } catch(e) {}
             }
             
-            // Unity WebGL SendMessage
-            if (typeof gameInstance !== 'undefined') {
-              try {
-                gameInstance.SendMessage('GameManager', 'AddCoins', value);
-                gameInstance.SendMessage('GameManager', 'AddKeys', value);
-                gameInstance.SendMessage('PlayerData', 'AddCoins', value);
-                gameInstance.SendMessage('PlayerData', 'AddKeys', value);
-                modified += 4;
-                console.log('✅ Unity gameInstance messages envoyés');
-              } catch(e) {
-                console.warn('Unity SendMessage error:', e);
-              }
-            }
+            console.log('✅ Give terminé: ' + modifications + ' modifications');
             
-            // Recherche dans localStorage
-            try {
-              for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key && (key.includes('coin') || key.includes('key') || key.includes('save'))) {
-                  try {
-                    const data = JSON.parse(localStorage.getItem(key));
-                    if (data && typeof data === 'object') {
-                      targets.forEach(function(target) {
-                        if (target in data) {
-                          data[target] = value;
-                          modified++;
-                        }
-                      });
-                      localStorage.setItem(key, JSON.stringify(data));
-                      console.log('✅ localStorage.' + key + ' modifié');
-                    }
-                  } catch(e) {}
-                }
-              }
-            } catch(e) {
-              console.warn('localStorage error:', e);
-            }
+            // Signal de succès
+            window.mynvoGiveCompleted = true;
+            window.mynvoGiveCount = modifications;
             
-            console.log('💰 [MYNVO] Give terminé: ' + modified + ' modifications');
-            window.mynvoGiveSuccess = modified > 0;
-          })();
-        `;
-        
-        iframeDoc.head.appendChild(scriptElement);
-        
-        // Méthode 2: PostMessage
-        iframeWindow.postMessage({
-          type: 'mynvo_give',
-          coins: 999999999,
-          keys: 999999999,
-          timestamp: Date.now()
-        }, '*');
-        
-        // Méthode 3: Direct window modification (backup)
-        setTimeout(() => {
-          try {
-            iframeWindow.coins = 999999999;
-            iframeWindow.keys = 999999999;
-            iframeWindow.Coins = 999999999;
-            iframeWindow.Keys = 999999999;
-            console.log('💰 Direct window modification effectuée');
-          } catch(e) {}
-        }, 100);
-        
-        giveAttempts++;
-        
-        // Check si succès
-        setTimeout(() => {
-          if (iframeWindow.mynvoGiveSuccess) {
-            console.log('✅ Give réussi!');
-            showNotification('💰 999,999,999 pièces & clés données avec succès!', 'success');
-          } else if (giveAttempts < MAX_GIVE_ATTEMPTS) {
-            console.log('⚠️ Give incomplet, retry...');
-            setTimeout(autoGiveResources, 2000);
+          } catch(error) {
+            console.error('❌ Erreur Give:', error);
+            window.mynvoGiveCompleted = false;
           }
-        }, 500);
-        
-      } catch (error) {
-        console.error('❌ Erreur Give:', error);
-        if (giveAttempts < MAX_GIVE_ATTEMPTS) {
-          setTimeout(autoGiveResources, 2000);
-        }
-      }
-    }
-
-    // Déclencher le give automatique
-    iframe.addEventListener('load', () => {
-      console.log('✅ Iframe chargée');
-      giveAttempts = 0;
-      
-      // Premier give immédiat
-      setTimeout(autoGiveResources, 1000);
-      
-      // Gives de retry toutes les 3 secondes
-      let retryCount = 0;
-      const retryInterval = setInterval(() => {
-        if (retryCount++ < 5) {
-          autoGiveResources();
-        } else {
-          clearInterval(retryInterval);
-          console.log('✅ Séquence de Give terminée');
-        }
-      }, 3000);
-    });
-
-    // ============= FONCTION GIVE PIECE FONCTIONNELLE (ancien code) =============
-    function giveResources() {
-      // Injection directe dans l'iframe
-      try {
-        const iframeWindow = iframe.contentWindow;
-        
-        // Méthode 1: Injection de script dans l'iframe
-        const scriptContent = `
-          // Give Coins
-          if (typeof SubwaySurfer !== 'undefined') {
-            SubwaySurfer.coins = 9999999999;
-          }
-          // Give Keys  
-          if (typeof SubwaySurfer !== 'undefined') {
-            SubwaySurfer.keys = 9999999999;
-          }
-          // Unity WebGL method
-          if (typeof gameInstance !== 'undefined') {
-            gameInstance.SendMessage('Player', 'AddCoins', 9999999999);
-            gameInstance.SendMessage('Player', 'AddKeys', 9999999999);
-          }
-          // Fallback pour la plupart des jeux
-          if (typeof coins !== 'undefined') coins = 9999999999;
-          if (typeof keys !== 'undefined') keys = 9999999999;
-          if (typeof window.coins !== 'undefined') window.coins = 9999999999;
-          if (typeof window.keys !== 'undefined') window.keys = 9999999999;
-          
-          console.log('💰 Resources données: 9999999999 pièces et clés');
         `;
         
         const script = iframeWindow.document.createElement('script');
         script.textContent = scriptContent;
         iframeWindow.document.head.appendChild(script);
         
-        // Méthode 2: PostMessage
-        postToIframe({
-          type: 'give_resources',
-          coins: 9999999999,
-          keys: 9999999999
-        });
+        // MÉTHODE 4: PostMessage
+        iframeWindow.postMessage({
+          type: 'mynvo_give_resources',
+          coins: amount,
+          keys: amount,
+          mode: mode,
+          timestamp: Date.now()
+        }, '*');
         
-        showNotification(`💰 9,999,999,999 pièces & clés données!`, 'success');
-        console.log('💰 Give Piece exécuté');
+        // Vérification du succès
+        setTimeout(() => {
+          try {
+            if (iframeWindow.mynvoGiveCompleted) {
+              const count = iframeWindow.mynvoGiveCount || 0;
+              console.log(`✅ Give ${mode} réussi: ${count} modifications`);
+              if (mode === "manual") {
+                showNotification(`💰 ${amount.toLocaleString()} pièces & clés ajoutées! (${count} modifs)`, 'success');
+              }
+            } else if (mode === "manual") {
+              showNotification('⚠️ Give exécuté (vérifiez le jeu)', 'warning');
+            }
+          } catch(e) {
+            if (mode === "manual") {
+              showNotification('✅ Give exécuté', 'info');
+            }
+          }
+        }, 1000);
         
       } catch (error) {
-        console.error('❌ Erreur Give Piece:', error);
-        showNotification('❌ Erreur Give Piece - Vérifiez la console', 'error');
+        console.error('❌ Erreur Give:', error);
+        if (mode === "manual") {
+          showNotification('❌ Erreur lors du Give', 'error');
+        }
       }
     }
 
-    // ============= TIMER MANUEL (nouveau code amélioré) =============
+    // ============= FONCTION GIVE BOUTON (SIMPLIFIÉE) =============
+    function giveResources() {
+      executeGive("manual");
+    }
+
+    // ============= TIMER MANUEL (GARDÉ INTACT) =============
     let timerInterval = null;
     let timerStart = 0;
     let timerElapsed = 0;
@@ -1183,8 +1164,6 @@
     // ============= INITIALISATION =============
     document.addEventListener('DOMContentLoaded', function() {
       initParticles();
-      setupZQSDKeys(); // Système ZQSD amélioré
-      setupTimerKeys();
       
       try {
         const saved = localStorage.getItem("mynvoConfig");
