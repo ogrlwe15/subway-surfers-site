@@ -236,9 +236,11 @@
       background: #000;
     }
     
-    #game-canvas {
+    iframe {
       width: 100%;
       height: 100%;
+      border: none;
+      background: #000000;
       display: block;
     }
     
@@ -783,6 +785,42 @@
       border: none;
     }
     
+    /* Game Selection */
+    .game-selection {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .game-option {
+      background: var(--primary-transparent);
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: 100%;
+      max-width: 400px;
+    }
+    
+    .game-option:hover {
+      background: var(--primary);
+      transform: translateY(-5px);
+    }
+    
+    .game-option h3 {
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+    
+    .game-option:hover h3 {
+      color: white;
+    }
+    
     /* Responsive */
     @media (max-width: 1200px) {
       .game-container { padding: 30px; }
@@ -838,8 +876,10 @@
         </div>
         <button class="fs-button" id="fs-btn" title="Plein écran">⤢ Plein écran</button>
         
-        <!-- Canvas pour le jeu Subway Surfers -->
-        <canvas id="game-canvas"></canvas>
+        <!-- Conteneur pour le jeu Subway Surfers -->
+        <div id="game-container">
+          <iframe class="game-embedded" id="game-iframe" src="https://subway-surfers.io" allowfullscreen></iframe>
+        </div>
       </div>
     </div>
   </main>
@@ -922,8 +962,7 @@
     };
 
     // ============= VARIABLES GLOBALES =============
-    const canvas = document.getElementById('game-canvas');
-    const ctx = canvas.getContext('2d');
+    const iframe = document.getElementById('game-iframe');
     const loadingUI = document.getElementById('loading-ui');
     const timerOverlay = document.getElementById('speedrun-timer-overlay');
     const timerDisplay = document.getElementById('timer-display');
@@ -939,387 +978,25 @@
     let timerInterval = null;
     let timerVisible = false;
 
-    // Variables du jeu
-    let gameState = 'menu'; // menu, playing, gameOver
-    let playerX = 50;
-    let playerY = 300;
-    let playerWidth = 40;
-    let playerHeight = 60;
-    let playerVelocityY = 0;
-    let isJumping = false;
-    let score = 0;
-    let coins = 0;
-    let obstacles = [];
-    let coinsList = [];
-    let gameSpeed = 5;
-    let gravity = 0.8;
-    let jumpForce = -15;
-    let keys = {};
-    let lastTime = 0;
-
-    // ============= JEU SUBWAY SURFERS SIMPLIFIÉ =============
-    function initGame() {
-      console.log('🎮 Initialisation du jeu Subway Surfers...');
-      
-      // Ajuster la taille du canvas
-      resizeCanvas();
-      window.addEventListener('resize', resizeCanvas);
-      
-      // Initialiser les événements
-      initGameEvents();
-      
-      // Démarrer la boucle de jeu
-      requestAnimationFrame(gameLoop);
-      
-      // Cacher l'écran de chargement
-      hideLoading();
-      
-      console.log('✅ Jeu initialisé');
-    }
-
-    function resizeCanvas() {
-      const gameFrame = document.querySelector('.game-frame');
-      canvas.width = gameFrame.clientWidth;
-      canvas.height = gameFrame.clientHeight;
-    }
-
-    function initGameEvents() {
-      // Écouteurs pour les touches
-      document.addEventListener('keydown', (e) => {
-        keys[e.key.toLowerCase()] = true;
-        
-        // Démarrer le jeu si on appuie sur espace et qu'on est au menu
-        if (e.key === ' ' && gameState === 'menu') {
-          startGame();
-        }
-        
-        // Redémarrer le jeu si on appuie sur espace et qu'on a perdu
-        if (e.key === ' ' && gameState === 'gameOver') {
-          resetGame();
-          startGame();
-        }
-      });
-      
-      document.addEventListener('keyup', (e) => {
-        keys[e.key.toLowerCase()] = false;
-      });
-    }
-
-    function startGame() {
-      gameState = 'playing';
-      score = 0;
-      coins = 0;
-      obstacles = [];
-      coinsList = [];
-      playerY = 300;
-      playerVelocityY = 0;
-      isJumping = false;
-      gameSpeed = 5;
-    }
-
-    function resetGame() {
-      gameState = 'menu';
-      playerX = 50;
-      playerY = 300;
-      playerVelocityY = 0;
-      isJumping = false;
-      obstacles = [];
-      coinsList = [];
-    }
-
-    function gameLoop(timestamp) {
-      // Calcul du delta time
-      const deltaTime = timestamp - lastTime || 0;
-      lastTime = timestamp;
-      
-      // Effacer le canvas
-      ctx.fillStyle = '#1a1a2e';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      // Dessiner les rails de métro
-      drawTracks();
-      
-      // Mettre à jour et dessiner le joueur
-      updatePlayer(deltaTime);
-      drawPlayer();
-      
-      // Mettre à jour et dessiner les obstacles
-      updateObstacles(deltaTime);
-      drawObstacles();
-      
-      // Mettre à jour et dessiner les pièces
-      updateCoins(deltaTime);
-      drawCoins();
-      
-      // Dessiner l'interface utilisateur
-      drawUI();
-      
-      // Gérer les collisions
-      handleCollisions();
-      
-      // Continuer la boucle de jeu
-      requestAnimationFrame(gameLoop);
-    }
-
-    function drawTracks() {
-      // Dessiner les rails
-      ctx.fillStyle = '#333';
-      ctx.fillRect(0, canvas.height - 100, canvas.width, 100);
-      
-      // Lignes de séparation des voies
-      ctx.strokeStyle = '#fff';
-      ctx.lineWidth = 2;
-      ctx.setLineDash([20, 20]);
-      
-      const laneWidth = canvas.width / 3;
-      for (let i = 1; i < 3; i++) {
-        ctx.beginPath();
-        ctx.moveTo(i * laneWidth, canvas.height - 100);
-        ctx.lineTo(i * laneWidth, canvas.height);
-        ctx.stroke();
-      }
-      
-      ctx.setLineDash([]);
-    }
-
-    function updatePlayer(deltaTime) {
-      if (gameState !== 'playing') return;
-      
-      // Appliquer la gravité
-      playerVelocityY += gravity;
-      playerY += playerVelocityY;
-      
-      // Empêcher le joueur de tomber en dessous du sol
-      const groundLevel = canvas.height - 100 - playerHeight;
-      if (playerY > groundLevel) {
-        playerY = groundLevel;
-        playerVelocityY = 0;
-        isJumping = false;
-      }
-      
-      // Gérer les déplacements gauche/droite
-      const laneWidth = canvas.width / 3;
-      let targetLane = 1; // voie du milieu par défaut
-      
-      if (keys[config.customKeys.left] || keys['arrowleft']) {
-        targetLane = 0; // voie de gauche
-      } else if (keys[config.customKeys.right] || keys['arrowright']) {
-        targetLane = 2; // voie de droite
-      }
-      
-      // Animer le déplacement entre les voies
-      const targetX = 50 + targetLane * laneWidth;
-      const dx = targetX - playerX;
-      playerX += dx * 0.1;
-      
-      // Gérer le saut
-      if ((keys[config.customKeys.jump] || keys[' '] || keys['arrowup']) && !isJumping) {
-        playerVelocityY = jumpForce;
-        isJumping = true;
-      }
-      
-      // Augmenter le score
-      score += deltaTime * 0.01;
-    }
-
-    function drawPlayer() {
-      // Dessiner le personnage
-      ctx.fillStyle = '#ff6b6b';
-      ctx.fillRect(playerX, playerY, playerWidth, playerHeight);
-      
-      // Dessiner les détails du personnage
-      ctx.fillStyle = '#4ecdc4';
-      ctx.fillRect(playerX + 5, playerY + 5, playerWidth - 10, 15); // Casque
-      ctx.fillRect(playerX + 10, playerY + 25, playerWidth - 20, 30); // Corps
-    }
-
-    function updateObstacles(deltaTime) {
-      if (gameState !== 'playing') return;
-      
-      // Générer de nouveaux obstacles
-      if (Math.random() < 0.01) {
-        const lane = Math.floor(Math.random() * 3);
-        const laneWidth = canvas.width / 3;
-        const obstacleX = 50 + lane * laneWidth;
-        
-        obstacles.push({
-          x: obstacleX,
-          y: canvas.height - 100 - 40,
-          width: 40,
-          height: 40,
-          lane: lane
-        });
-      }
-      
-      // Mettre à jour la position des obstacles
-      for (let i = obstacles.length - 1; i >= 0; i--) {
-        obstacles[i].x -= gameSpeed;
-        
-        // Supprimer les obstacles hors écran
-        if (obstacles[i].x + obstacles[i].width < 0) {
-          obstacles.splice(i, 1);
-        }
-      }
-      
-      // Augmenter progressivement la difficulté
-      gameSpeed += deltaTime * 0.0001;
-    }
-
-    function drawObstacles() {
-      ctx.fillStyle = '#ff9e00';
-      
-      for (const obstacle of obstacles) {
-        // Dessiner un obstacle de type barrière
-        ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-        
-        // Détails de l'obstacle
-        ctx.fillStyle = '#ff6b00';
-        ctx.fillRect(obstacle.x + 5, obstacle.y + 5, obstacle.width - 10, 10);
-        ctx.fillStyle = '#ff9e00';
-      }
-    }
-
-    function updateCoins(deltaTime) {
-      if (gameState !== 'playing') return;
-      
-      // Générer de nouvelles pièces
-      if (Math.random() < 0.02) {
-        const lane = Math.floor(Math.random() * 3);
-        const laneWidth = canvas.width / 3;
-        const coinX = canvas.width + Math.random() * 100;
-        const coinY = canvas.height - 200 - Math.random() * 100;
-        
-        coinsList.push({
-          x: coinX,
-          y: coinY,
-          width: 20,
-          height: 20,
-          lane: lane,
-          collected: false
-        });
-      }
-      
-      // Mettre à jour la position des pièces
-      for (let i = coinsList.length - 1; i >= 0; i--) {
-        coinsList[i].x -= gameSpeed;
-        
-        // Supprimer les pièces hors écran
-        if (coinsList[i].x + coinsList[i].width < 0) {
-          coinsList.splice(i, 1);
-        }
-      }
-    }
-
-    function drawCoins() {
-      for (const coin of coinsList) {
-        if (!coin.collected) {
-          // Dessiner une pièce
-          ctx.fillStyle = '#ffd700';
-          ctx.beginPath();
-          ctx.arc(coin.x + coin.width/2, coin.y + coin.height/2, coin.width/2, 0, Math.PI * 2);
-          ctx.fill();
-          
-          // Détail au centre de la pièce
-          ctx.fillStyle = '#ffaa00';
-          ctx.beginPath();
-          ctx.arc(coin.x + coin.width/2, coin.y + coin.height/2, coin.width/4, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-    }
-
-    function handleCollisions() {
-      if (gameState !== 'playing') return;
-      
-      // Vérifier les collisions avec les obstacles
-      for (const obstacle of obstacles) {
-        if (
-          playerX < obstacle.x + obstacle.width &&
-          playerX + playerWidth > obstacle.x &&
-          playerY < obstacle.y + obstacle.height &&
-          playerY + playerHeight > obstacle.y
-        ) {
-          gameState = 'gameOver';
-          return;
-        }
-      }
-      
-      // Vérifier les collisions avec les pièces
-      for (let i = coinsList.length - 1; i >= 0; i--) {
-        const coin = coinsList[i];
-        
-        if (
-          !coin.collected &&
-          playerX < coin.x + coin.width &&
-          playerX + playerWidth > coin.x &&
-          playerY < coin.y + coin.height &&
-          playerY + playerHeight > coin.y
-        ) {
-          coin.collected = true;
-          coins++;
-          coinsList.splice(i, 1);
-        }
-      }
-    }
-
-    function drawUI() {
-      // Afficher le score
-      ctx.fillStyle = '#fff';
-      ctx.font = '20px Arial';
-      ctx.fillText(`Score: ${Math.floor(score)}`, 20, 30);
-      ctx.fillText(`Pièces: ${coins}`, 20, 60);
-      
-      // Afficher l'écran de menu
-      if (gameState === 'menu') {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        ctx.fillStyle = '#fff';
-        ctx.font = '40px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText('SUBWAY SURFERS', canvas.width/2, canvas.height/2 - 50);
-        
-        ctx.font = '20px Arial';
-        ctx.fillText('Appuyez sur ESPACE pour commencer', canvas.width/2, canvas.height/2 + 20);
-        
-        ctx.fillText('ZQSD pour se déplacer, ESPACE pour sauter', canvas.width/2, canvas.height/2 + 60);
-        
-        ctx.textAlign = 'left';
-      }
-      
-      // Afficher l'écran de game over
-      if (gameState === 'gameOver') {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        ctx.fillStyle = '#fff';
-        ctx.font = '40px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText('GAME OVER', canvas.width/2, canvas.height/2 - 50);
-        
-        ctx.font = '20px Arial';
-        ctx.fillText(`Score: ${Math.floor(score)}`, canvas.width/2, canvas.height/2);
-        ctx.fillText(`Pièces: ${coins}`, canvas.width/2, canvas.height/2 + 30);
-        
-        ctx.fillText('Appuyez sur ESPACE pour rejouer', canvas.width/2, canvas.height/2 + 80);
-        
-        ctx.textAlign = 'left';
-      }
-    }
-
     // ============= CHARGEMENT DE LA PAGE =============
     window.addEventListener('load', function() {
       console.log('✅ Page chargée, initialisation du jeu...');
-      setTimeout(() => {
-        initGame();
-        initializeExtensionFeatures();
-      }, 500);
+      hideLoading();
+      initializeExtensionFeatures();
     });
+
+    // Fallback si l'iframe ne charge pas
+    setTimeout(function() {
+      if (loadingUI.style.display !== 'none') {
+        console.log('⚠️ Iframe lente à charger, forçage de l\'affichage...');
+        hideLoading();
+        showNotification('🎮 Jeu Subway Surfers 2025 chargé!', 'success');
+      }
+    }, 5000);
 
     function hideLoading() {
       if (loadingUI.style.display !== 'none') {
         loadingUI.style.display = 'none';
-        showNotification('🎮 Jeu Subway Surfers 2025 chargé!', 'success');
       }
     }
 
@@ -1369,6 +1046,100 @@
         
         // Sauvegarder la configuration
         saveConfig();
+      }
+    }
+
+    // ============= SYSTÈME ZQSD AMÉLIORÉ =============
+    function setupZQSDSystem() {
+      console.log('🎮 Activation du système ZQSD...');
+      
+      // Nettoyer les anciens écouteurs
+      document.removeEventListener('keydown', handleZQSDKeyDown, true);
+      document.removeEventListener('keyup', handleZQSDKeyUp, true);
+      
+      // Ajouter les nouveaux écouteurs en phase de CAPTURE
+      document.addEventListener('keydown', handleZQSDKeyDown, true);
+      document.addEventListener('keyup', handleZQSDKeyUp, true);
+      
+      console.log('✅ ZQSD activé avec capture phase');
+    }
+
+    function handleZQSDKeyDown(e) {
+      if (!zqsdActive || e.repeat) return;
+      
+      const key = e.key.toLowerCase();
+      const mappedKey = getKeyMapping(key);
+      
+      if (mappedKey) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        // Envoyer l'événement mappé
+        dispatchMappedKey(mappedKey, 'keydown');
+      }
+    }
+
+    function handleZQSDKeyUp(e) {
+      if (!zqsdActive) return;
+      
+      const key = e.key.toLowerCase();
+      const mappedKey = getKeyMapping(key);
+      
+      if (mappedKey) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        dispatchMappedKey(mappedKey, 'keyup');
+      }
+    }
+
+    function getKeyMapping(key) {
+      const keyMap = {
+        [config.customKeys.up]: { key: 'ArrowUp', code: 'ArrowUp', keyCode: 38 },
+        [config.customKeys.down]: { key: 'ArrowDown', code: 'ArrowDown', keyCode: 40 },
+        [config.customKeys.left]: { key: 'ArrowLeft', code: 'ArrowLeft', keyCode: 37 },
+        [config.customKeys.right]: { key: 'ArrowRight', code: 'ArrowRight', keyCode: 39 },
+        [config.customKeys.jump]: { key: ' ', code: 'Space', keyCode: 32 }
+      };
+      
+      return keyMap[key] || null;
+    }
+
+    function dispatchMappedKey(mappedKey, eventType) {
+      try {
+        // Créer l'événement clavier
+        const event = new KeyboardEvent(eventType, {
+          key: mappedKey.key,
+          code: mappedKey.code,
+          keyCode: mappedKey.keyCode,
+          which: mappedKey.keyCode,
+          bubbles: true,
+          cancelable: true,
+          composed: true
+        });
+        
+        // Envoyer à l'iframe
+        if (iframe.contentWindow) {
+          iframe.contentWindow.dispatchEvent(event);
+        }
+        if (iframe.contentDocument) {
+          iframe.contentDocument.dispatchEvent(event);
+          iframe.contentDocument.documentElement?.dispatchEvent(event);
+        }
+        
+        // PostMessage de secours
+        iframe.contentWindow?.postMessage({
+          type: 'keyboard_event',
+          eventType: eventType,
+          key: mappedKey.key,
+          code: mappedKey.code,
+          keyCode: mappedKey.keyCode
+        }, '*');
+        
+      } catch (err) {
+        console.log('Dispatch key:', mappedKey.key);
       }
     }
 
@@ -1564,7 +1335,8 @@
     document.addEventListener('fullscreenchange', function() {
       if (!document.fullscreenElement) {
         setTimeout(() => {
-          resizeCanvas();
+          zqsdActive = true;
+          setupZQSDSystem();
           applyOverlaysFromConfig();
         }, 100);
       }
@@ -1746,6 +1518,13 @@
           <div class="settings-section">
             <h3>🎮 Options de jeu</h3>
             <div class="mynvo-row">
+              <div class="mynvo-label">Contrôles ZQSD</div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="zqsd-active" ${zqsdActive ? 'checked' : ''}>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="mynvo-row">
               <button class="quick-btn give-piece-btn" onclick="unlockAllCharacters();" style="width:100%;">🔓 Débloquer Tous les Personnages</button>
             </div>
           </div>
@@ -1821,6 +1600,13 @@
       document.getElementById('fullscreen-keep').addEventListener('change', function() {
         config.fullscreenKeepOverlays = this.checked;
         saveConfig();
+      });
+      
+      document.getElementById('zqsd-active').addEventListener('change', function() {
+        zqsdActive = this.checked;
+        if (zqsdActive) {
+          setupZQSDSystem();
+        }
       });
       
       // Sliders de taille
@@ -1905,6 +1691,7 @@
         showNotification(`✅ Touche ${keyType} définie sur: ${displayValue}`, 'success');
         
         // Reconfigurer les contrôles
+        setupZQSDSystem();
         setupTimerSystem();
       };
       
@@ -2092,7 +1879,7 @@
         behavior: 'smooth', 
         block: 'center' 
       });
-      canvas.focus();
+      iframe.focus();
     });
 
     // ============= INITIALISATION DES SYSTÈMES =============
@@ -2105,15 +1892,18 @@
       // 2. Appliquer l'état des overlays
       applyOverlaysFromConfig();
       
-      // 3. Activer le système de timer
+      // 3. Activer le système ZQSD
+      setupZQSDSystem();
+      
+      // 4. Activer le système de timer
       setupTimerSystem();
       
-      // 4. Rendre les overlays déplaçables
+      // 5. Rendre les overlays déplaçables
       makeDraggable(document.getElementById('fps-overlay'));
       makeDraggable(document.getElementById('top3-overlay'));
       makeDraggable(document.getElementById('speedrun-timer-overlay'));
       
-      // 5. Activer le menu contextuel
+      // 6. Activer le menu contextuel
       document.addEventListener('contextmenu', function(e) {
         e.preventDefault();
         toggleBottomMenu();
@@ -2141,7 +1931,7 @@
     // ============= LOGS DE DÉMARRAGE =============
     console.log('%c╔════════════════════════════════════════╗', 'color: #7c62dc; font-weight: bold;');
     console.log('%c║  SUBWAY SURFERS 2025 - ÉDITION MYNVO  ║', 'color: #7c62dc; font-weight: bold;');
-    console.log('%c║  Version Intégrée v4.0                ║', 'color: #7c62dc; font-weight: bold;');
+    console.log('%c║  Version Intégrée v5.0                ║', 'color: #7c62dc; font-weight: bold;');
     console.log('%c╚════════════════════════════════════════╝', 'color: #7c62dc; font-weight: bold;');
     console.log('');
     console.log('%c🎮 Touches:', 'color: #00cc66; font-weight: bold;');
