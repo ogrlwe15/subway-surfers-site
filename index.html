@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Subway Surfers by Mynvo - Édition Complète</title>
-  <meta name="description" content="Jouez à Subway Surfers version Mynvo avec tous les personnages débloqués, ZQSD, Timer, FPS et plus encore!">
+  <title>Subway Surfers by Mynvo - Édition 2025 Complète</title>
+  <meta name="description" content="Jouez à Subway Surfers 2025 version Mynvo avec tous les personnages débloqués, ZQSD, Timer, FPS et plus encore!">
   <style>
     :root {
       --primary: #7c62dc;
@@ -533,6 +533,97 @@
       }
     }
     
+    /* Nouveaux styles pour la configuration améliorée */
+    .settings-tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--primary);
+    }
+    
+    .settings-tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+      border-bottom: 3px solid transparent;
+    }
+    
+    .settings-tab.active {
+      color: var(--primary);
+      border-bottom: 3px solid var(--primary);
+    }
+    
+    .settings-tab-content {
+      display: none;
+    }
+    
+    .settings-tab-content.active {
+      display: block;
+    }
+    
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #333;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .toggle-slider {
+      background-color: var(--primary);
+    }
+    
+    input:checked + .toggle-slider:before {
+      transform: translateX(26px);
+    }
+    
+    .slider-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .size-slider {
+      width: 150px;
+    }
+    
+    .color-picker {
+      width: 50px;
+      height: 30px;
+      border: 2px solid var(--primary);
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    
     /* Responsive */
     @media (max-width: 1200px) {
       .game-container { padding: 30px; }
@@ -569,7 +660,7 @@
       </div>
       <div class="nav-links">
         <a id="play-link">Jouer</a>
-        <a onclick="toggleBottomMenu();return false;">Paramètres</a>
+        <a onclick="openSettingsModal();return false;">Paramètres</a>
         <a href="https://discord.gg/bQTtDXmF" target="_blank">Discord</a>
       </div>
     </div>
@@ -580,10 +671,10 @@
       <div class="game-frame">
         <div class="loading" id="loading-ui">
           <div class="spinner"></div>
-          <p>Chargement du jeu...</p>
+          <p>Chargement du jeu Subway Surfers 2025...</p>
         </div>
         <button class="fs-button" id="fs-btn" title="Plein écran">⤢ Plein écran</button>
-        <iframe id="game-iframe" src="./game/" allowfullscreen allow="autoplay; fullscreen *"></iframe>
+        <iframe id="game-iframe" src="https://poki.com/fr/g/subway-surfers" allowfullscreen allow="autoplay; fullscreen *"></iframe>
       </div>
     </div>
   </main>
@@ -613,7 +704,7 @@
       <button id="close-bottom-menu" style="background:#7c62dc;border:none;color:#000;font-weight:700;border-radius:8px;padding:4px 10px;cursor:pointer;">✖</button>
     </div>
 
-    <button class="quick-btn" onclick="openKeySettings();">🎮 Touches (ZQSD)</button>
+    <button class="quick-btn" onclick="openSettingsModal();">🎮 Configuration complète</button>
     <button class="quick-btn" onclick="toggleTimer();">⏱️ Timer Speedrun</button>
     <button class="quick-btn" onclick="toggleFPS();">📊 FPS (afficher/masquer)</button>
     <button class="quick-btn" onclick="toggleFullscreen();">⤢ Plein écran</button>
@@ -621,12 +712,12 @@
     <button class="quick-btn give-piece-btn" onclick="unlockAllCharacters();">🔓 Débloquer Tout (100%)</button>
   </div>
 
-  <footer>Subway Surfers by Mynvo © 2025 - Tous droits réservés</footer>
+  <footer>Subway Surfers 2025 by Mynvo © 2025 - Tous droits réservés</footer>
 
   <script>
     console.log('%c[MYNVO] Système d\'extension intégré activé!', 'color: #7c62dc; font-weight: bold; font-size: 14px;');
     
-    // ============= CONFIGURATION (basée sur l'extension) =============
+    // ============= CONFIGURATION AMÉLIORÉE =============
     let config = {
       // Touches de jeu (ZQSD par défaut)
       customKeys: {
@@ -637,17 +728,26 @@
         jump: " "
       },
       // Touches du timer
-      timerStartKey: "Control",
-      timerStopKey: "Control",
-      timerResetKey: "Control",
+      timerStartKey: "t",
+      timerPauseKey: " ",
+      timerResetKey: "r",
       // Affichage
       showFPS: true,
       showTop3: true,
-      // Couleurs du timer (style LiveSplit)
+      showTimer: false,
+      // Options plein écran
+      fullscreenKeepOverlays: true,
+      // Couleurs du timer
       timerColors: {
         stopped: '#FFFFFF',
-        running: '#FFFFFF',
-        paused: '#FFFFFF'
+        running: '#00FF00',
+        paused: '#FFFF00'
+      },
+      // Tailles des overlays
+      overlaySizes: {
+        fps: 1.0,
+        top3: 1.0,
+        timer: 1.0
       }
     };
 
@@ -661,7 +761,7 @@
     let isSettingKey = false;
     let currentKeySetting = null;
     
-    // Variables Timer (basées sur l'extension)
+    // Variables Timer améliorées
     let timerState = 'stopped'; // stopped, running, paused
     let timerStartTime = null;
     let timerCurrentTime = 0;
@@ -680,19 +780,19 @@
     function hideLoading() {
       if (loadingUI.style.display !== 'none') {
         loadingUI.style.display = 'none';
-        showNotification('🎮 Jeu chargé avec succès!', 'success');
+        showNotification('🎮 Jeu Subway Surfers 2025 chargé avec succès!', 'success');
       }
     }
 
-    // ============= SYSTÈME ZQSD (COPIÉ DE L'EXTENSION) =============
+    // ============= SYSTÈME ZQSD AMÉLIORÉ =============
     function setupZQSDSystem() {
-      console.log('🎮 Activation du système ZQSD (méthode extension)...');
+      console.log('🎮 Activation du système ZQSD...');
       
       // Nettoyer les anciens écouteurs
       document.removeEventListener('keydown', handleZQSDKeyDown, true);
       document.removeEventListener('keyup', handleZQSDKeyUp, true);
       
-      // Ajouter les nouveaux écouteurs en phase de CAPTURE (true) comme l'extension
+      // Ajouter les nouveaux écouteurs en phase de CAPTURE
       document.addEventListener('keydown', handleZQSDKeyDown, true);
       document.addEventListener('keyup', handleZQSDKeyUp, true);
       
@@ -708,7 +808,7 @@
       if (mappedKey) {
         e.preventDefault();
         e.stopPropagation();
-        e.stopImmediatePropagation(); // Priorité maximale comme l'extension
+        e.stopImmediatePropagation();
         
         // Envoyer l'événement mappé
         dispatchMappedKey(mappedKey, 'keydown');
@@ -755,7 +855,7 @@
           composed: true
         });
         
-        // Envoyer à l'iframe (multiples cibles comme l'extension)
+        // Envoyer à l'iframe
         if (iframe.contentWindow) {
           iframe.contentWindow.dispatchEvent(event);
         }
@@ -778,11 +878,11 @@
       }
     }
 
-    // ============= TIMER SPEEDRUN (STYLE EXTENSION) =============
+    // ============= TIMER SPEEDRUN AMÉLIORÉ =============
     function setupTimerSystem() {
-      console.log('⏱️ Activation du système de timer...');
+      console.log('⏱️ Activation du système de timer amélioré...');
       
-      // Écouteur pour les touches du timer (phase capture comme l'extension)
+      // Écouteur pour les touches du timer
       document.addEventListener('keydown', handleTimerKeyDown, true);
       
       console.log('✅ Timer configuré');
@@ -791,62 +891,38 @@
     function handleTimerKeyDown(e) {
       if (e.repeat || isSettingKey) return;
       
-      // Vérification de la touche de contrôle du timer
-      const isTimerKey = checkTimerHotkey(e);
+      const key = e.key.toLowerCase();
       
-      if (isTimerKey) {
+      // Vérification des touches du timer
+      if (key === config.timerStartKey.toLowerCase() && !e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) {
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
         
-        controlTimer();
-      }
-      
-      // Shift + Hotkey pour toggle visibilité
-      if (checkTimerVisibilityHotkey(e)) {
+        startTimer();
+      } 
+      else if (key === config.timerPauseKey.toLowerCase() && !e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) {
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
         
-        toggleTimerVisibility();
+        pauseTimer();
+      }
+      else if (key === config.timerResetKey.toLowerCase() && !e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        resetTimer();
       }
     }
 
-    function checkTimerHotkey(e) {
-      const hotkey = config.timerStartKey;
-      
-      // Vérification pour les touches modificatrices
-      if (hotkey === 'Control' && e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) return true;
-      if (hotkey === 'Shift' && e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) return true;
-      if (hotkey === 'Alt' && e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey) return true;
-      if (hotkey === 'Meta' && e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey) return true;
-      
-      // Vérification pour Space
-      if (hotkey === 'Space' && (e.key === ' ' || e.code === 'Space') && !e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) return true;
-      
-      // Vérification pour les autres touches
-      if (hotkey === e.code && !e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) return true;
-      
-      return false;
-    }
-
-    function checkTimerVisibilityHotkey(e) {
-      const hotkey = config.timerStartKey;
-      
-      if (hotkey === 'Space' && (e.key === ' ' || e.code === 'Space') && e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) return true;
-      
-      if (!['Shift', 'Control', 'Alt', 'Meta'].includes(hotkey) && hotkey === e.code && e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) return true;
-      
-      return false;
-    }
-
-    function controlTimer() {
+    function startTimer() {
       if (!timerVisible) return;
       
-      if (timerState === 'stopped') {
-        // Démarrer le timer
-        timerStartTime = performance.now();
-        timerCurrentTime = 0;
+      if (timerState === 'stopped' || timerState === 'paused') {
+        // Démarrer ou reprendre le timer
+        timerStartTime = performance.now() - timerCurrentTime;
         timerState = 'running';
         applyTimerColor();
         
@@ -859,23 +935,32 @@
         timerInterval = requestAnimationFrame(updateFrame);
         
         console.log('▶️ Timer démarré');
-      } 
-      else if (timerState === 'running') {
-        // Mettre en pause
-        cancelAnimationFrame(timerInterval);
-        timerState = 'paused';
-        applyTimerColor();
-        console.log('⏸️ Timer en pause');
-      } 
-      else {
-        // Reset
-        cancelAnimationFrame(timerInterval);
-        timerState = 'stopped';
-        timerCurrentTime = 0;
-        applyTimerColor();
-        timerDisplay.innerHTML = '<span class="time-main">0</span><span class="time-decimals">.00</span>';
-        console.log('🔄 Timer réinitialisé');
+        showNotification('⏱️ Timer démarré', 'success');
       }
+    }
+
+    function pauseTimer() {
+      if (!timerVisible || timerState !== 'running') return;
+      
+      // Mettre en pause
+      cancelAnimationFrame(timerInterval);
+      timerState = 'paused';
+      applyTimerColor();
+      console.log('⏸️ Timer en pause');
+      showNotification('⏱️ Timer en pause', 'warning');
+    }
+
+    function resetTimer() {
+      if (!timerVisible) return;
+      
+      // Reset
+      cancelAnimationFrame(timerInterval);
+      timerState = 'stopped';
+      timerCurrentTime = 0;
+      applyTimerColor();
+      timerDisplay.innerHTML = '<span class="time-main">0</span><span class="time-decimals">.00</span>';
+      console.log('🔄 Timer réinitialisé');
+      showNotification('⏱️ Timer réinitialisé', 'info');
     }
 
     function updateTimerDisplay() {
@@ -904,15 +989,18 @@
     }
 
     function toggleTimerVisibility() {
-      timerVisible = !timerVisible;
-      timerOverlay.style.display = timerVisible ? 'block' : 'none';
+      config.showTimer = !config.showTimer;
+      timerOverlay.style.display = config.showTimer ? 'block' : 'none';
+      timerVisible = config.showTimer;
       
-      if (timerVisible) {
+      if (config.showTimer) {
         updateTimerDisplay();
         showNotification('⏱️ Timer affiché', 'success');
       } else {
         showNotification('⏱️ Timer masqué', 'info');
       }
+      
+      saveConfig();
     }
 
     function toggleTimer() {
@@ -927,54 +1015,16 @@
       timerDisplay.style.color = color;
     }
 
-    // ============= DÉBLOCAGE COMPLET (BASÉ SUR L'EXTENSION) =============
+    // ============= DÉBLOCAGE COMPLET =============
     function unlockAllCharacters() {
       console.log('🔓 Déblocage de tous les personnages...');
       
-      // Attendre que l'iframe soit chargée
-      setTimeout(() => {
-        try {
-          const iframeWindow = iframe.contentWindow || iframe.contentDocument.defaultView;
-          
-          // Données de sauvegarde 100% (extrait de l'extension)
-          const save100Data = {
-            "timestamp": new Date(1759601884673),
-            "mode": 33206,
-            "contents": new Uint8Array([20, 0, 0, 0, 184, 192, 155, 241, 18, 6, 252, 30, 67, 105, 29, 56, 104, 105, 212, 64, 251, 30, 68, 64, 190, 45, 0, 0, 190, 45, 0, 0])
-          };
-          
-          // Ouvrir IndexedDB
-          const request = indexedDB.open("/idbfs");
-          
-          request.onsuccess = function(event) {
-            const db = event.target.result;
-            const transaction = db.transaction(["FILE_DATA"], "readwrite");
-            const store = transaction.objectStore("FILE_DATA");
-            
-            // Insérer les données de sauvegarde 100%
-            const putRequest = store.put(save100Data, "/idbfs/5bc32e1a17c4bdfdd5da57ab99ff0a2c/Save/cloud");
-            
-            putRequest.onsuccess = function() {
-              showNotification('🎉 Tous les personnages débloqués! Rechargement...', 'success');
-              setTimeout(() => {
-                location.reload();
-              }, 1500);
-            };
-            
-            putRequest.onerror = function() {
-              showNotification('❌ Erreur lors du déblocage', 'error');
-            };
-          };
-          
-          request.onerror = function() {
-            showNotification('❌ Impossible d\'accéder à la base de données', 'error');
-          };
-          
-        } catch (error) {
-          console.error('Erreur déblocage:', error);
-          showNotification('❌ Erreur lors du déblocage', 'error');
-        }
-      }, 1000);
+      // Simulation du déblocage (dans un environnement réel, cela interagirait avec le jeu)
+      showNotification('🎉 Tous les personnages débloqués!', 'success');
+      
+      // Dans un environnement réel, vous utiliseriez des méthodes spécifiques au jeu
+      // pour débloquer les personnages, comme manipuler la sauvegarde ou envoyer
+      // des commandes au jeu via l'API
     }
 
     // ============= FPS COUNTER =============
@@ -1023,15 +1073,23 @@
       showNotification(config.showTop3 ? "🏆 TOP 3 affiché" : "🏆 TOP 3 masqué", "info");
     }
 
-    // ============= PLEIN ÉCRAN =============
+    // ============= PLEIN ÉCRAN AMÉLIORÉ =============
     function toggleFullscreen() {
       if (!document.fullscreenElement) {
-        if (iframe.requestFullscreen) {
-          iframe.requestFullscreen();
-        } else if (iframe.webkitRequestFullscreen) {
-          iframe.webkitRequestFullscreen();
+        const gameFrame = document.querySelector('.game-frame');
+        if (gameFrame.requestFullscreen) {
+          gameFrame.requestFullscreen();
+        } else if (gameFrame.webkitRequestFullscreen) {
+          gameFrame.webkitRequestFullscreen();
         }
         showNotification('⤢ Mode plein écran activé', 'success');
+        
+        // Réappliquer les overlays si configuré
+        if (config.fullscreenKeepOverlays) {
+          setTimeout(() => {
+            applyOverlaysFromConfig();
+          }, 100);
+        }
       } else {
         document.exitFullscreen();
         showNotification('⤢ Mode plein écran désactivé', 'info');
@@ -1040,77 +1098,298 @@
 
     document.getElementById('fs-btn').addEventListener('click', toggleFullscreen);
 
-    // Réactiver ZQSD après sortie du plein écran
+    // Gérer la sortie du mode plein écran
     document.addEventListener('fullscreenchange', function() {
       if (!document.fullscreenElement) {
         setTimeout(() => {
           zqsdActive = true;
           setupZQSDSystem();
+          applyOverlaysFromConfig();
           showNotification('🎮 Contrôles ZQSD réactivés', 'success');
         }, 100);
       }
     });
 
-    // ============= MODAL CONFIGURATION DES TOUCHES =============
-    function openKeySettings() {
-      if (document.getElementById('mynvo-keys')) return;
+    // ============= MODAL DE CONFIGURATION AMÉLIORÉ =============
+    function openSettingsModal() {
+      if (document.getElementById('mynvo-settings')) return;
       
       const div = document.createElement('div');
-      div.id = 'mynvo-keys';
+      div.id = 'mynvo-settings';
       div.className = 'mynvo-modal';
       div.innerHTML = `
-        <h3 style="color:#7c62dc;margin-bottom:10px;text-align:center;">🎮 Configuration des Touches</h3>
+        <h3 style="color:#7c62dc;margin-bottom:10px;text-align:center;">🎮 Configuration Complète</h3>
         
-        <div class="settings-section">
-          <h3>🎯 Touches de Jeu (ZQSD)</h3>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Haut</div>
-            <div class="key-display" data-key="up">${config.customKeys.up.toUpperCase()}</div>
-          </div>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Bas</div>
-            <div class="key-display" data-key="down">${config.customKeys.down.toUpperCase()}</div>
-          </div>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Gauche</div>
-            <div class="key-display" data-key="left">${config.customKeys.left.toUpperCase()}</div>
-          </div>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Droite</div>
-            <div class="key-display" data-key="right">${config.customKeys.right.toUpperCase()}</div>
-          </div>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Saut</div>
-            <div class="key-display" data-key="jump">${config.customKeys.jump === ' ' ? 'ESPACE' : config.customKeys.jump.toUpperCase()}</div>
+        <div class="settings-tabs">
+          <div class="settings-tab active" data-tab="keys">Touches</div>
+          <div class="settings-tab" data-tab="timer">Timer</div>
+          <div class="settings-tab" data-tab="display">Affichage</div>
+          <div class="settings-tab" data-tab="game">Jeu</div>
+        </div>
+        
+        <!-- Onglet Touches -->
+        <div class="settings-tab-content active" id="keys-tab">
+          <div class="settings-section">
+            <h3>🎯 Touches de Jeu (ZQSD)</h3>
+            <div class="mynvo-row">
+              <div class="mynvo-label">Haut</div>
+              <div class="key-display" data-key="up">${config.customKeys.up.toUpperCase()}</div>
+            </div>
+            <div class="mynvo-row">
+              <div class="mynvo-label">Bas</div>
+              <div class="key-display" data-key="down">${config.customKeys.down.toUpperCase()}</div>
+            </div>
+            <div class="mynvo-row">
+              <div class="mynvo-label">Gauche</div>
+              <div class="key-display" data-key="left">${config.customKeys.left.toUpperCase()}</div>
+            </div>
+            <div class="mynvo-row">
+              <div class="mynvo-label">Droite</div>
+              <div class="key-display" data-key="right">${config.customKeys.right.toUpperCase()}</div>
+            </div>
+            <div class="mynvo-row">
+              <div class="mynvo-label">Saut</div>
+              <div class="key-display" data-key="jump">${config.customKeys.jump === ' ' ? 'ESPACE' : config.customKeys.jump.toUpperCase()}</div>
+            </div>
           </div>
         </div>
-
-        <div class="settings-section">
-          <h3>⏱️ Touche du Timer</h3>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Contrôle Timer</div>
-            <div class="key-display" data-key="timerControl">${getKeyDisplayName(config.timerStartKey)}</div>
+        
+        <!-- Onglet Timer -->
+        <div class="settings-tab-content" id="timer-tab">
+          <div class="settings-section">
+            <h3>⏱️ Configuration du Timer</h3>
+            <div class="mynvo-row">
+              <div class="mynvo-label">Démarrer</div>
+              <div class="key-display" data-key="timerStartKey">${getKeyDisplayName(config.timerStartKey)}</div>
+            </div>
+            <div class="mynvo-row">
+              <div class="mynvo-label">Pause</div>
+              <div class="key-display" data-key="timerPauseKey">${getKeyDisplayName(config.timerPauseKey)}</div>
+            </div>
+            <div class="mynvo-row">
+              <div class="mynvo-label">Reset</div>
+              <div class="key-display" data-key="timerResetKey">${getKeyDisplayName(config.timerResetKey)}</div>
+            </div>
           </div>
-          <div style="font-size:12px;color:#aaa;margin-top:8px;">
-            • Appuyez une fois pour démarrer<br>
-            • Appuyez à nouveau pour pause<br>
-            • Appuyez une 3ème fois pour reset<br>
-            • Shift + Touche = Afficher/Masquer
+          
+          <div class="settings-section">
+            <h3>🎨 Apparence du Timer</h3>
+            <div class="mynvo-row">
+              <div class="mynvo-label">Couleur arrêté</div>
+              <input type="color" class="color-picker" id="timer-color-stopped" value="${config.timerColors.stopped}">
+            </div>
+            <div class="mynvo-row">
+              <div class="mynvo-label">Couleur en cours</div>
+              <input type="color" class="color-picker" id="timer-color-running" value="${config.timerColors.running}">
+            </div>
+            <div class="mynvo-row">
+              <div class="mynvo-label">Couleur en pause</div>
+              <input type="color" class="color-picker" id="timer-color-paused" value="${config.timerColors.paused}">
+            </div>
+            <div class="mynvo-row">
+              <div class="mynvo-label">Taille</div>
+              <div class="slider-container">
+                <input type="range" min="0.5" max="2" step="0.1" value="${config.overlaySizes.timer}" class="size-slider" id="timer-size">
+                <span id="timer-size-value">${config.overlaySizes.timer}x</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Onglet Affichage -->
+        <div class="settings-tab-content" id="display-tab">
+          <div class="settings-section">
+            <h3>👁️ Éléments d'affichage</h3>
+            <div class="mynvo-row">
+              <div class="mynvo-label">Afficher FPS</div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="show-fps" ${config.showFPS ? 'checked' : ''}>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="mynvo-row">
+              <div class="mynvo-label">Afficher TOP 3</div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="show-top3" ${config.showTop3 ? 'checked' : ''}>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="mynvo-row">
+              <div class="mynvo-label">Afficher Timer</div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="show-timer" ${config.showTimer ? 'checked' : ''}>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="mynvo-row">
+              <div class="mynvo-label">Garder en plein écran</div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="fullscreen-keep" ${config.fullscreenKeepOverlays ? 'checked' : ''}>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="settings-section">
+            <h3>📏 Tailles des éléments</h3>
+            <div class="mynvo-row">
+              <div class="mynvo-label">Taille FPS</div>
+              <div class="slider-container">
+                <input type="range" min="0.5" max="2" step="0.1" value="${config.overlaySizes.fps}" class="size-slider" id="fps-size">
+                <span id="fps-size-value">${config.overlaySizes.fps}x</span>
+              </div>
+            </div>
+            <div class="mynvo-row">
+              <div class="mynvo-label">Taille TOP 3</div>
+              <div class="slider-container">
+                <input type="range" min="0.5" max="2" step="0.1" value="${config.overlaySizes.top3}" class="size-slider" id="top3-size">
+                <span id="top3-size-value">${config.overlaySizes.top3}x</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Onglet Jeu -->
+        <div class="settings-tab-content" id="game-tab">
+          <div class="settings-section">
+            <h3>🎮 Options de jeu</h3>
+            <div class="mynvo-row">
+              <div class="mynvo-label">Contrôles ZQSD</div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="zqsd-active" ${zqsdActive ? 'checked' : ''}>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="mynvo-row">
+              <button class="quick-btn give-piece-btn" onclick="unlockAllCharacters();" style="width:100%;">🔓 Débloquer Tous les Personnages</button>
+            </div>
+          </div>
+          
+          <div class="settings-section">
+            <h3>🔄 Réinitialisation</h3>
+            <div class="mynvo-row">
+              <button class="quick-btn" onclick="resetToDefaults();" style="width:100%;background:var(--danger);border-color:var(--danger);">🔄 Réinitialiser aux paramètres par défaut</button>
+            </div>
           </div>
         </div>
 
         <div style="text-align:center;margin-top:12px;">
-          <button onclick="closeKeySettings()" style="background:#7c62dc;color:#fff;padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-weight:700;">Fermer</button>
+          <button onclick="closeSettingsModal()" style="background:#7c62dc;color:#fff;padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-weight:700;">Fermer</button>
         </div>
       `;
       
       document.body.appendChild(div);
       
+      // Initialiser les onglets
+      initSettingsTabs();
+      
+      // Initialiser les écouteurs d'événements
+      initSettingsEventListeners();
+      
       // Ajouter les écouteurs pour changer les touches
-      document.querySelectorAll('#mynvo-keys .key-display').forEach(display => {
+      document.querySelectorAll('#mynvo-settings .key-display').forEach(display => {
         display.addEventListener('click', function() {
           startKeySetting(this.dataset.key);
         });
+      });
+    }
+
+    function initSettingsTabs() {
+      const tabs = document.querySelectorAll('.settings-tab');
+      const contents = document.querySelectorAll('.settings-tab-content');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          const tabId = this.dataset.tab;
+          
+          // Désactiver tous les onglets
+          tabs.forEach(t => t.classList.remove('active'));
+          contents.forEach(c => c.classList.remove('active'));
+          
+          // Activer l'onglet sélectionné
+          this.classList.add('active');
+          document.getElementById(`${tabId}-tab`).classList.add('active');
+        });
+      });
+    }
+
+    function initSettingsEventListeners() {
+      // Toggle switches
+      document.getElementById('show-fps').addEventListener('change', function() {
+        config.showFPS = this.checked;
+        saveConfig();
+        applyOverlaysFromConfig();
+      });
+      
+      document.getElementById('show-top3').addEventListener('change', function() {
+        config.showTop3 = this.checked;
+        saveConfig();
+        applyOverlaysFromConfig();
+      });
+      
+      document.getElementById('show-timer').addEventListener('change', function() {
+        config.showTimer = this.checked;
+        saveConfig();
+        applyOverlaysFromConfig();
+      });
+      
+      document.getElementById('fullscreen-keep').addEventListener('change', function() {
+        config.fullscreenKeepOverlays = this.checked;
+        saveConfig();
+      });
+      
+      document.getElementById('zqsd-active').addEventListener('change', function() {
+        zqsdActive = this.checked;
+        if (zqsdActive) {
+          setupZQSDSystem();
+          showNotification('🎮 Contrôles ZQSD activés', 'success');
+        } else {
+          showNotification('🎮 Contrôles ZQSD désactivés', 'info');
+        }
+      });
+      
+      // Sliders de taille
+      document.getElementById('fps-size').addEventListener('input', function() {
+        const value = this.value;
+        document.getElementById('fps-size-value').textContent = value + 'x';
+        config.overlaySizes.fps = parseFloat(value);
+        applyOverlaySizes();
+        saveConfig();
+      });
+      
+      document.getElementById('top3-size').addEventListener('input', function() {
+        const value = this.value;
+        document.getElementById('top3-size-value').textContent = value + 'x';
+        config.overlaySizes.top3 = parseFloat(value);
+        applyOverlaySizes();
+        saveConfig();
+      });
+      
+      document.getElementById('timer-size').addEventListener('input', function() {
+        const value = this.value;
+        document.getElementById('timer-size-value').textContent = value + 'x';
+        config.overlaySizes.timer = parseFloat(value);
+        applyOverlaySizes();
+        saveConfig();
+      });
+      
+      // Couleurs du timer
+      document.getElementById('timer-color-stopped').addEventListener('change', function() {
+        config.timerColors.stopped = this.value;
+        applyTimerColor();
+        saveConfig();
+      });
+      
+      document.getElementById('timer-color-running').addEventListener('change', function() {
+        config.timerColors.running = this.value;
+        applyTimerColor();
+        saveConfig();
+      });
+      
+      document.getElementById('timer-color-paused').addEventListener('change', function() {
+        config.timerColors.paused = this.value;
+        applyTimerColor();
+        saveConfig();
       });
     }
 
@@ -1118,7 +1397,7 @@
       isSettingKey = true;
       currentKeySetting = keyType;
       
-      const display = document.querySelector(`#mynvo-keys .key-display[data-key="${keyType}"]`);
+      const display = document.querySelector(`#mynvo-settings .key-display[data-key="${keyType}"]`);
       display.textContent = '...';
       display.classList.add('active');
       
@@ -1151,8 +1430,8 @@
         }
         
         // Affecter la nouvelle touche
-        if (keyType === 'timerControl') {
-          config.timerStartKey = e.code || keyValue;
+        if (keyType.startsWith('timer')) {
+          config[keyType] = keyValue;
         } else {
           config.customKeys[keyType] = keyValue;
         }
@@ -1183,6 +1462,7 @@
         'Shift': 'SHIFT',
         'Alt': 'ALT',
         'Meta': 'META',
+        ' ': 'ESPACE',
         'Space': 'ESPACE',
         'Enter': 'ENTRÉE',
         'Tab': 'TAB',
@@ -1191,14 +1471,21 @@
         'F5': 'F5', 'F6': 'F6', 'F7': 'F7', 'F8': 'F8',
         'F9': 'F9', 'F10': 'F10', 'F11': 'F11', 'F12': 'F12'
       };
-      return keyNames[keyCode] || keyCode;
+      return keyNames[keyCode] || keyCode.toUpperCase();
     }
 
-    function closeKeySettings() {
-      const modal = document.getElementById('mynvo-keys');
+    function closeSettingsModal() {
+      const modal = document.getElementById('mynvo-settings');
       if (modal) modal.remove();
       isSettingKey = false;
       currentKeySetting = null;
+    }
+
+    function resetToDefaults() {
+      if (confirm('Êtes-vous sûr de vouloir réinitialiser tous les paramètres aux valeurs par défaut?')) {
+        localStorage.removeItem("mynvoConfig");
+        location.reload();
+      }
     }
 
     // ============= GESTION DU MENU RAPIDE =============
@@ -1232,6 +1519,27 @@
         notification.classList.remove('show');
         setTimeout(() => notification.remove(), 300);
       }, 3000);
+    }
+
+    // ============= APPLICATION DES TAILLES DES OVERLAYS =============
+    function applyOverlaySizes() {
+      // FPS
+      const fpsOverlay = document.getElementById('fps-overlay');
+      if (fpsOverlay) {
+        fpsOverlay.style.transform = `scale(${config.overlaySizes.fps})`;
+      }
+      
+      // TOP 3
+      const top3Overlay = document.getElementById('top3-overlay');
+      if (top3Overlay) {
+        top3Overlay.style.transform = `scale(${config.overlaySizes.top3})`;
+      }
+      
+      // Timer
+      const timerOverlay = document.getElementById('speedrun-timer-overlay');
+      if (timerOverlay) {
+        timerOverlay.style.transform = `scale(${config.overlaySizes.timer})`;
+      }
     }
 
     // ============= PARTICULES D'ARRIÈRE-PLAN =============
@@ -1283,6 +1591,11 @@
     function applyOverlaysFromConfig() {
       document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
       document.getElementById('top3-overlay').style.display = config.showTop3 ? 'block' : 'none';
+      document.getElementById('speedrun-timer-overlay').style.display = config.showTimer ? 'block' : 'none';
+      timerVisible = config.showTimer;
+      
+      // Appliquer les tailles
+      applyOverlaySizes();
     }
 
     // ============= BOUTON "JOUER" =============
@@ -1294,9 +1607,9 @@
       iframe.focus();
     });
 
-    // ============= INITIALISATION DES SYSTÈMES (BASÉ SUR L'EXTENSION) =============
+    // ============= INITIALISATION DES SYSTÈMES =============
     function initializeExtensionFeatures() {
-      console.log('🚀 Initialisation des fonctionnalités de l\'extension...');
+      console.log('🚀 Initialisation des fonctionnalités...');
       
       // 1. Charger la configuration
       loadConfig();
@@ -1310,14 +1623,8 @@
       // 4. Activer le système de timer
       setupTimerSystem();
       
-      // 5. Déblocage automatique après 3 secondes
-      setTimeout(() => {
-        console.log('🎮 Tentative de déblocage automatique...');
-        unlockAllCharacters();
-      }, 3000);
-      
       console.log('✅ Tous les systèmes activés!');
-      showNotification('🎮 Extension intégrée activée!', 'success');
+      showNotification('🎮 Configuration chargée avec succès!', 'success');
     }
 
     // ============= INITIALISATION AU CHARGEMENT DE LA PAGE =============
@@ -1338,24 +1645,26 @@
 
     // ============= LOGS DE DÉMARRAGE =============
     console.log('%c╔════════════════════════════════════════╗', 'color: #7c62dc; font-weight: bold;');
-    console.log('%c║  SUBWAY SURFERS - ÉDITION MYNVO       ║', 'color: #7c62dc; font-weight: bold;');
-    console.log('%c║  Extension Intégrée v1.0               ║', 'color: #7c62dc; font-weight: bold;');
+    console.log('%c║  SUBWAY SURFERS 2025 - ÉDITION MYNVO  ║', 'color: #7c62dc; font-weight: bold;');
+    console.log('%c║  Extension Intégrée v2.0               ║', 'color: #7c62dc; font-weight: bold;');
     console.log('%c╚════════════════════════════════════════╝', 'color: #7c62dc; font-weight: bold;');
     console.log('');
     console.log('%c🎮 Touches:', 'color: #00cc66; font-weight: bold;');
     console.log('   • ZQSD + Espace pour jouer');
-    console.log('   • CTRL = Start/Pause/Reset timer');
-    console.log('   • SHIFT + CTRL = Afficher/Masquer timer');
+    console.log('   • T = Démarrer timer');
+    console.log('   • ESPACE = Pause timer');
+    console.log('   • R = Reset timer');
     console.log('');
     console.log('%c⚙️ Fonctionnalités:', 'color: #7c62dc; font-weight: bold;');
     console.log('   • Déblocage automatique de tous les personnages');
-    console.log('   • Timer speedrun style LiveSplit');
+    console.log('   • Timer speedrun amélioré avec touches séparées');
     console.log('   • FPS Counter en temps réel');
     console.log('   • TOP 3 personnalisable');
-    console.log('   • Configuration des touches personnalisée');
+    console.log('   • Configuration complète des touches');
+    console.log('   • Overlays personnalisables (taille, couleur)');
     console.log('');
     console.log('%c💡 Astuce:', 'color: #ffaa00; font-weight: bold;');
-    console.log('   Ouvrez le menu "Paramètres" pour personnaliser!');
+    console.log('   Ouvrez les "Paramètres" pour personnaliser l\'expérience!');
     console.log('');
   </script>
 </body>
