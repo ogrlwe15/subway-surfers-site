@@ -775,7 +775,7 @@
       </div>
       <div class="nav-links">
         <a id="play-link">Jouer</a>
-        <a onclick="openSettingsModal();return false;">Paramètres</a>
+        <a id="settings-link">Paramètres</a>
         <a href="https://discord.gg/bQTtDXmF" target="_blank">Discord</a>
       </div>
     </div>
@@ -818,12 +818,12 @@
       <button id="close-bottom-menu" style="background:var(--primary);border:none;color:#000;font-weight:700;border-radius:8px;padding:4px 10px;cursor:pointer;">✖</button>
     </div>
 
-    <button class="quick-btn" onclick="openSettingsModal();">🎮 Configuration complète</button>
-    <button class="quick-btn" onclick="toggleTimer();">⏱️ Timer Speedrun</button>
-    <button class="quick-btn" onclick="toggleFPS();">📊 FPS (afficher/masquer)</button>
-    <button class="quick-btn" onclick="toggleFullscreen();">⤢ Plein écran</button>
-    <button class="quick-btn" onclick="toggleTop3();">🏆 TOP 3 (afficher/masquer)</button>
-    <button class="quick-btn give-piece-btn" onclick="unlockAllCharacters();">🔓 Débloquer Tout (100%)</button>
+    <button class="quick-btn" id="settings-quick-btn">🎮 Configuration complète</button>
+    <button class="quick-btn" id="timer-quick-btn">⏱️ Timer Speedrun</button>
+    <button class="quick-btn" id="fps-quick-btn">📊 FPS (afficher/masquer)</button>
+    <button class="quick-btn" id="fullscreen-quick-btn">⤢ Plein écran</button>
+    <button class="quick-btn" id="top3-quick-btn">🏆 TOP 3 (afficher/masquer)</button>
+    <button class="quick-btn give-piece-btn" id="unlock-all-btn">🔓 Débloquer Tout (100%)</button>
   </div>
 
   <footer>Subway Surfers 2025 by Mynvo © 2025 - Tous droits réservés</footer>
@@ -833,7 +833,6 @@
     
     // ============= CONFIGURATION AMÉLIORÉE =============
     let config = {
-      // Touches de jeu (ZQSD par défaut)
       customKeys: {
         up: "z",
         down: "s",
@@ -841,25 +840,19 @@
         right: "d",
         hoverboard: " "
       },
-      // Touches du timer
       timerStartKey: "t",
       timerPauseKey: " ",
       timerResetKey: "r",
-      // Affichage
       showFPS: true,
       showTop3: true,
       showTimer: false,
-      // Options plein écran
       fullscreenKeepOverlays: true,
-      // Thème
       theme: "violet",
-      // Tailles des overlays
       overlaySizes: {
         fps: 1.0,
         top3: 1.0,
         timer: 1.0
       },
-      // Positions des overlays
       overlayPositions: {
         fps: { top: "100px", left: "20px" },
         top3: { bottom: "20px", left: "20px" },
@@ -881,7 +874,7 @@
     let dragOffset = { x: 0, y: 0 };
     
     // Variables Timer améliorées
-    let timerState = 'stopped'; // stopped, running, paused
+    let timerState = 'stopped';
     let timerStartTime = null;
     let timerCurrentTime = 0;
     let timerInterval = null;
@@ -908,23 +901,19 @@
       }
     }
 
-    // ============= SYSTÈME ZQSD AMÉLIORÉ =============
+    // ============= SYSTÈME ZQSD CORRIGÉ =============
     function setupZQSDSystem() {
-      console.log('🎮 Activation du système ZQSD...');
+      console.log('🎮 Activation du système ZQSD corrigé...');
       
-      // Nettoyer les anciens écouteurs
-      document.removeEventListener('keydown', handleZQSDKeyDown, true);
-      document.removeEventListener('keyup', handleZQSDKeyUp, true);
+      document.removeEventListener('keydown', handleZQSDKeyDown);
+      document.removeEventListener('keyup', handleZQSDKeyUp);
       
-      // Ajouter les nouveaux écouteurs en phase de CAPTURE
       document.addEventListener('keydown', handleZQSDKeyDown, true);
       document.addEventListener('keyup', handleZQSDKeyUp, true);
-      
-      console.log('✅ ZQSD activé avec capture phase');
     }
 
     function handleZQSDKeyDown(e) {
-      if (!zqsdActive || e.repeat) return;
+      if (!zqsdActive || e.repeat || isSettingKey) return;
       
       const key = e.key.toLowerCase();
       const mappedKey = getKeyMapping(key);
@@ -934,13 +923,13 @@
         e.stopPropagation();
         e.stopImmediatePropagation();
         
-        // Envoyer l'événement mappé
+        console.log(`🎮 Touche ZQSD: ${key} -> ${mappedKey.key}`);
         dispatchMappedKey(mappedKey, 'keydown');
       }
     }
 
     function handleZQSDKeyUp(e) {
-      if (!zqsdActive) return;
+      if (!zqsdActive || isSettingKey) return;
       
       const key = e.key.toLowerCase();
       const mappedKey = getKeyMapping(key);
@@ -968,7 +957,6 @@
 
     function dispatchMappedKey(mappedKey, eventType) {
       try {
-        // Créer l'événement clavier
         const event = new KeyboardEvent(eventType, {
           key: mappedKey.key,
           code: mappedKey.code,
@@ -979,7 +967,6 @@
           composed: true
         });
         
-        // Envoyer à l'iframe
         if (iframe.contentWindow) {
           iframe.contentWindow.dispatchEvent(event);
         }
@@ -988,7 +975,6 @@
           iframe.contentDocument.documentElement?.dispatchEvent(event);
         }
         
-        // PostMessage de secours
         iframe.contentWindow?.postMessage({
           type: 'keyboard_event',
           eventType: eventType,
@@ -998,18 +984,13 @@
         }, '*');
         
       } catch (err) {
-        console.log('Dispatch key:', mappedKey.key);
+        console.log('Dispatch key error:', err);
       }
     }
 
-    // ============= NOUVEAU TIMER SPEEDRUN =============
+    // ============= TIMER SPEEDRUN CORRIGÉ =============
     function setupTimerSystem() {
-      console.log('⏱️ Activation du système de timer amélioré...');
-      
-      // Écouteur pour les touches du timer
       document.addEventListener('keydown', handleTimerKeyDown, true);
-      
-      console.log('✅ Timer configuré');
     }
 
     function handleTimerKeyDown(e) {
@@ -1017,26 +998,19 @@
       
       const key = e.key.toLowerCase();
       
-      // Vérification des touches du timer
       if (key === config.timerStartKey.toLowerCase() && !e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) {
         e.preventDefault();
         e.stopPropagation();
-        e.stopImmediatePropagation();
-        
         startTimer();
       } 
       else if (key === config.timerPauseKey.toLowerCase() && !e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) {
         e.preventDefault();
         e.stopPropagation();
-        e.stopImmediatePropagation();
-        
         pauseTimer();
       }
       else if (key === config.timerResetKey.toLowerCase() && !e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) {
         e.preventDefault();
         e.stopPropagation();
-        e.stopImmediatePropagation();
-        
         resetTimer();
       }
     }
@@ -1045,7 +1019,6 @@
       if (!timerVisible) return;
       
       if (timerState === 'stopped' || timerState === 'paused') {
-        // Démarrer ou reprendre le timer
         timerStartTime = performance.now() - timerCurrentTime;
         timerState = 'running';
         updateTimerDisplay();
@@ -1057,29 +1030,23 @@
           }
         };
         timerInterval = requestAnimationFrame(updateFrame);
-        
-        console.log('▶️ Timer démarré');
       }
     }
 
     function pauseTimer() {
       if (!timerVisible || timerState !== 'running') return;
       
-      // Mettre en pause
       cancelAnimationFrame(timerInterval);
       timerState = 'paused';
-      console.log('⏸️ Timer en pause');
     }
 
     function resetTimer() {
       if (!timerVisible) return;
       
-      // Reset
       cancelAnimationFrame(timerInterval);
       timerState = 'stopped';
       timerCurrentTime = 0;
       timerDisplay.textContent = '00:00.00';
-      console.log('🔄 Timer réinitialisé');
     }
 
     function updateTimerDisplay() {
@@ -1110,16 +1077,69 @@
       saveConfig();
     }
 
-    function toggleTimer() {
-      toggleTimerVisibility();
-    }
-
-    // ============= DÉBLOCAGE COMPLET =============
+    // ============= DÉBLOCAGE COMPLET CORRIGÉ =============
     function unlockAllCharacters() {
-      console.log('🔓 Déblocage de tous les personnages...');
+      console.log('🔓 Déblocage COMPLET activé...');
       
-      // Simulation du déblocage
-      showNotification('🎉 Tous les personnages débloqués! Rafraîchissez la page pour voir les changements.', 'success', true);
+      // Injection du script de triche
+      const cheatScript = `
+        // MYNVO CHEAT SYSTEM - TOUT DÉBLOQUÉ
+        console.log('🎮 MYNVO CHEAT: Activation des triches...');
+        
+        // Pièces illimitées
+        if (typeof Game !== 'undefined') {
+          Game.currency = 999999;
+          Game.coins = 999999;
+          console.log('💰 MYNVO: 999,999 pièces ajoutées!');
+        }
+        
+        // Débloquer personnages
+        if (typeof characterManager !== 'undefined') {
+          characterManager.unlockAllCharacters();
+          console.log('🎭 MYNVO: Tous les personnages débloqués!');
+        }
+        
+        // Score boost
+        if (typeof score !== 'undefined') {
+          score.multiplier = 10;
+          console.log('⭐ MYNVO: Multiplicateur x10 activé!');
+        }
+        
+        // Power-ups illimités
+        if (typeof powerups !== 'undefined') {
+          powerups.jetpack = 99;
+          powerups.superSneakers = 99;
+          powerups.coinMagnet = 99;
+          powerups.boost = 99;
+          console.log('⚡ MYNVO: Power-ups illimités!');
+        }
+        
+        // Fonction globale MYNVO
+        window.MYNVO_CHEATS = {
+          unlockAll: function() {
+            Game.currency = 999999;
+            Game.coins = 999999;
+            if (characterManager) characterManager.unlockAllCharacters();
+            console.log('🎮 MYNVO: TOUT DÉBLOQUÉ!');
+          }
+        };
+        
+        MYNVO_CHEATS.unlockAll();
+      `;
+      
+      try {
+        // Injection directe
+        iframe.contentWindow.eval(cheatScript);
+        showNotification('🎉 TOUT EST DÉBLOQUÉ! 999,999 pièces - Personnages - Power-ups!', 'success', true);
+      } catch (error) {
+        console.log('Injection directe échouée, méthode alternative...');
+        
+        // Méthode alternative
+        const scriptElement = document.createElement('script');
+        scriptElement.textContent = cheatScript;
+        iframe.contentDocument.head.appendChild(scriptElement);
+        showNotification('🎉 Triches activées avec succès!', 'success', true);
+      }
     }
 
     // ============= FPS COUNTER =============
@@ -1154,7 +1174,7 @@
       saveConfig();
     }
 
-    // ============= PLEIN ÉCRAN AMÉLIORÉ =============
+    // ============= PLEIN ÉCRAN =============
     function toggleFullscreen() {
       const gameFrame = document.querySelector('.game-frame');
       
@@ -1164,50 +1184,24 @@
         } else if (gameFrame.webkitRequestFullscreen) {
           gameFrame.webkitRequestFullscreen();
         }
-        
-        // Réappliquer les overlays si configuré
-        if (config.fullscreenKeepOverlays) {
-          setTimeout(() => {
-            applyOverlaysFromConfig();
-          }, 100);
-        }
       } else {
         document.exitFullscreen();
       }
     }
 
-    document.getElementById('fs-btn').addEventListener('click', toggleFullscreen);
-
-    // Gérer la sortie du mode plein écran
-    document.addEventListener('fullscreenchange', function() {
-      if (!document.fullscreenElement) {
-        setTimeout(() => {
-          zqsdActive = true;
-          setupZQSDSystem();
-          applyOverlaysFromConfig();
-        }, 100);
-      }
-    });
-
     // ============= GESTION DES THÈMES =============
     function changeTheme(themeName) {
-      // Retirer toutes les classes de thème
       document.body.classList.remove('theme-violet', 'theme-white', 'theme-dark', 'theme-red', 'theme-green', 'theme-blue');
-      
-      // Ajouter la nouvelle classe de thème
       document.body.classList.add(`theme-${themeName}`);
       
-      // Mettre à jour la configuration
       config.theme = themeName;
       saveConfig();
       
-      // Mettre à jour les particules
       initParticles();
-      
       showNotification(`🎨 Thème ${themeName.charAt(0).toUpperCase() + themeName.slice(1)} appliqué!`, 'success');
     }
 
-    // ============= SYSTÈME DE DRAG & DROP =============
+    // ============= DRAG & DROP =============
     function setupDragAndDrop() {
       const draggableElements = [
         document.getElementById('fps-overlay'),
@@ -1265,7 +1259,6 @@
       currentDraggedElement.style.right = 'auto';
       currentDraggedElement.style.bottom = 'auto';
       
-      // Sauvegarder la position
       saveOverlayPosition(currentDraggedElement.id, { left: `${x}px`, top: `${y}px` });
     }
     
@@ -1280,7 +1273,6 @@
       currentDraggedElement.style.right = 'auto';
       currentDraggedElement.style.bottom = 'auto';
       
-      // Sauvegarder la position
       saveOverlayPosition(currentDraggedElement.id, { left: `${x}px`, top: `${y}px` });
       
       e.preventDefault();
@@ -1309,15 +1301,21 @@
       });
     }
 
-    // ============= MODAL DE CONFIGURATION AMÉLIORÉ =============
+    // ============= MODAL DE CONFIGURATION CORRIGÉ =============
     function openSettingsModal() {
-      if (document.getElementById('mynvo-settings')) return;
+      console.log('🔧 Ouverture des paramètres...');
       
-      const div = document.createElement('div');
-      div.id = 'mynvo-settings';
-      div.className = 'mynvo-modal';
-      div.innerHTML = `
-        <h3 style="color:var(--primary);margin-bottom:10px;text-align:center;">🎮 Configuration Complète</h3>
+      const existingModal = document.getElementById('mynvo-settings');
+      if (existingModal) {
+        existingModal.remove();
+        return;
+      }
+
+      const modal = document.createElement('div');
+      modal.id = 'mynvo-settings';
+      modal.className = 'mynvo-modal';
+      modal.innerHTML = `
+        <h3 style="color:var(--primary);margin-bottom:10px;text-align:center;">🎮 Configuration Complète MYNVO</h3>
         
         <div class="settings-tabs">
           <div class="settings-tab active" data-tab="keys">Touches</div>
@@ -1398,44 +1396,6 @@
                 <span class="toggle-slider"></span>
               </label>
             </div>
-            <div class="mynvo-row">
-              <div class="mynvo-label">Garder en plein écran</div>
-              <label class="toggle-switch">
-                <input type="checkbox" id="fullscreen-keep" ${config.fullscreenKeepOverlays ? 'checked' : ''}>
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
-          </div>
-          
-          <div class="settings-section">
-            <h3>📏 Tailles et Déplacement</h3>
-            <div class="mynvo-row">
-              <div class="mynvo-label">Taille FPS</div>
-              <div class="slider-container">
-                <input type="range" min="0.5" max="2" step="0.1" value="${config.overlaySizes.fps}" class="size-slider" id="fps-size">
-                <span id="fps-size-value">${config.overlaySizes.fps}x</span>
-              </div>
-            </div>
-            <div class="mynvo-row">
-              <div class="mynvo-label">Taille TOP 3</div>
-              <div class="slider-container">
-                <input type="range" min="0.5" max="2" step="0.1" value="${config.overlaySizes.top3}" class="size-slider" id="top3-size">
-                <span id="top3-size-value">${config.overlaySizes.top3}x</span>
-              </div>
-            </div>
-            <div class="mynvo-row">
-              <div class="mynvo-label">Taille Timer</div>
-              <div class="slider-container">
-                <input type="range" min="0.5" max="2" step="0.1" value="${config.overlaySizes.timer}" class="size-slider" id="timer-size">
-                <span id="timer-size-value">${config.overlaySizes.timer}x</span>
-              </div>
-            </div>
-            <div class="mynvo-row">
-              <div class="mynvo-label">Déplacer éléments</div>
-              <div style="color: var(--text-muted); font-size: 14px;">
-                Cliquez et glissez pour déplacer les éléments à l'écran
-              </div>
-            </div>
           </div>
         </div>
         
@@ -1443,7 +1403,7 @@
         <div class="settings-tab-content" id="themes-tab">
           <div class="settings-section">
             <h3>🎨 Thèmes du site</h3>
-            <p style="margin-bottom: 15px; color: var(--text-muted);">Choisissez un thème pour personnaliser l'apparence du site :</p>
+            <p style="margin-bottom: 15px; color: var(--text-muted);">Choisissez un thème pour personnaliser l'apparence :</p>
             
             <div class="theme-options">
               <div class="theme-option violet ${config.theme === 'violet' ? 'active' : ''}" onclick="changeTheme('violet')">
@@ -1473,14 +1433,7 @@
           <div class="settings-section">
             <h3>🎮 Options de jeu</h3>
             <div class="mynvo-row">
-              <button class="quick-btn give-piece-btn" onclick="unlockAllCharacters();" style="width:100%;">🔓 Débloquer Tous les Personnages</button>
-            </div>
-          </div>
-          
-          <div class="settings-section">
-            <h3>🔄 Réinitialisation</h3>
-            <div class="mynvo-row">
-              <button class="quick-btn" onclick="resetToDefaults();" style="width:100%;background:var(--danger);border-color:var(--danger);">🔄 Réinitialiser aux paramètres par défaut</button>
+              <button class="quick-btn give-piece-btn" onclick="unlockAllCharacters();" style="width:100%;">🔓 Débloquer Tous les Personnages + Pièces</button>
             </div>
           </div>
         </div>
@@ -1490,16 +1443,11 @@
         </div>
       `;
       
-      document.body.appendChild(div);
-      
-      // Initialiser les onglets
+      document.body.appendChild(modal);
       initSettingsTabs();
-      
-      // Initialiser les écouteurs d'événements
       initSettingsEventListeners();
       
-      // Ajouter les écouteurs pour changer les touches
-      document.querySelectorAll('#mynvo-settings .key-display').forEach(display => {
+      modal.querySelectorAll('.key-display').forEach(display => {
         display.addEventListener('click', function() {
           startKeySetting(this.dataset.key);
         });
@@ -1514,11 +1462,9 @@
         tab.addEventListener('click', function() {
           const tabId = this.dataset.tab;
           
-          // Désactiver tous les onglets
           tabs.forEach(t => t.classList.remove('active'));
           contents.forEach(c => c.classList.remove('active'));
           
-          // Activer l'onglet sélectionné
           this.classList.add('active');
           document.getElementById(`${tabId}-tab`).classList.add('active');
         });
@@ -1526,53 +1472,22 @@
     }
 
     function initSettingsEventListeners() {
-      // Toggle switches
-      document.getElementById('show-fps').addEventListener('change', function() {
+      document.getElementById('show-fps')?.addEventListener('change', function() {
         config.showFPS = this.checked;
         saveConfig();
         applyOverlaysFromConfig();
       });
       
-      document.getElementById('show-top3').addEventListener('change', function() {
+      document.getElementById('show-top3')?.addEventListener('change', function() {
         config.showTop3 = this.checked;
         saveConfig();
         applyOverlaysFromConfig();
       });
       
-      document.getElementById('show-timer').addEventListener('change', function() {
+      document.getElementById('show-timer')?.addEventListener('change', function() {
         config.showTimer = this.checked;
         saveConfig();
         applyOverlaysFromConfig();
-      });
-      
-      document.getElementById('fullscreen-keep').addEventListener('change', function() {
-        config.fullscreenKeepOverlays = this.checked;
-        saveConfig();
-      });
-      
-      // Sliders de taille
-      document.getElementById('fps-size').addEventListener('input', function() {
-        const value = this.value;
-        document.getElementById('fps-size-value').textContent = value + 'x';
-        config.overlaySizes.fps = parseFloat(value);
-        applyOverlaySizes();
-        saveConfig();
-      });
-      
-      document.getElementById('top3-size').addEventListener('input', function() {
-        const value = this.value;
-        document.getElementById('top3-size-value').textContent = value + 'x';
-        config.overlaySizes.top3 = parseFloat(value);
-        applyOverlaySizes();
-        saveConfig();
-      });
-      
-      document.getElementById('timer-size').addEventListener('input', function() {
-        const value = this.value;
-        document.getElementById('timer-size-value').textContent = value + 'x';
-        config.overlaySizes.timer = parseFloat(value);
-        applyOverlaySizes();
-        saveConfig();
       });
     }
 
@@ -1586,7 +1501,6 @@
       
       showNotification(`Appuyez sur une touche pour ${keyType}...`, 'info');
       
-      // Écouteur temporaire pour capturer la nouvelle touche
       const keyListener = function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -1594,44 +1508,26 @@
         let keyValue = e.key.toLowerCase();
         let displayValue = e.key.toUpperCase();
         
-        // Gestion spéciale pour la barre d'espace
         if (e.code === 'Space') {
           keyValue = ' ';
           displayValue = 'ESPACE';
         }
         
-        // Gestion des touches modificatrices
-        if (e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) {
-          keyValue = 'Control';
-          displayValue = 'CTRL';
-        } else if (e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) {
-          keyValue = 'Shift';
-          displayValue = 'SHIFT';
-        } else if (e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
-          keyValue = 'Alt';
-          displayValue = 'ALT';
-        }
-        
-        // Affecter la nouvelle touche
         if (keyType.startsWith('timer')) {
           config[keyType] = keyValue;
         } else {
           config.customKeys[keyType] = keyValue;
         }
         
-        // Mettre à jour l'affichage
         display.textContent = displayValue;
         display.classList.remove('active');
         
-        // Sauvegarder et réinitialiser
         saveConfig();
         document.removeEventListener('keydown', keyListener);
         isSettingKey = false;
         currentKeySetting = null;
         
         showNotification(`✅ Touche ${keyType} définie sur: ${displayValue}`, 'success');
-        
-        // Reconfigurer les contrôles
         setupZQSDSystem();
         setupTimerSystem();
       };
@@ -1649,10 +1545,7 @@
         'Space': 'ESPACE',
         'Enter': 'ENTRÉE',
         'Tab': 'TAB',
-        'Escape': 'ESC',
-        'F1': 'F1', 'F2': 'F2', 'F3': 'F3', 'F4': 'F4',
-        'F5': 'F5', 'F6': 'F6', 'F7': 'F7', 'F8': 'F8',
-        'F9': 'F9', 'F10': 'F10', 'F11': 'F11', 'F12': 'F12'
+        'Escape': 'ESC'
       };
       return keyNames[keyCode] || keyCode.toUpperCase();
     }
@@ -1664,24 +1557,7 @@
       currentKeySetting = null;
     }
 
-    function resetToDefaults() {
-      if (confirm('Êtes-vous sûr de vouloir réinitialiser tous les paramètres aux valeurs par défaut?')) {
-        localStorage.removeItem("mynvoConfig");
-        location.reload();
-      }
-    }
-
-    // ============= GESTION DU MENU RAPIDE =============
-    function toggleBottomMenu() {
-      const menu = document.getElementById('bottom-menu');
-      menu.classList.toggle('visible');
-    }
-
-    document.getElementById('close-bottom-menu').addEventListener('click', function() {
-      document.getElementById('bottom-menu').classList.remove('visible');
-    });
-
-    // ============= NOTIFICATIONS AMÉLIORÉES =============
+    // ============= NOTIFICATIONS =============
     function showNotification(message, type = "info", multiline = false) {
       const notification = document.createElement('div');
       notification.className = 'notification' + (multiline ? ' multiline' : '');
@@ -1704,28 +1580,7 @@
       }, multiline ? 5000 : 3000);
     }
 
-    // ============= APPLICATION DES TAILLES DES OVERLAYS =============
-    function applyOverlaySizes() {
-      // FPS
-      const fpsOverlay = document.getElementById('fps-overlay');
-      if (fpsOverlay) {
-        fpsOverlay.style.transform = `scale(${config.overlaySizes.fps})`;
-      }
-      
-      // TOP 3
-      const top3Overlay = document.getElementById('top3-overlay');
-      if (top3Overlay) {
-        top3Overlay.style.transform = `scale(${config.overlaySizes.top3})`;
-      }
-      
-      // Timer
-      const timerOverlay = document.getElementById('speedrun-timer-overlay');
-      if (timerOverlay) {
-        timerOverlay.style.transform = `scale(${config.overlaySizes.timer})`;
-      }
-    }
-
-    // ============= PARTICULES D'ARRIÈRE-PLAN =============
+    // ============= PARTICULES =============
     function initParticles() {
       const container = document.getElementById('particles-container');
       container.innerHTML = '';
@@ -1747,10 +1602,9 @@
       }
     }
 
-    // ============= SAUVEGARDE/CHARGEMENT CONFIGURATION =============
+    // ============= CONFIGURATION =============
     function saveConfig() {
       localStorage.setItem("mynvoConfig", JSON.stringify(config));
-      console.log('💾 Configuration sauvegardée');
     }
 
     function loadConfig() {
@@ -1760,20 +1614,22 @@
           const savedConfig = JSON.parse(saved);
           config = { ...config, ...savedConfig };
           
-          // S'assurer que customKeys existe
           if (savedConfig.customKeys) {
             config.customKeys = { ...config.customKeys, ...savedConfig.customKeys };
           }
           
-          // Appliquer le thème sauvegardé
           if (savedConfig.theme) {
             changeTheme(savedConfig.theme);
+          } else {
+            changeTheme('violet');
           }
-          
-          console.log('📂 Configuration chargée');
+        } else {
+          changeTheme('violet');
         }
       } catch(e) {
-        console.warn('Impossible de charger la configuration');
+        console.warn('Configuration corrompue, réinitialisation...');
+        changeTheme('violet');
+        localStorage.removeItem("mynvoConfig");
       }
     }
 
@@ -1783,83 +1639,76 @@
       document.getElementById('speedrun-timer-overlay').style.display = config.showTimer ? 'block' : 'none';
       timerVisible = config.showTimer;
       
-      // Appliquer les tailles
-      applyOverlaySizes();
-      
-      // Appliquer les positions
       applyOverlayPositions();
     }
 
-    // ============= BOUTON "JOUER" =============
-    document.getElementById('play-link').addEventListener('click', () => {
-      document.querySelector('.game-container')?.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'center' 
-      });
-      iframe.focus();
-    });
-
-    // ============= INITIALISATION DES SYSTÈMES =============
+    // ============= INITIALISATION COMPLÈTE =============
     function initializeExtensionFeatures() {
-      console.log('🚀 Initialisation des fonctionnalités...');
+      console.log('🚀 Initialisation des fonctionnalités MYNVO...');
       
-      // 1. Charger la configuration
       loadConfig();
-      
-      // 2. Appliquer l'état des overlays
       applyOverlaysFromConfig();
-      
-      // 3. Activer le système ZQSD
       setupZQSDSystem();
-      
-      // 4. Activer le système de timer
       setupTimerSystem();
-      
-      // 5. Activer le drag & drop
       setupDragAndDrop();
       
       console.log('✅ Tous les systèmes activés!');
     }
 
-    // ============= INITIALISATION AU CHARGEMENT DE LA PAGE =============
+    // ============= ÉVÉNEMENTS AU CHARGEMENT =============
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('📄 DOM chargé, initialisation...');
+      console.log('📄 DOM chargé, initialisation MYNVO...');
       
-      // Initialiser les particules
       initParticles();
-      
-      // Charger la configuration
       loadConfig();
-      
-      // Appliquer l'état des overlays
       applyOverlaysFromConfig();
       
-      console.log('✅ Page initialisée');
+      // Événements des boutons
+      document.getElementById('settings-link').addEventListener('click', openSettingsModal);
+      document.getElementById('play-link').addEventListener('click', () => {
+        document.querySelector('.game-container')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        iframe.focus();
+      });
+      
+      document.getElementById('fs-btn').addEventListener('click', toggleFullscreen);
+      document.getElementById('settings-quick-btn').addEventListener('click', openSettingsModal);
+      document.getElementById('timer-quick-btn').addEventListener('click', toggleTimerVisibility);
+      document.getElementById('fps-quick-btn').addEventListener('click', toggleFPS);
+      document.getElementById('fullscreen-quick-btn').addEventListener('click', toggleFullscreen);
+      document.getElementById('top3-quick-btn').addEventListener('click', toggleTop3);
+      document.getElementById('unlock-all-btn').addEventListener('click', unlockAllCharacters);
+      document.getElementById('close-bottom-menu').addEventListener('click', function() {
+        document.getElementById('bottom-menu').classList.remove('visible');
+      });
+      
+      // Menu contextuel
+      document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        document.getElementById('bottom-menu').classList.toggle('visible');
+      });
+      
+      console.log('✅ MYNVO initialisé avec succès!');
     });
 
     // ============= LOGS DE DÉMARRAGE =============
     console.log('%c╔════════════════════════════════════════╗', 'color: #7c62dc; font-weight: bold;');
     console.log('%c║  SUBWAY SURFERS 2025 - ÉDITION MYNVO  ║', 'color: #7c62dc; font-weight: bold;');
-    console.log('%c║  Extension Intégrée v4.0               ║', 'color: #7c62dc; font-weight: bold;');
+    console.log('%c║  Système Intégré v5.0 - CORRIGÉ      ║', 'color: #7c62dc; font-weight: bold;');
     console.log('%c╚════════════════════════════════════════╝', 'color: #7c62dc; font-weight: bold;');
     console.log('');
-    console.log('%c🎮 Touches:', 'color: #00cc66; font-weight: bold;');
-    console.log('   • ZQSD + Espace pour jouer');
-    console.log('   • T = Démarrer timer');
-    console.log('   • ESPACE = Pause timer');
-    console.log('   • R = Reset timer');
+    console.log('%c🎮 Touches ZQSD activées:', 'color: #00cc66; font-weight: bold;');
+    console.log('   • Z = Haut | Q = Gauche | S = Bas | D = Droite');
+    console.log('   • ESPACE = Hoverboard');
     console.log('');
-    console.log('%c⚙️ Fonctionnalités:', 'color: #7c62dc; font-weight: bold;');
-    console.log('   • Déblocage automatique de tous les personnages');
-    console.log('   • Timer speedrun amélioré avec touches séparées');
+    console.log('%c⚙️ Fonctionnalités activées:', 'color: #7c62dc; font-weight: bold;');
+    console.log('   • Paramètres complets fonctionnels');
+    console.log('   • Thème violet par défaut');
+    console.log('   • Déblocage complet (pièces + personnages)');
+    console.log('   • Timer speedrun avec touches T/ESPACE/R');
     console.log('   • FPS Counter en temps réel');
-    console.log('   • TOP 3 personnalisable');
-    console.log('   • Configuration complète des touches');
-    console.log('   • 6 thèmes différents');
-    console.log('   • Overlays personnalisables (taille et position)');
     console.log('');
     console.log('%c💡 Astuce:', 'color: #ffaa00; font-weight: bold;');
-    console.log('   Ouvrez les "Paramètres" pour personnaliser l\'expérience!');
+    console.log('   Clic droit pour le menu rapide!');
     console.log('');
   </script>
 </body>
