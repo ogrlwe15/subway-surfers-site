@@ -1,1965 +1,1326 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Subway Surfers by Mynvo - Jeu en ligne gratuit</title>
-  <meta name="description" content="Jouez à Subway Surfers version Mynvo avec TOP 3 et FPS. Jeu gratuit en ligne avec personnalisation des touches et paramètres avancés.">
-  <meta name="keywords" content="subway surfers, jeu en ligne, mynvo, jeu gratuit, subway surfers mod">
-  <style>
-    :root {
-      --primary: #7c62dc;
-      --primary-dark: #6a50c9;
-      --primary-light: #9580e8;
-      --primary-transparent: rgba(124, 98, 220, 0.15);
-      --bg-dark: #0a0a0a;
-      --bg-card: rgba(30, 30, 40, 0.8);
-      --text-light: #f0f0f0;
-      --text-muted: #aaa;
-      --success: #00cc66;
-      --danger: #ff4444;
-      --warning: #ffaa00;
-      --primary-bg: #0f172a;
-      --header-bg: #1e293b;
-      --card-bg: rgba(30, 41, 59, 0.7);
-      --card-hover-bg: rgba(51, 65, 85, 0.8);
-      --border-color: #475569;
-      --border-hover-color: #64748b;
-      --text-primary: #f8fafc;
-      --text-secondary: #cbd5e1;
-      --text-accent: #000000;
-      --button-primary: linear-gradient(135deg, #000000, #1a1a1a);
-      --glow-primary: 0 0 20px rgba(0, 0, 0, 0.5);
-      --timer-bg: rgba(15, 23, 42, 0.9);
-      --timer-text: #f8fafc;
-      --timer-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-      --timer-border: 2px solid #000000;
-      --timer-glow: #000000;
-      --border-radius: 12px;
-      --transition: all 0.3s ease;
-    }
-   
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-    }
-   
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
-      color: var(--text-light);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
-      width: 400px;
-      min-height: 200px;
-      background: var(--primary-bg);
-      color: var(--text-primary);
-      padding: 20px;
-      line-height: 1.6;
-      backdrop-filter: blur(10px);
-      -webkit-font-smoothing: antialiased;
-    }
-   
-    /* Header amélioré */
-    header {
-      background: var(--primary-transparent);
-      backdrop-filter: blur(12px);
-      padding: 18px 40px;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      border-bottom: 2px solid var(--primary);
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-    }
-   
-    .header-content {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-   
-    .logo {
-      font-size: 34px;
-      font-weight: 900;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-   
-    .logo img {
-      height: 50px;
-      width: 50px;
-      border-radius: 50%;
-      border: 4px solid var(--primary);
-      box-shadow: 0 0 20px var(--primary-transparent);
-      object-fit: cover;
-    }
-   
-    .logo span {
-      color: var(--primary);
-      text-shadow: 0 0 10px rgba(124, 98, 220, 0.5);
-    }
-   
-    .nav-links {
-      display: flex;
-      align-items: center;
-    }
-   
-    .nav-links a {
-      color: #fff;
-      text-decoration: none;
-      margin-left: 24px;
-      font-weight: 600;
-      font-size: 17px;
-      transition: 0.2s;
-      cursor: pointer;
-      position: relative;
-      padding: 8px 0;
-    }
-   
-    .nav-links a:hover {
-      color: var(--primary);
-    }
-   
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--primary);
-      transition: width 0.3s;
-    }
-   
-    .nav-links a:hover::after {
-      width: 100%;
-    }
-   
-    /* Main content */
-    main {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 120px 20px 40px;
-    }
-   
-    .game-container {
-      width: 100%;
-      max-width: 1350px;
-      background: var(--bg-card);
-      backdrop-filter: blur(20px);
-      border-radius: 28px;
-      padding: 40px;
-      box-shadow: 0 25px 80px rgba(124, 98, 220, 0.25);
-      overflow: hidden;
-      position: relative;
-      border: 2px solid var(--primary);
-      animation: containerGlow 4s infinite alternate;
-    }
-   
-    @keyframes containerGlow {
-      0% {
-        box-shadow: 0 25px 80px rgba(124, 98, 220, 0.25);
-      }
-      100% {
-        box-shadow: 0 25px 80px rgba(124, 98, 220, 0.4);
-      }
-    }
-   
-    .game-frame {
-      position: relative;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 15px 50px rgba(124, 98, 220, 0.3);
-      border: 2px solid var(--primary);
-    }
-   
-    iframe {
-      width: 100%;
-      height: 720px;
-      border: none;
-      background: #000000;
-      display: block;
-    }
-   
-    .loading {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 10;
-      text-align: center;
-      background: rgba(0, 0, 0, 0.8);
-      padding: 30px;
-      border-radius: 15px;
-      border: 2px solid var(--primary);
-    }
-   
-    .spinner {
-      width: 70px;
-      height: 70px;
-      border: 8px solid #ffffff33;
-      border-top: 8px solid var(--primary);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
-    }
-   
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-   
-    footer {
-      text-align: center;
-      padding: 25px;
-      font-size: 15px;
-      opacity: 0.85;
-      background: rgba(124, 98, 220, 0.08);
-      color: var(--primary);
-    }
-   
-    .fs-button {
-      position: absolute;
-      top: 18px;
-      right: 18px;
-      z-index: 200;
-      background: rgba(0, 0, 0, 0.8);
-      border: 2px solid var(--primary);
-      color: #fff;
-      padding: 10px 14px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: 700;
-      transition: all 0.3s;
-    }
-   
-    .fs-button:hover {
-      background: var(--primary);
-      color: #000;
-      transform: scale(1.05);
-    }
-   
-    /* Overlays qui restent en plein écran */
-    #fps-overlay {
-      position: fixed;
-      top: 100px;
-      left: 20px;
-      z-index: 2147483647;
-      background: rgba(0, 0, 0, 0.95);
-      color: var(--primary);
-      padding: 10px 18px;
-      border-radius: 12px;
-      font-size: 18px;
-      font-weight: 700;
-      border: 2px solid var(--primary);
-      box-shadow: 0 0 20px rgba(124, 98, 220, 0.4);
-      font-family: system-ui, sans-serif;
-      pointer-events: none;
-      transition: all 0.3s;
-    }
-   
-    #top3-overlay {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      z-index: 2147483647;
-      background: rgba(0, 0, 0, 0.98);
-      color: #fff;
-      padding: 16px 22px;
-      border-radius: 14px;
-      border: 2px solid var(--primary);
-      font-size: 14px;
-      line-height: 1.6;
-      box-shadow: 0 0 30px rgba(124, 98, 220, 0.5);
-      font-family: system-ui, sans-serif;
-      pointer-events: none;
-      min-width: 280px;
-      backdrop-filter: blur(10px);
-    }
-   
-    #top3-overlay .title {
-      color: var(--primary);
-      font-size: 16px;
-      font-weight: 900;
-      margin-bottom: 10px;
-      text-align: center;
-    }
-   
-    #top3-overlay .player {
-      margin: 6px 0;
-      padding: 6px;
-      border-radius: 8px;
-      background: rgba(124, 98, 220, 0.08);
-      transition: all 0.3s;
-    }
-   
-    #top3-overlay .player.first {
-      color: var(--primary);
-      font-weight: 700;
-      font-size: 15px;
-      background: rgba(124, 98, 220, 0.15);
-    }
-   
-    /* Timer overlay - reste en plein écran */
-    #timer-overlay {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: rgba(0, 0, 0, 0.9);
-      color: #fff;
-      padding: 12px 16px;
-      border-radius: 12px;
-      border: 2px solid var(--primary);
-      z-index: 2147483647;
-      font-weight: 700;
-      font-size: 18px;
-      display: none;
-      box-shadow: 0 0 20px rgba(124, 98, 220, 0.4);
-      backdrop-filter: blur(5px);
-      pointer-events: none;
-    }
-   
-    #timer-overlay.running {
-      border-color: var(--success);
-      animation: pulse 2s infinite;
-    }
-   
-    #timer-overlay.stopped {
-      border-color: var(--danger);
-    }
-   
-    .timer-display {
-      font-family: 'Courier New', monospace;
-      font-size: 24px;
-      font-weight: bold;
-      color: var(--success);
-      text-shadow: 0 0 10px rgba(0, 204, 102, 0.5);
-    }
-   
-    .timer-status {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-   
-    /* Bottom menu - CACHÉ PAR DÉFAUT */
-    #bottom-menu {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: rgba(0, 0, 0, 0.95);
-      border: 2px solid var(--primary);
-      border-radius: 14px;
-      padding: 14px 18px;
-      z-index: 999999;
-      color: #fff;
-      font-family: 'Segoe UI', sans-serif;
-      min-width: 260px;
-      box-shadow: 0 0 25px rgba(124, 98, 220, 0.55);
-      backdrop-filter: blur(10px);
-      transition: all 0.3s;
-      display: none;
-    }
-   
-    #bottom-menu.visible {
-      display: block;
-    }
-   
-    .quick-btn {
-      width: 100%;
-      padding: 10px 12px;
-      background: #111;
-      border: 2px solid var(--primary);
-      border-radius: 10px;
-      color: #fff;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.15s;
-      margin-top: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-   
-    .quick-btn:hover {
-      background: var(--primary);
-      color: #000;
-      transform: translateX(5px);
-    }
-   
-    /* Style pour le bouton Give Piece */
-    .give-piece-btn {
-      background: linear-gradient(135deg, #ffd700, #ffaa00);
-      color: #000;
-      border: none;
-      border-radius: 10px;
-      padding: 12px 16px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
-    }
-   
-    .give-piece-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
-    }
-   
-    /* Modal amélioré */
-    .mynvo-modal {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: var(--bg-card);
-      color: #fff;
-      padding: 24px;
-      border-radius: 16px;
-      border: 4px solid var(--primary);
-      z-index: 100000;
-      max-width: 92%;
-      width: 720px;
-      box-shadow: 0 0 60px rgba(124, 98, 220, 0.55);
-      backdrop-filter: blur(15px);
-      animation: modalAppear 0.3s ease-out;
-    }
-   
-    @keyframes modalAppear {
-      0% {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(0.9);
-      }
-      100% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-      }
-    }
-   
-    .mynvo-row {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-   
-    .mynvo-label {
-      min-width: 120px;
-      color: var(--text-muted);
-    }
-   
-    .key-display {
-      display: inline-block;
-      min-width: 50px;
-      padding: 10px 16px;
-      background: var(--bg-dark);
-      border: 2px solid var(--primary);
-      border-radius: 8px;
-      text-align: center;
-      font-weight: 700;
-      font-size: 18px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-   
-    .key-display:hover {
-      border-color: var(--primary-light);
-      background: #1a1a1a;
-    }
-   
-    .key-display.active {
-      border-color: var(--success);
-      background: #1a4d1a;
-      animation: pulse 0.5s;
-    }
-   
-    @keyframes pulse {
-      0%, 100% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.05);
-      }
-    }
-   
-    /* Nouveau style pour les sections de paramètres */
-    .settings-section {
-      background: rgba(20, 20, 30, 0.7);
-      padding: 16px;
-      border-radius: 12px;
-      margin-bottom: 16px;
-      border: 1px solid rgba(124, 98, 220, 0.3);
-    }
-   
-    .settings-section h3 {
-      color: var(--primary);
-      margin-bottom: 12px;
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-   
-    /* Animation de particules en arrière-plan */
-    .particles {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      overflow: hidden;
-    }
-   
-    .particle {
-      position: absolute;
-      background: rgba(124, 98, 220, 0.3);
-      border-radius: 50%;
-      animation: float 15s infinite linear;
-    }
-   
-    @keyframes float {
-      0% {
-        transform: translateY(0) translateX(0);
-        opacity: 0;
-      }
-      10% {
-        opacity: 1;
-      }
-      90% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-100vh) translateX(100px);
-        opacity: 0;
-      }
-    }
-   
-    /* Style pour les notifications */
-    .notification {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--bg-card);
-      color: white;
-      padding: 12px 20px;
-      border-radius: 8px;
-      border-left: 4px solid var(--primary);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      z-index: 100001;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-   
-    .notification.show {
-      opacity: 1;
-    }
-   
-    /* Améliorations responsive */
-    @media (max-width: 1200px) {
-      .game-container {
-        padding: 30px;
-      }
-     
-      iframe {
-        height: 600px;
-      }
-    }
-   
-    @media (max-width: 768px) {
-      header {
-        padding: 14px 20px;
-      }
-     
-      .logo {
-        font-size: 24px;
-      }
-     
-      .logo img {
-        height: 40px;
-        width: 40px;
-      }
-     
-      .nav-links a {
-        margin-left: 16px;
-        font-size: 15px;
-      }
-     
-      .game-container {
-        padding: 20px;
-      }
-     
-      iframe {
-        height: 400px;
-      }
-     
-      #bottom-menu {
-        min-width: 240px;
-        right: 10px;
-        bottom: 10px;
-      }
-    }
-   
-    @media (max-width: 480px) {
-      .header-content {
-        flex-direction: column;
-        gap: 10px;
-      }
-     
-      .nav-links {
-        width: 100%;
-        justify-content: center;
-      }
-     
-      .nav-links a {
-        margin: 0 10px;
-      }
-     
-      iframe {
-        height: 300px;
-      }
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subway Surfers by Mynvo - Édition 2025</title>
+    <style>
+        :root {
+            --primary: #7c62dc;
+            --primary-dark: #6a50c9;
+            --primary-light: #9580e8;
+            --primary-transparent: rgba(124, 98, 220, 0.15);
+            --bg-dark: #0a0a0a;
+            --bg-card: rgba(30, 30, 40, 0.9);
+            --text-light: #f0f0f0;
+            --text-muted: #aaa;
+            --success: #00cc66;
+            --danger: #ff4444;
+            --warning: #ffaa00;
+            --timer-color: #ff6b6b;
+            --stats-color: #4ecdc4;
+            --top3-color: #ffd93d;
+        }
 
-    .container {
-      max-width: 100%;
-      margin: 0 auto;
-    }
+        .theme-violet {
+            --primary: #7c62dc;
+            --primary-dark: #6a50c9;
+            --primary-light: #9580e8;
+            --primary-transparent: rgba(124, 98, 220, 0.15);
+            --timer-color: #ff6b6b;
+            --stats-color: #4ecdc4;
+            --top3-color: #ffd93d;
+        }
 
-    .header {
-      background: var(--header-bg);
-      padding: 16px;
-      border-radius: var(--border-radius);
-      margin-bottom: 20px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
+        .theme-blue {
+            --primary: #4a6fa5;
+            --primary-dark: #3a5a85;
+            --primary-light: #6b8cc0;
+            --primary-transparent: rgba(74, 111, 165, 0.15);
+            --timer-color: #ff9a76;
+            --stats-color: #6a89cc;
+            --top3-color: #82ccdd;
+        }
 
-    .title {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 8px;
-      text-align: center;
-    }
+        .theme-green {
+            --primary: #2ecc71;
+            --primary-dark: #27ae60;
+            --primary-light: #58d68d;
+            --primary-transparent: rgba(46, 204, 113, 0.15);
+            --timer-color: #e74c3c;
+            --stats-color: #3498db;
+            --top3-color: #f1c40f;
+        }
 
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: var(--border-radius);
-      padding: 16px;
-      margin: 12px 0;
-      backdrop-filter: blur(8px);
-      transition: var(--transition);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
+        .theme-red {
+            --primary: #e74c3c;
+            --primary-dark: #c0392b;
+            --primary-light: #ff7979;
+            --primary-transparent: rgba(231, 76, 60, 0.15);
+            --timer-color: #3498db;
+            --stats-color: #2ecc71;
+            --top3-color: #f39c12;
+        }
 
-    .card:hover {
-      border-color: var(--border-hover-color);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
-    }
+        .theme-orange {
+            --primary: #e67e22;
+            --primary-dark: #d35400;
+            --primary-light: #f39c12;
+            --primary-transparent: rgba(230, 126, 34, 0.15);
+            --timer-color: #9b59b6;
+            --stats-color: #1abc9c;
+            --top3-color: #e74c3c;
+        }
 
-    button {
-      padding: 10px 20px;
-      margin: 6px;
-      background: var(--button-primary);
-      color: white;
-      border: none;
-      border-radius: var(--border-radius);
-      cursor: pointer;
-      font-weight: 500;
-      transition: var(--transition);
-      box-shadow: var(--glow-primary);
-      text-transform: capitalize;
-    }
+        .theme-purple {
+            --primary: #9b59b6;
+            --primary-dark: #8e44ad;
+            --primary-light: #bb8fce;
+            --primary-transparent: rgba(155, 89, 182, 0.15);
+            --timer-color: #e74c3c;
+            --stats-color: #3498db;
+            --top3-color: #f1c40f;
+        }
 
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--glow-primary), 0 10px 20px rgba(0, 0, 0, 0.2);
-    }
+        .theme-pink {
+            --primary: #e84393;
+            --primary-dark: #fd79a8;
+            --primary-light: #fab1a0;
+            --primary-transparent: rgba(232, 67, 147, 0.15);
+            --timer-color: #00cec9;
+            --stats-color: #0984e3;
+            --top3-color: #fdcb6e;
+        }
 
-    button:active {
-      transform: translateY(0);
-    }
+        .theme-cyan {
+            --primary: #00cec9;
+            --primary-dark: #00b894;
+            --primary-light: #81ecec;
+            --primary-transparent: rgba(0, 206, 201, 0.15);
+            --timer-color: #e84393;
+            --stats-color: #6c5ce7;
+            --top3-color: #fdcb6e;
+        }
 
-    .tab-container {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-      overflow-x: auto;
-      padding-bottom: 8px;
-    }
+        .theme-yellow {
+            --primary: #fdcb6e;
+            --primary-dark: #fdcb6e;
+            --primary-light: #ffeaa7;
+            --primary-transparent: rgba(253, 203, 110, 0.15);
+            --timer-color: #e84393;
+            --stats-color: #00b894;
+            --top3-color: #6c5ce7;
+        }
 
-    .tab-btn {
-      background: var(--card-bg);
-      color: var(--text-secondary);
-      padding: 8px 16px;
-      border-radius: var(--border-radius);
-      border: 1px solid var(--border-color);
-      cursor: pointer;
-      transition: var(--transition);
-      white-space: nowrap;
-    }
+        .theme-midnight {
+            --primary: #2d3436;
+            --primary-dark: #636e72;
+            --primary-light: #b2bec3;
+            --primary-transparent: rgba(45, 52, 54, 0.15);
+            --timer-color: #e84393;
+            --stats-color: #00b894;
+            --top3-color: #fdcb6e;
+        }
 
-    .tab-btn.active {
-      background: var(--button-primary);
-      color: white;
-      border-color: transparent;
-    }
+        .theme-ocean {
+            --primary: #0984e3;
+            --primary-dark: #0984e3;
+            --primary-light: #74b9ff;
+            --primary-transparent: rgba(9, 132, 227, 0.15);
+            --timer-color: #e84393;
+            --stats-color: #00b894;
+            --top3-color: #fdcb6e;
+        }
 
-    .tab-content {
-      display: none;
-      opacity: 0;
-      transition: var(--transition);
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .tab-content.active {
-      display: block;
-      opacity: 1;
-    }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a2e 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-    /* Header / Logo container (used in popup.html) */
-    .logo-container, .header-title, .header-version {
-      display: inline-flex;
-      align-items: center;
-    }
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
-    .logo-container {
-      gap: 10px;
-    }
+        /* Header Styles */
+        header {
+            background: var(--primary-transparent);
+            backdrop-filter: blur(12px);
+            padding: 1rem 2rem;
+            border-bottom: 2px solid var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
-    .logo {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      object-fit: cover;
-    }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    .header-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
+        .logo {
+            font-size: 2rem;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-    .header-version {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-left: 8px;
-    }
+        .logo span {
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary-transparent);
+        }
 
-    /* Tabs row used in popup.html (.tabs .tab-btn) */
-    .tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
-      align-items: center;
-    }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
 
-    .tab-btn {
-      background: transparent;
-      border: none;
-      padding: 8px 12px;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      border-bottom: 3px solid transparent;
-      transition: color 0.18s, border-bottom-color 0.18s, transform 0.12s;
-      user-select: none;
-    }
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
 
-    .tab-btn.active {
-      color: var(--text-accent);
-      border-bottom-color: var(--text-accent);
-    }
+        .nav-links a:hover {
+            color: var(--primary);
+        }
 
-    /* City links */
-    .city-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+        /* Game Container */
+        .game-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
 
-    .city-link {
-      display: block;
-      padding: 10px 14px;
-      background: var(--card-bg);
-      color: var(--text-primary);
-      border-radius: 10px;
-      text-decoration: none;
-      border: 1px solid var(--border-color);
-      transition: transform 0.12s ease, background 0.12s;
-    }
+        .game-container {
+            width: 100%;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px var(--primary-transparent);
+            border: 2px solid var(--primary);
+        }
 
-    .city-link:hover {
-      transform: translateY(-2px);
-      background: var(--card-hover-bg);
-    }
+        .game-frame {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px var(--primary-transparent);
+            border: 2px solid var(--primary);
+            height: 80vh;
+            min-height: 600px;
+            background: #000;
+        }
 
-    /* Theme grid adjustments */
-    .theme-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-      gap: 10px;
-      margin-top: 10px;
-    }
+        #game-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #000;
+        }
 
-    .theme-card {
-      border-radius: 10px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.12s ease, box-shadow 0.18s ease;
-    }
+        .game-controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 100;
+            display: flex;
+            gap: 10px;
+        }
 
-    .theme-card .theme-preview {
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      font-weight: 800;
-    }
+        .control-btn {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--primary);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
 
-    .theme-card .theme-name {
-      padding: 8px 6px 12px;
-    }
+        .control-btn:hover {
+            background: var(--primary);
+            transform: scale(1.05);
+        }
 
-    .theme-card.active {
-      box-shadow: 0 6px 20px rgba(0,0,0,0.28);
-      transform: translateY(-4px);
-    }
+        /* Overlays */
+        .overlay {
+            position: fixed;
+            z-index: 2147483647;
+            backdrop-filter: blur(10px);
+            pointer-events: none;
+        }
 
-    /* Status toast */
-    .status {
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 70px;
-      padding: 10px 16px;
-      border-radius: 999px;
-      font-weight: 700;
-      color: var(--primary-bg);
-      display: none;
-      opacity: 0;
-      transition: opacity 0.28s ease, transform 0.18s ease;
-      z-index: 9999;
-    }
+        #fps-overlay {
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            color: var(--success);
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 2px solid var(--success);
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
 
-    .status.success { background: linear-gradient(90deg,#34d399,#10b981); }
-    .status.error { background: linear-gradient(90deg,#fb7185,#ef4444); }
+        #top3-overlay {
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.95);
+            color: var(--top3-color);
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 2px solid var(--top3-color);
+            min-width: 160px;
+        }
 
-    .footer {
-      text-align: center;
-      padding: 10px 0;
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-top: 14px;
-    }
+        #top3-overlay .title {
+            color: var(--top3-color);
+            font-size: 12px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            text-align: center;
+        }
 
-    /* Layout: sidebar + content */
-    .main-layout {
-      display: grid;
-      grid-template-columns: 120px 1fr;
-      gap: 14px;
-      align-items: start;
-    }
+        #top3-overlay .player {
+            margin: 4px 0;
+            padding: 4px 6px;
+            border-radius: 5px;
+            background: rgba(255, 217, 61, 0.1);
+            font-size: 11px;
+        }
 
-    .sidebar {
-      padding: 12px;
-      height: auto;
-    }
+        #top3-overlay .player.first {
+            color: var(--top3-color);
+            font-weight: 700;
+        }
 
-    .content {
-      padding: 6px 0;
-    }
+        #speedrun-timer-overlay {
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid var(--timer-color);
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-family: 'Courier New', monospace;
+            min-width: 140px;
+        }
 
-    .muted { color: var(--text-secondary); font-size: 13px; }
+        #timer-display {
+            font-weight: bold;
+            font-size: 18px;
+            color: var(--timer-color);
+            text-align: center;
+            letter-spacing: 1px;
+        }
 
-    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .timer-controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 5px;
+            margin-top: 8px;
+        }
 
-    /* Button variants */
-    .action-button.success { background: linear-gradient(90deg,#34d399,#10b981); color: #022; }
-    .action-button.danger { background: linear-gradient(90deg,#fb7185,#ef4444); color: #fff; }
-    .action-button.accent { background: linear-gradient(90deg,#00d4ff,#ff6ec7); color: #0a0a0a; }
+        .timer-btn {
+            background: var(--timer-color);
+            border: none;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 10px;
+            flex: 1;
+            pointer-events: all;
+            transition: all 0.2s ease;
+        }
 
-    .resolution-buttons { display: flex; gap: 8px; margin-top: 10px; }
+        .timer-btn:hover {
+            background: var(--primary-light);
+        }
 
-    .small { font-size: 11px; opacity: 0.85; }
+        /* Stats Panel */
+        .stats-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid var(--stats-color);
+            border-radius: 10px;
+            padding: 15px;
+            z-index: 999;
+            min-width: 180px;
+            backdrop-filter: blur(10px);
+        }
 
-    /* Ensure existing selectors used by JS still match */
-    .tab-content-container { min-height: 220px; }
+        .stats-panel h3 {
+            color: var(--stats-color);
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
 
-    @media (max-width: 420px) {
-      .main-layout { grid-template-columns: 1fr; }
-      .sidebar { order: 2; }
-    }
+        .stats-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
 
-    input[type="text"],
-    input[type="number"],
-    select {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border: 1px solid var(--border-color);
-      border-radius: var(--border-radius);
-      background: var(--card-bg);
-      color: var(--text-primary);
-      transition: var(--transition);
-    }
+        /* Bottom Menu */
+        #bottom-menu {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 15px;
+            z-index: 999999;
+            min-width: 220px;
+            backdrop-filter: blur(15px);
+            display: none;
+        }
 
-    input[type="text"]:focus,
-    input[type="number"]:focus,
-    select:focus {
-      border-color: var(--text-accent);
-      outline: none;
-      box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
-    }
+        #bottom-menu.visible {
+            display: block;
+        }
 
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 60px;
-      height: 34px;
-    }
+        .menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
 
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
+        .menu-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary);
+        }
 
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: var(--card-bg);
-      transition: var(--transition);
-      border-radius: 34px;
-      border: 1px solid var(--border-color);
-    }
+        .close-btn {
+            background: var(--primary);
+            border: none;
+            color: #000;
+            font-weight: 700;
+            border-radius: 6px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 10px;
+        }
 
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 26px;
-      width: 26px;
-      left: 4px;
-      bottom: 3px;
-      background-color: var(--text-primary);
-      transition: var(--transition);
-      border-radius: 50%;
-    }
+        .quick-btn {
+            width: 100%;
+            padding: 8px 10px;
+            background: #111;
+            border: 1px solid var(--primary);
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 11px;
+            transition: all 0.15s ease;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            pointer-events: all;
+        }
 
-    input:checked + .slider {
-      background: var(--button-primary);
-    }
+        .quick-btn:hover {
+            background: var(--primary);
+            color: #000;
+        }
 
-    input:checked + .slider:before {
-      transform: translateX(26px);
-    }
+        /* Settings Modal */
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-card);
+            border: 3px solid var(--primary);
+            border-radius: 15px;
+            padding: 2rem;
+            z-index: 100000;
+            max-width: 90%;
+            width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            backdrop-filter: blur(20px);
+            display: none;
+        }
 
-    .timer-display {
-      font-size: 48px;
-      font-weight: 700;
-      text-align: center;
-      padding: 20px;
-      background: var(--timer-bg);
-      border-radius: var(--border-radius);
-      border: var(--timer-border);
-      box-shadow: var(--timer-shadow);
-      color: var(--timer-text);
-      margin: 20px 0;
-      transition: var(--transition);
-    }
+        .modal.active {
+            display: block;
+        }
 
-    .timer-controls {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+        .settings-section {
+            background: rgba(20, 20, 30, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid var(--primary-transparent);
+        }
 
-    .settings-group {
-      margin: 16px 0;
-    }
+        .settings-section h3 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-    .settings-group label {
-      display: block;
-      margin-bottom: 8px;
-      color: var(--text-secondary);
-      font-weight: 500;
-    }
+        .settings-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
 
-    .icon-button {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
+        .settings-label {
+            min-width: 120px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
 
-    .icon-button svg {
-      width: 20px;
-      height: 20px;
-    }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
 
-    /* Ripple Effect */
-    .ripple {
-      position: absolute;
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      transform: scale(0);
-      animation: ripple 0.6s linear;
-      pointer-events: none;
-    }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
 
-    @keyframes ripple {
-      to {
-        transform: scale(4);
-        opacity: 0;
-      }
-    }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #333;
+            transition: .4s;
+            border-radius: 24px;
+        }
 
-    /* Scrollbar Styling */
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
 
-    ::-webkit-scrollbar-track {
-      background: var(--primary-bg);
-      border-radius: 4px;
-    }
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
 
-    ::-webkit-scrollbar-thumb {
-      background: var(--border-color);
-      border-radius: 4px;
-    }
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
 
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--border-hover-color);
-    }
-  </style>
+        .theme-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .theme-option {
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .theme-option.active {
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .theme-option.violet { background: linear-gradient(135deg, #7c62dc, #6a50c9); color: white; }
+        .theme-option.blue { background: linear-gradient(135deg, #4a6fa5, #3a5a85); color: white; }
+        .theme-option.green { background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; }
+        .theme-option.red { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; }
+        .theme-option.orange { background: linear-gradient(135deg, #e67e22, #d35400); color: white; }
+        .theme-option.purple { background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; }
+        .theme-option.pink { background: linear-gradient(135deg, #e84393, #fd79a8); color: white; }
+        .theme-option.cyan { background: linear-gradient(135deg, #00cec9, #00b894); color: white; }
+        .theme-option.yellow { background: linear-gradient(135deg, #fdcb6e, #ffeaa7); color: #333; }
+        .theme-option.midnight { background: linear-gradient(135deg, #2d3436, #636e72); color: white; }
+        .theme-option.ocean { background: linear-gradient(135deg, #0984e3, #74b9ff); color: white; }
+
+        .key-config {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .key-input {
+            background: var(--bg-dark);
+            border: 2px solid var(--primary);
+            border-radius: 6px;
+            color: var(--text-light);
+            padding: 8px 12px;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            min-width: 60px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 14px;
+            opacity: 0.8;
+            color: var(--text-muted);
+            border-top: 1px solid var(--primary-transparent);
+        }
+
+        /* Loading */
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 2px solid var(--primary);
+            z-index: 10;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #ffffff33;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-card);
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            padding: 15px 20px;
+            z-index: 10000;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            max-width: 300px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .game-frame {
+                height: 60vh;
+                min-height: 400px;
+            }
+
+            #top3-overlay {
+                display: none;
+            }
+
+            .modal {
+                width: 95%;
+                padding: 1rem;
+            }
+
+            .stats-panel {
+                display: none;
+            }
+        }
+    </style>
 </head>
-<body>
-  <!-- Particules d'arrière-plan -->
-  <div class="particles" id="particles-container"></div>
-  <header>
-    <div class="header-content">
-      <div class="logo">
-        <img src="logo.png" alt="Mynvo" onerror="this.style.display='none'">
-        Subway<span>Surfers</span> by <span>Mynvo</span>
-      </div>
-      <div class="nav-links">
-        <a id="play-link">Jouer</a>
-        <a onclick="toggleBottomMenu();return false;">Paramètres</a>
-        <a href="https://discord.gg/bQTtDXmF" target="_blank">Discord</a>
-      </div>
+<body class="theme-violet">
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    🚇 Subway<span>Surfers</span> by <span>Mynvo</span>
+                </div>
+                <div class="nav-links">
+                    <a id="play-btn">🎮 Jouer</a>
+                    <a id="settings-btn">⚙️ Paramètres</a>
+                </div>
+            </div>
+        </header>
+
+        <main class="game-section">
+            <div class="game-container">
+                <div class="game-frame">
+                    <div class="loading" id="loading">
+                        <div class="spinner"></div>
+                        <p>Chargement de Subway Surfers...</p>
+                    </div>
+                    
+                    <div class="game-controls">
+                        <button class="control-btn" id="fullscreen-btn">⤢ Plein écran</button>
+                    </div>
+
+                    <!-- LIEN CORRIGÉ -->
+                    <iframe id="game-iframe" 
+                            src="https://yell0wsuit.page/assets/games/subway-surfers-unity/winterholiday.html"
+                            allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            Subway Surfers 2025 by Mynvo © - Tous droits réservés
+        </footer>
     </div>
-  </header>
-  <main>
-    <div class="game-container">
-      <div class="game-frame">
-        <div class="loading" id="loading-ui"><div class="spinner"></div><p>Chargement du jeu...</p></div>
-        <button class="fs-button" id="fs-btn" title="Plein écran">⤢ Plein écran</button>
-        <iframe id="game-iframe" src="./game/" allowfullscreen allow="autoplay; fullscreen *"></iframe>
-      </div>
+
+    <!-- Overlays -->
+    <div id="fps-overlay" class="overlay">FPS: <span id="fps-value">60</span></div>
+
+    <div id="top3-overlay" class="overlay">
+        <div class="title">🏆 TOP 3</div>
+        <div class="player first">🥇 Mynvo – 13:27</div>
+        <div class="player">🥈 Le_A – 11:51</div>
+        <div class="player">🥉 Pro – 10:23</div>
     </div>
-  </main>
-  <!-- FPS Counter - RESTE EN PLEIN ÉCRAN -->
-  <div id="fps-overlay">🎮 FPS: <span id="fps-value">60</span></div>
-  <!-- TOP 3 - RESTE EN PLEIN ÉCRAN -->
-  <div id="top3-overlay">
-    <div class="title">🏆 TOP 3 NO COIN</div>
-    <div class="player first">🥇 Mynvo – 13:27</div>
-    <div class="player">🥈 Le_A – 11:51</div>
-    <div class="player">🥉 .... – 0:00</div>
-  </div>
-  <!-- TIMER overlay - RESTE EN PLEIN ÉCRAN -->
-  <div id="timer-overlay">
-    <div class="timer-display"><span id="timer-value">00:00.00</span></div>
-    <div class="timer-status" id="timer-status">En attente...</div>
-  </div>
-  <!-- Bottom menu - CACHÉ PAR DÉFAUT -->
-  <div id="bottom-menu">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-      <div style="font-size:16px;font-weight:700;color:#7c62dc;">⚙️ Menu rapide</div>
-      <button id="close-bottom-menu" style="background:#7c62dc;border:none;color:#000;font-weight:700;border-radius:8px;padding:4px 10px;cursor:pointer;">✖</button>
+
+    <div id="speedrun-timer-overlay" class="overlay">
+        <div id="timer-display">00:00.00</div>
+        <div class="timer-controls">
+            <button class="timer-btn" onclick="startTimer()">▶️</button>
+            <button class="timer-btn" onclick="pauseTimer()">⏸️</button>
+            <button class="timer-btn" onclick="resetTimer()">⏹️</button>
+        </div>
     </div>
-    <button class="quick-btn" onclick="openKeySettings();">🎮 Touches (ZQSD)</button>
-    <button class="quick-btn" onclick="openTimerSettings();">⏱️ Timer Manuel</button>
-    <button class="quick-btn" onclick="toggleFPS();">📊 FPS (afficher/masquer)</button>
-    <button class="quick-btn" onclick="toggleFullscreen();">⤢ Plein écran</button>
-    <button class="quick-btn" onclick="openSongMenu();">🎵 Son du jeu</button>
-    <button class="quick-btn" onclick="openMapMenu();">🗺️ Map/TOP3</button>
-    <button class="quick-btn give-piece-btn" onclick="giveResources();">💰 Give Piece & Keys</button>
-  </div>
-  <footer>Subway Surfers by Mynvo © 2023 - Tous droits réservés</footer>
-  <script>
-    // ============= CONFIG AMÉLIORÉE =============
-    let config = {
-      up: "z", down: "s", left: "q", right: "d", jump: " ",
-      showFPS: true, showTop3: true,
-      top3Position: "bottom-left",
-      volume: 1,
-      timerStartKey: "F1",
-      timerStopKey: "F2",
-      timerResetKey: "F3",
-      timerRunning: false,
-      // NOUVEAU: Configuration des touches modifiables
-      customKeys: {
-        up: "z",
-        down: "s",
-        left: "q",
-        right: "d",
-        jump: " ",
-        timerStart: "F1",
-        timerStop: "F2",
-        timerReset: "F3"
-      }
-    };
-    // ============= VARIABLES GLOBALES =============
-    const iframe = document.getElementById('game-iframe');
-    const loadingUI = document.getElementById('loading-ui');
-    let isSettingKey = false;
-    let currentKeySetting = null;
-    let zqsdActive = true;
-    // ============= GESTION DU CHARGEMENT =============
-    iframe.addEventListener('load', function() {
-      console.log('✅ Iframe chargée');
-      hideLoading();
-      setTimeout(initializeGameSystems, 1500);
-    });
-    setTimeout(hideLoading, 3000);
-    function hideLoading() {
-      if (loadingUI.style.display !== 'none') {
-        loadingUI.style.display = 'none';
-        showNotification('🎮 Jeu chargé avec succès!', 'success');
-      }
-    }
-    // ============= SYSTÈME ZQSD ULTRA-ROBUSTE =============
-    function setupZQSDKeys() {
-      // Nettoyer les anciens écouteurs
-      document.removeEventListener('keydown', handleZQSDKey);
-      document.removeEventListener('keyup', handleZQSDKey);
-     
-      document.addEventListener('keydown', handleZQSDKey);
-      document.addEventListener('keyup', handleZQSDKey);
-     
-      console.log('✅ Système ZQSD activé (ultra-robuste)');
-    }
-    function handleZQSDKey(e) {
-      if (!zqsdActive) return;
-     
-      const key = e.key.toLowerCase();
-      const mappedKey = getMappedKey(key, e.type);
-     
-      if (mappedKey) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-       
-        // Envoyer l'événement à l'iframe de manière agressive
-        sendKeyToIframe(mappedKey, e.type);
-      }
-    }
-    function getMappedKey(key, eventType) {
-      const keyMap = {
-        [config.customKeys.up]: { key: 'ArrowUp', code: 'ArrowUp', keyCode: 38 },
-        [config.customKeys.down]: { key: 'ArrowDown', code: 'ArrowDown', keyCode: 40 },
-        [config.customKeys.left]: { key: 'ArrowLeft', code: 'ArrowLeft', keyCode: 37 },
-        [config.customKeys.right]: { key: 'ArrowRight', code: 'ArrowRight', keyCode: 39 },
-        [config.customKeys.jump]: { key: ' ', code: 'Space', keyCode: 32 }
-      };
-     
-      return keyMap[key];
-    }
-    function sendKeyToIframe(mappedKey, eventType) {
-      try {
-        const event = new KeyboardEvent(eventType, {
-          key: mappedKey.key,
-          code: mappedKey.code,
-          keyCode: mappedKey.keyCode,
-          which: mappedKey.keyCode,
-          bubbles: true,
-          cancelable: true,
-          composed: true
-        });
-       
-        // Multiples méthodes d'envoi
-        iframe.contentWindow?.dispatchEvent(event);
-        iframe.contentDocument?.dispatchEvent(event);
-        iframe.contentWindow?.document?.dispatchEvent(event);
-       
-        // PostMessage de secours
-        iframe.contentWindow?.postMessage({
-          type: 'keyboard_event',
-          eventType: eventType,
-          key: mappedKey.key,
-          keyCode: mappedKey.keyCode
-        }, '*');
-       
-      } catch (err) {
-        console.log('Envoi clé à iframe:', mappedKey.key);
-      }
-    }
-    // ============= GESTION PLEIN ÉCRAN AMÉLIORÉE =============
-    function toggleFullscreen() {
-      if (!document.fullscreenElement) {
-        if (iframe.requestFullscreen) {
-          iframe.requestFullscreen();
-        } else if (iframe.webkitRequestFullscreen) {
-          iframe.webkitRequestFullscreen();
-        }
-        showNotification('⤢ Mode plein écran activé', 'success');
-      } else {
-        document.exitFullscreen();
-        showNotification('⤢ Mode plein écran désactivé', 'info');
-      }
-    }
-    document.getElementById('fs-btn').addEventListener('click', toggleFullscreen);
-    // Réactiver ZQSD après sortie du plein écran
-    document.addEventListener('fullscreenchange', function() {
-      if (!document.fullscreenElement) {
-        setTimeout(() => {
-          zqsdActive = true;
-          setupZQSDKeys();
-          showNotification('🎮 Contrôles ZQSD réactivés', 'success');
-        }, 100);
-      }
-    });
-    // ============= SYSTÈME GIVE CORRIGÉ =============
-    let giveInProgress = false;
-    function intelligentAutoGive() {
-      if (giveInProgress) return;
-      giveInProgress = true;
-     
-      setTimeout(() => executeSubwaySurfersGive("auto"), 3000);
-      setTimeout(() => executeSubwaySurfersGive("auto"), 6000);
-     
-      setTimeout(() => {
-        giveInProgress = false;
-      }, 9000);
-    }
-    function executeSubwaySurfersGive(mode = "manual") {
-      try {
-        const iframeWindow = iframe.contentWindow;
-        const amount = 99999;
-       
-        if (!iframeWindow.unityGame) {
-          if (mode === "manual") showNotification('⏳ Unity pas encore chargé, réessayez', 'warning');
-          return;
-        }
-        // Méthode principale
-        try {
-          const subwayObjects = ['GameManager', 'PlayerController', 'Player', 'CoinManager', 'PokiBridge'];
-          const subwayMethods = ['AddCoins', 'AddMoney', 'AddCurrency', 'AddKeys'];
-         
-          subwayObjects.forEach(obj => {
-            subwayMethods.forEach(method => {
-              try {
-                iframeWindow.unityGame.SendMessage(obj, method, amount);
-              } catch(e) {}
-            });
-          });
-        } catch(e) {}
-       
-        // Vérification
-        setTimeout(() => {
-          if (mode === "manual") {
-            showNotification(`💰 ${amount.toLocaleString()} pièces/clés ajoutées!`, 'success');
-          }
-        }, 1500);
-       
-      } catch (error) {
-        if (mode === "manual") {
-          showNotification('❌ Erreur Give Subway', 'error');
-        }
-      }
-    }
-    function giveResources() {
-      executeSubwaySurfersGive("manual");
-    }
-    // ============= TIMER CORRIGÉ =============
-    let timerInterval = null;
-    let timerStart = 0;
-    let timerElapsed = 0;
-    let timerActive = false;
-    function setupTimerKeys() {
-      document.addEventListener('keydown', function(e) {
-        if (e.key === config.customKeys.timerStart && !timerActive) {
-          startTimer();
-        }
-        else if (e.key === config.customKeys.timerStop && timerActive) {
-          stopTimer();
-        }
-        else if (e.key === config.customKeys.timerReset) {
-          resetTimer();
-        }
-      });
-    }
-    function startTimer() {
-      if (timerActive) return;
-     
-      timerStart = Date.now() - timerElapsed;
-      timerActive = true;
-     
-      const timerEl = document.getElementById('timer-overlay');
-      timerEl.style.display = 'block';
-      timerEl.classList.remove('stopped');
-      timerEl.classList.add('running');
-     
-      document.getElementById('timer-status').textContent = 'En cours...';
-     
-      timerInterval = setInterval(() => {
-        timerElapsed = Date.now() - timerStart;
-        document.getElementById('timer-value').textContent = formatTime(timerElapsed);
-      }, 10);
-    }
-    function stopTimer() {
-      if (!timerActive) return;
-     
-      clearInterval(timerInterval);
-      timerActive = false;
-     
-      const timerEl = document.getElementById('timer-overlay');
-      timerEl.classList.remove('running');
-      timerEl.classList.add('stopped');
-      document.getElementById('timer-status').textContent = 'Arrêté';
-    }
-    function resetTimer() {
-      clearInterval(timerInterval);
-      timerActive = false;
-      timerElapsed = 0;
-     
-      const timerEl = document.getElementById('timer-overlay');
-      timerEl.style.display = 'none';
-      timerEl.classList.remove('running', 'stopped');
-      document.getElementById('timer-value').textContent = '00:00.00';
-      document.getElementById('timer-status').textContent = 'En attente...';
-    }
-    function formatTime(ms) {
-      const total = Math.max(0, ms);
-      const minutes = Math.floor(total / 60000);
-      const seconds = Math.floor((total % 60000) / 1000);
-      const centiseconds = Math.floor((total % 1000) / 10);
-     
-      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(centiseconds).padStart(2, '0')}`;
-    }
-    // ============= FPS COUNTER =============
-    let fpsFrames = 0;
-    let fpsLastTime = performance.now();
-   
-    function updateFPS() {
-      fpsFrames++;
-      const now = performance.now();
-     
-      if (now - fpsLastTime >= 1000) {
-        const fps = Math.round((fpsFrames * 1000) / (now - fpsLastTime));
-        document.getElementById('fps-value').textContent = fps;
-       
-        const fpsEl = document.getElementById('fps-overlay');
-        if (fps >= 55) {
-          fpsEl.style.color = '#7c62dc';
-          fpsEl.style.borderColor = '#7c62dc';
-        } else if (fps >= 30) {
-          fpsEl.style.color = '#f59e0b';
-          fpsEl.style.borderColor = '#f59e0b';
-        } else {
-          fpsEl.style.color = '#ef4444';
-          fpsEl.style.borderColor = '#ef4444';
-        }
-       
-        fpsFrames = 0;
-        fpsLastTime = now;
-      }
-     
-      requestAnimationFrame(updateFPS);
-    }
-    updateFPS();
-    function toggleFPS() {
-      config.showFPS = !config.showFPS;
-      document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
-      saveConfig();
-      showNotification(config.showFPS ? "📊 FPS affiché" : "📊 FPS masqué", "info");
-    }
-    // ============= NOTIFICATIONS =============
-    function showNotification(message, type = "info") {
-      const notification = document.createElement('div');
-      notification.className = 'notification';
-      notification.innerHTML = `<span>${message}</span>`;
-     
-      if (type === "error") {
-        notification.style.borderLeftColor = "var(--danger)";
-      } else if (type === "success") {
-        notification.style.borderLeftColor = "var(--success)";
-      } else if (type === "warning") {
-        notification.style.borderLeftColor = "var(--warning)";
-      }
-     
-      document.body.appendChild(notification);
-     
-      setTimeout(() => notification.classList.add('show'), 10);
-      setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => notification.remove(), 300);
-      }, 3000);
-    }
-    // ============= FONCTIONS DES MODALS CORRIGÉES =============
-    function openKeySettings() {
-      if (document.getElementById('mynvo-keys')) return;
-     
-      const div = document.createElement('div');
-      div.id = 'mynvo-keys';
-      div.className = 'mynvo-modal';
-      div.innerHTML = `
-        <h3 style="color:#7c62dc;margin-bottom:10px;text-align:center;">🎮 Configuration des Touches</h3>
-       
-        <div class="settings-section">
-          <h3>🎯 Touches de Jeu</h3>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Haut</div>
-            <div class="key-display" data-key="up">${config.customKeys.up.toUpperCase()}</div>
-          </div>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Bas</div>
-            <div class="key-display" data-key="down">${config.customKeys.down.toUpperCase()}</div>
-          </div>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Gauche</div>
-            <div class="key-display" data-key="left">${config.customKeys.left.toUpperCase()}</div>
-          </div>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Droite</div>
-            <div class="key-display" data-key="right">${config.customKeys.right.toUpperCase()}</div>
-          </div>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Saut</div>
-            <div class="key-display" data-key="jump">${config.customKeys.jump === ' ' ? 'ESPACE' : config.customKeys.jump.toUpperCase()}</div>
-          </div>
+
+    <!-- Stats Panel -->
+    <div class="stats-panel" id="stats-panel">
+        <h3>📊 Stats</h3>
+        <div class="stats-item">
+            <span>Score:</span>
+            <span id="max-score">0</span>
         </div>
-        <div class="settings-section">
-          <h3>⏱️ Touches du Timer</h3>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Démarrer</div>
-            <div class="key-display" data-key="timerStart">${config.customKeys.timerStart}</div>
-          </div>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Arrêter</div>
-            <div class="key-display" data-key="timerStop">${config.customKeys.timerStop}</div>
-          </div>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Réinitialiser</div>
-            <div class="key-display" data-key="timerReset">${config.customKeys.timerReset}</div>
-          </div>
+        <div class="stats-item">
+            <span>Distance:</span>
+            <span id="total-distance">0m</span>
         </div>
-        <div style="text-align:center;margin-top:12px;">
-          <button onclick="closeKeySettings()" style="background:#ff4444;color:#fff;padding:8px 14px;border:none;border-radius:8px;cursor:pointer;">Fermer</button>
+        <div class="stats-item">
+            <span>Pièces:</span>
+            <span id="total-coins">0</span>
         </div>
-      `;
-     
-      document.body.appendChild(div);
-     
-      // Ajouter les écouteurs pour changer les touches
-      document.querySelectorAll('#mynvo-keys .key-display').forEach(display => {
-        display.addEventListener('click', function() {
-          startKeySetting(this.dataset.key);
-        });
-      });
-    }
-    function startKeySetting(keyType) {
-      isSettingKey = true;
-      currentKeySetting = keyType;
-     
-      const display = document.querySelector(`#mynvo-keys .key-display[data-key="${keyType}"]`);
-      display.textContent = '...';
-      display.classList.add('active');
-     
-      showNotification(`Appuyez sur une touche pour ${keyType}...`, 'info');
-     
-      // Écouteur temporaire pour capturer la nouvelle touche
-      const keyListener = function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-       
-        let keyValue = e.key;
-       
-        // Gestion spéciale pour la barre d'espace
-        if (e.code === 'Space') {
-          keyValue = ' ';
-        }
-       
-        config.customKeys[keyType] = keyValue.toLowerCase();
-       
-        // Mettre à jour l'affichage
-        display.textContent = keyValue === ' ' ? 'ESPACE' : keyValue.toUpperCase();
-        display.classList.remove('active');
-       
-        // Sauvegarder et réinitialiser
-        saveConfig();
-        document.removeEventListener('keydown', keyListener);
-        isSettingKey = false;
-        currentKeySetting = null;
-       
-        showNotification(`✅ Touche ${keyType} définie sur: ${keyValue.toUpperCase()}`, 'success');
-       
-        // Reconfigurer les contrôles
-        setupZQSDKeys();
-        setupTimerKeys();
-      };
-     
-      document.addEventListener('keydown', keyListener, { once: true });
-    }
-    function closeKeySettings() {
-      const modal = document.getElementById('mynvo-keys');
-      if (modal) modal.remove();
-      isSettingKey = false;
-      currentKeySetting = null;
-    }
-    function openTimerSettings() {
-      if (document.getElementById('mynvo-timer-settings')) return;
-     
-      const div = document.createElement('div');
-      div.id = 'mynvo-timer-settings';
-      div.className = 'mynvo-modal';
-      div.innerHTML = `
-        <h3 style="color:#7c62dc;margin-bottom:10px;text-align:center;">⏱️ Configuration du Timer</h3>
-       
-        <div class="settings-section">
-          <h3>🎮 Touches du Timer</h3>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Démarrer</div>
-            <div class="key-display">${config.customKeys.timerStart}</div>
-          </div>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Arrêter</div>
-            <div class="key-display">${config.customKeys.timerStop}</div>
-          </div>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Réinitialiser</div>
-            <div class="key-display">${config.customKeys.timerReset}</div>
-          </div>
+        <div class="stats-item">
+            <span>Parties:</span>
+            <span id="games-played">0</span>
         </div>
-        <div style="text-align:center;margin-top:12px;">
-          <button onclick="closeTimerSettings()" style="background:#ff4444;color:#fff;padding:8px 14px;border:none;border-radius:8px;cursor:pointer;">Fermer</button>
+    </div>
+
+    <!-- Bottom Menu -->
+    <div id="bottom-menu">
+        <div class="menu-header">
+            <div class="menu-title">⚙️ Menu Rapide</div>
+            <button class="close-btn" id="close-menu-btn">✖</button>
         </div>
-      `;
-     
-      document.body.appendChild(div);
-    }
-    function closeTimerSettings() {
-      const modal = document.getElementById('mynvo-timer-settings');
-      if (modal) modal.remove();
-    }
-    // ============= GESTION DU MENU RAPIDE =============
-    function toggleBottomMenu() {
-      const menu = document.getElementById('bottom-menu');
-      menu.classList.toggle('visible');
-    }
-    document.getElementById('close-bottom-menu').addEventListener('click', function() {
-      document.getElementById('bottom-menu').classList.remove('visible');
-    });
-    // ============= FONCTIONS EXISTANTES =============
-    function applyOverlaysFromConfig() {
-      document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
-      document.getElementById('top3-overlay').style.display = config.showTop3 ? 'block' : 'none';
-    }
-    function initParticles() {
-      const container = document.getElementById('particles-container');
-      const particleCount = 30;
-     
-      for (let i = 0; i < particleCount; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-       
-        const size = Math.random() * 5 + 2;
-        particle.style.width = `${size}px`;
-        particle.style.height = `${size}px`;
-        particle.style.left = `${Math.random() * 100}%`;
-        particle.style.top = `${Math.random() * 100}%`;
-        particle.style.animationDuration = `${Math.random() * 20 + 10}s`;
-        particle.style.animationDelay = `${Math.random() * 5}s`;
-       
-        container.appendChild(particle);
-      }
-    }
-    function saveConfig() {
-      localStorage.setItem("mynvoConfig", JSON.stringify(config));
-    }
-    function openSongMenu() {
-      showNotification("🎵 Ouverture des paramètres audio...", "info");
-    }
-    function openMapMenu() {
-      showNotification("🗺️ Ouverture des paramètres de map...", "info");
-    }
-    document.getElementById('play-link').addEventListener('click', () => {
-      document.querySelector('.game-container')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      iframe.focus();
-    });
-    // ============= INITIALISATION FINALE =============
-    function initializeGameSystems() {
-      console.log('🎮 Initialisation des systèmes de jeu...');
-      setupZQSDKeys();
-      setupTimerKeys();
-      setTimeout(intelligentAutoGive, 2000);
-    }
-    document.addEventListener('DOMContentLoaded', function() {
-      initParticles();
-     
-      try {
-        const saved = localStorage.getItem("mynvoConfig");
-        if (saved) {
-          const savedConfig = JSON.parse(saved);
-          config = { ...config, ...savedConfig };
-          // S'assurer que customKeys existe
-          if (savedConfig.customKeys) {
-            config.customKeys = { ...config.customKeys, ...savedConfig.customKeys };
-          }
-        }
-      } catch(e) {}
-     
-      applyOverlaysFromConfig();
-    });
-    console.log('%c[MYNVO Parent] Système initialisé!', 'color: #7c62dc; font-weight: bold;');
-    console.log('🎮 Touches: ZQSD + Espace');
-    console.log('⏱️ Timer: F1=Start, F2=Stop, F3=Reset');
-    console.log('💰 Give Piece disponible dans le menu Paramètres');
+        <button class="quick-btn" onclick="openSettingsModal()">🎮 Paramètres</button>
+        <button class="quick-btn" onclick="toggleTimer()">⏱️ Timer</button>
+        <button class="quick-btn" onclick="toggleFPS()">📊 FPS</button>
+        <button class="quick-btn" onclick="toggleFullscreen()">⤢ Plein écran</button>
+        <button class="quick-btn" onclick="toggleTop3()">🏆 TOP 3</button>
+        <button class="quick-btn" onclick="toggleStats()">📈 Stats</button>
+        <button class="quick-btn give-piece-btn" onclick="unlockAllCharacters()">🔓 Débloquer</button>
+    </div>
 
-    // Fusion des scripts de l'extension (adaptés pour le web, sans chrome.*)
-    console.log("Gaming Tools Suite Complete - Content script chargé");
-
-    // ================================
-    // ADBLOCK FUNCTIONS (adapté pour le site - bloque les pubs dans l'iframe si besoin)
-    // ================================
-
-    const adSelectors = [
-      '[id*="google_ads"]',
-      '[class*="google-ad"]',
-      '[id*="ad-"]',
-      '[class*="ad-"]',
-      '[class*="advertisement"]',
-      'iframe[src*="doubleclick"]',
-      'iframe[src*="googlesyndication"]',
-      '.adsbygoogle',
-      '[id*="banner"]',
-      '[class*="banner"]',
-      '[id*="sponsor"]',
-      '[class*="sponsor"]',
-      '[class*="AdBox"]',
-      '[class*="ad_container"]',
-      '[id*="popup"]',
-      '[class*="popup-ad"]'
-    ];
-
-    let adblockActive = true;
-    let adblockObserver = null;
-
-    // Fonction pour masquer les publicités
-    function hideAds() {
-      if (!adblockActive) return 0;
-      
-      const selector = adSelectors.join(', ');
-      const ads = iframe.contentDocument.querySelectorAll(selector);
-      let blockedCount = 0;
-      
-      ads.forEach(ad => {
-        if (ad.style.display !== 'none') {
-          ad.style.display = 'none';
-          ad.style.visibility = 'hidden';
-          ad.style.opacity = '0';
-          ad.style.height = '0';
-          ad.style.width = '0';
-          ad.style.position = 'absolute';
-          ad.style.pointerEvents = 'none';
-          blockedCount++;
-        }
-      });
-      
-      if (blockedCount > 0) {
-        console.log('Ads bloqués:', blockedCount);
-      }
-      
-      return blockedCount;
-    }
-
-    // Initialiser l'adblock
-    function initAdblock() {
-      if (adblockActive) {
-        startAdblocking();
-      } else {
-        stopAdblocking();
-      }
-    }
-
-    // Démarrer le blocage
-    function startAdblocking() {
-      console.log("AdBlock activé sur cette page");
-      
-      // Masquer les publicités au chargement
-      if (iframe.contentDocument.readyState === 'loading') {
-        iframe.contentDocument.addEventListener('DOMContentLoaded', hideAds);
-      } else {
-        hideAds();
-      }
-      
-      // Observer les changements du DOM
-      if (!adblockObserver) {
-        adblockObserver = new MutationObserver((mutations) => {
-          hideAds();
-        });
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal">
+        <h2 style="color: var(--primary); margin-bottom: 20px; text-align: center;">⚙️ Paramètres</h2>
         
-        adblockObserver.observe(iframe.contentDocument.documentElement, {
-          childList: true,
-          subtree: true
+        <div class="settings-section">
+            <h3>🎮 Contrôles Personnalisables</h3>
+            <div class="key-config">
+                <div class="settings-row">
+                    <div class="settings-label">Haut</div>
+                    <input type="text" class="key-input" id="key-up" maxlength="1" value="Z" readonly>
+                    <button class="control-btn" onclick="changeKey('up')">Modifier</button>
+                </div>
+                <div class="settings-row">
+                    <div class="settings-label">Bas</div>
+                    <input type="text" class="key-input" id="key-down" maxlength="1" value="S" readonly>
+                    <button class="control-btn" onclick="changeKey('down')">Modifier</button>
+                </div>
+                <div class="settings-row">
+                    <div class="settings-label">Gauche</div>
+                    <input type="text" class="key-input" id="key-left" maxlength="1" value="Q" readonly>
+                    <button class="control-btn" onclick="changeKey('left')">Modifier</button>
+                </div>
+                <div class="settings-row">
+                    <div class="settings-label">Droite</div>
+                    <input type="text" class="key-input" id="key-right" maxlength="1" value="D" readonly>
+                    <button class="control-btn" onclick="changeKey('right')">Modifier</button>
+                </div>
+                <div class="settings-row">
+                    <div class="settings-label">Saut</div>
+                    <input type="text" class="key-input" id="key-jump" maxlength="1" value=" " readonly>
+                    <button class="control-btn" onclick="changeKey('jump')">Modifier</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3>👁️ Affichage</h3>
+            <div class="settings-row">
+                <div class="settings-label">Afficher FPS</div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="show-fps" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="settings-row">
+                <div class="settings-label">Afficher TOP 3</div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="show-top3" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="settings-row">
+                <div class="settings-label">Afficher Timer</div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="show-timer">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="settings-row">
+                <div class="settings-label">Afficher Stats</div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="show-stats" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3>🎨 Thèmes</h3>
+            <p style="color: var(--text-muted); margin-bottom: 15px;">Choisissez un thème pour l'interface :</p>
+            <div class="theme-options">
+                <div class="theme-option violet active" data-theme="violet">🔮 Violet</div>
+                <div class="theme-option blue" data-theme="blue">🔵 Bleu</div>
+                <div class="theme-option green" data-theme="green">💚 Vert</div>
+                <div class="theme-option red" data-theme="red">❤️ Rouge</div>
+                <div class="theme-option orange" data-theme="orange">🟠 Orange</div>
+                <div class="theme-option purple" data-theme="purple">🟣 Pourpre</div>
+                <div class="theme-option pink" data-theme="pink">🌸 Rose</div>
+                <div class="theme-option cyan" data-theme="cyan">💧 Cyan</div>
+                <div class="theme-option yellow" data-theme="yellow">💛 Jaune</div>
+                <div class="theme-option midnight" data-theme="midnight">🌙 Minuit</div>
+                <div class="theme-option ocean" data-theme="ocean">🌊 Océan</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="control-btn" onclick="resetControls()" style="margin-right: 10px;">🔄 Réinitialiser</button>
+            <button class="control-btn" onclick="closeSettingsModal()" style="padding: 10px 20px;">❌ Fermer</button>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <div id="notification-message"></div>
+    </div>
+
+    <script>
+        // Configuration
+        const config = {
+            showFPS: true,
+            showTop3: true,
+            showTimer: false,
+            showStats: true,
+            theme: 'violet',
+            controls: {
+                up: 'Z',
+                down: 'S',
+                left: 'Q',
+                right: 'D',
+                jump: ' '
+            },
+            stats: {
+                maxScore: 12500,
+                totalDistance: 8450,
+                totalCoins: 320,
+                gamesPlayed: 15
+            }
+        };
+
+        // État du timer
+        let timerState = 'stopped';
+        let timerStartTime = 0;
+        let timerCurrentTime = 0;
+        let timerInterval = null;
+        let changingKey = null;
+
+        // FPS Counter
+        let frameCount = 0;
+        let lastTime = performance.now();
+        let fps = 60;
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            setupEventListeners();
+            startFPSCounter();
+            hideLoading();
         });
-      }
-      
-      // Vérifier périodiquement
-      setInterval(() => {
-        if (adblockActive) {
-          hideAds();
+
+        function initializeApp() {
+            loadConfig();
+            applyConfig();
+            setupCustomControls();
         }
-      }, 2000);
-    }
 
-    // Arrêter le blocage
-    function stopAdblocking() {
-      console.log("AdBlock désactivé sur cette page");
-      
-      if (adblockObserver) {
-        adblockObserver.disconnect();
-        adblockObserver = null;
-      }
-    }
+        function setupEventListeners() {
+            // Navigation
+            document.getElementById('play-btn').addEventListener('click', focusGame);
+            document.getElementById('settings-btn').addEventListener('click', openSettingsModal);
 
-    // Initialiser l'adblock au chargement
-    initAdblock();
+            // Contrôles de jeu
+            document.getElementById('fullscreen-btn').addEventListener('click', toggleFullscreen);
 
-    // ================================
-    // TIMER & OTHER FEATURES
-    // ================================
+            // Menu contextuel
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                toggleBottomMenu();
+            });
 
-    // Variables globales
-    let timerOverlay = null;
-    let timerState = 'stopped';
-    let startTime = null;
-    let currentTime = 0;
-    let timerInterval = null;
-    let isVisible = false;
-    let currentHotkey = 'Control';
-    let zqsdHandler = null;
-    let isResolutionForced = false;
+            document.getElementById('close-menu-btn').addEventListener('click', toggleBottomMenu);
 
-    let fpsOverlay = null;
-    let fpsVisible = false;
-    let fpsAnimationId = null;
-    let fpsLastTimestamp = null;
-    let fpsSamples = [];
-    let fpsSettings = {
-      position: { x: 20, y: 100 },
-      visible: false
-    };
+            // Paramètres
+            document.getElementById('show-fps').addEventListener('change', function() {
+                config.showFPS = this.checked;
+                document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
+                saveConfig();
+            });
 
-    // Charger la hotkey (adapté à localStorage)
-    currentHotkey = localStorage.getItem('customHotkey') || 'Control';
+            document.getElementById('show-top3').addEventListener('change', function() {
+                config.showTop3 = this.checked;
+                document.getElementById('top3-overlay').style.display = config.showTop3 ? 'block' : 'none';
+                saveConfig();
+            });
 
-    // AUTO-ACTIVATION ZQSD au chargement de la page
-    zqsdActive = localStorage.getItem('zqsdActive') === 'true' || false;
+            document.getElementById('show-timer').addEventListener('change', function() {
+                config.showTimer = this.checked;
+                document.getElementById('speedrun-timer-overlay').style.display = config.showTimer ? 'block' : 'none';
+                saveConfig();
+            });
 
-    fpsSettings = JSON.parse(localStorage.getItem('fpsSettings')) || {
-      position: { x: 20, y: 100 },
-      visible: false
-    };
+            document.getElementById('show-stats').addEventListener('change', function() {
+                config.showStats = this.checked;
+                document.getElementById('stats-panel').style.display = config.showStats ? 'block' : 'none';
+                saveConfig();
+            });
 
-    // ================================
-    // RESOLUTION MANAGEMENT
-    // ================================
+            // Thèmes
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const theme = this.dataset.theme;
+                    changeTheme(theme);
+                });
+            });
 
-    let blackBarsEnabled = true; // Par défaut activé
-    const LEGACY_VERTICAL_RESOLUTION_STORAGE_KEY = 'verticalResolutionEnabled';
-    const FORCED_RESOLUTION_STORAGE_KEY = 'forcedResolutionMode';
-    const RESOLUTION_CONFIGS = {
-      '608x1080': { width: 608, height: 1080, indicator: '608×1080 ACTIF' },
-      '1440x1080': { width: 1440, height: 1080, indicator: '1440×1080 ACTIF' }
-    };
+            // Écouteur global pour la modification des touches
+            document.addEventListener('keydown', handleKeyChange);
+        }
 
-    let currentResolutionMode = null;
+        // Système de contrôles personnalisés
+        function setupCustomControls() {
+            document.addEventListener('keydown', handleCustomKeyDown, true);
+        }
 
-    // Charger l'état des barres noires et de la résolution au démarrage
-    blackBarsEnabled = localStorage.getItem('blackBarsEnabled') === 'true';
-    let storedMode = localStorage.getItem(FORCED_RESOLUTION_STORAGE_KEY);
-    if (!storedMode && localStorage.getItem(LEGACY_VERTICAL_RESOLUTION_STORAGE_KEY)) {
-      storedMode = '608x1080';
-    }
+        function handleCustomKeyDown(e) {
+            if (e.target.tagName === 'INPUT' || changingKey) return;
 
-    if (storedMode && RESOLUTION_CONFIGS[storedMode]) {
-      const modeToApply = storedMode;
-      const triggerApply = () => setTimeout(() => applyForcedResolution(modeToApply, blackBarsEnabled), 1000);
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', triggerApply, { once: true });
-      } else {
-        triggerApply();
-      }
-    }
+            const key = e.key.toUpperCase();
+            const keyMap = {
+                [config.controls.up]: { key: 'ArrowUp', code: 'ArrowUp' },
+                [config.controls.down]: { key: 'ArrowDown', code: 'ArrowDown' },
+                [config.controls.left]: { key: 'ArrowLeft', code: 'ArrowLeft' },
+                [config.controls.right]: { key: 'ArrowRight', code: 'ArrowRight' },
+                [config.controls.jump]: { key: ' ', code: 'Space' }
+            };
 
-    function applyForcedResolution(modeKey = '608x1080', enableBlackBars = true) {
-      const config = RESOLUTION_CONFIGS[modeKey] || RESOLUTION_CONFIGS['608x1080'];
-      const { width, height, indicator } = config;
+            if (keyMap[key]) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Simulation des touches pour le jeu
+                const iframe = document.getElementById('game-iframe');
+                try {
+                    iframe.contentWindow.postMessage({
+                        type: 'keydown',
+                        key: keyMap[key].key,
+                        code: keyMap[key].code
+                    }, '*');
+                } catch (err) {
+                    console.log('Key simulation:', keyMap[key].key);
+                }
+            }
+        }
 
-      console.log(`Application permanente du mode ${modeKey}`);
+        // Modification des touches
+        function changeKey(action) {
+            changingKey = action;
+            const input = document.getElementById(`key-${action}`);
+            input.style.borderColor = 'var(--warning)';
+            input.placeholder = 'Appuyez sur une touche...';
+            input.value = '';
+            showNotification('Appuyez sur une touche pour l\'assigner');
+        }
 
-      blackBarsEnabled = enableBlackBars;
-      currentResolutionMode = modeKey;
-      isResolutionForced = true;
+        function handleKeyChange(e) {
+            if (changingKey) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const key = e.key.toUpperCase();
+                
+                // Vérifier si la touche est déjà utilisée
+                for (const control in config.controls) {
+                    if (config.controls[control] === key && control !== changingKey) {
+                        showNotification('Cette touche est déjà utilisée!', 'error');
+                        resetKeyInput();
+                        return;
+                    }
+                }
+                
+                document.getElementById(`key-${changingKey}`).value = key;
+                config.controls[changingKey] = key;
+                
+                document.getElementById(`key-${changingKey}`).style.borderColor = 'var(--primary)';
+                document.getElementById(`key-${changingKey}`).placeholder = '';
+                
+                saveConfig();
+                changingKey = null;
+                showNotification('Touche modifiée avec succès!');
+            }
+        }
 
-      localStorage.setItem('blackBarsEnabled', enableBlackBars);
-      localStorage.setItem(LEGACY_VERTICAL_RESOLUTION_STORAGE_KEY, modeKey === '608x1080');
-      localStorage.setItem(FORCED_RESOLUTION_STORAGE_KEY, modeKey);
-      localStorage.setItem('selectedResolutionMode', modeKey);
-      localStorage.setItem('resolutionActive', true);
-      localStorage.setItem('resolutionMode', modeKey);
+        function resetKeyInput() {
+            if (changingKey) {
+                document.getElementById(`key-${changingKey}`).value = config.controls[changingKey];
+                document.getElementById(`key-${changingKey}`).style.borderColor = 'var(--primary)';
+                document.getElementById(`key-${changingKey}`).placeholder = '';
+                changingKey = null;
+            }
+        }
 
-      let viewportMeta = document.querySelector('meta[name="viewport"]');
-      if (!viewportMeta) {
-        viewportMeta = document.createElement('meta');
-        viewportMeta.name = 'viewport';
-        document.head.appendChild(viewportMeta);
-      }
-      viewportMeta.content = `width=${width}, user-scalable=no`;
+        function resetControls() {
+            config.controls = {
+                up: 'Z',
+                down: 'S',
+                left: 'Q',
+                right: 'D',
+                jump: ' '
+            };
+            
+            document.getElementById('key-up').value = 'Z';
+            document.getElementById('key-down').value = 'S';
+            document.getElementById('key-left').value = 'Q';
+            document.getElementById('key-right').value = 'D';
+            document.getElementById('key-jump').value = ' ';
+            
+            saveConfig();
+            showNotification('Contrôles réinitialisés!');
+        }
 
-      const body = document.body;
-      const html = document.documentElement;
+        // Timer functions
+        function startTimer() {
+            if (timerState === 'stopped' || timerState === 'paused') {
+                timerStartTime = performance.now() - timerCurrentTime;
+                timerState = 'running';
+                
+                timerInterval = setInterval(() => {
+                    if (timerState === 'running') {
+                        timerCurrentTime = performance.now() - timerStartTime;
+                        updateTimerDisplay();
+                    }
+                }, 10);
+            }
+        }
 
-      // ... (code truncé pour le timer existant, etc.)
-    }
+        function pauseTimer() {
+            if (timerState === 'running') {
+                timerState = 'paused';
+                clearInterval(timerInterval);
+            }
+        }
 
-    function restoreNormalResolution() {
-      // Logique pour restaurer la résolution normale
-      localStorage.setItem('resolutionActive', false);
-      localStorage.setItem('resolutionMode', null);
-      isResolutionForced = false;
-      currentResolutionMode = null;
+        function resetTimer() {
+            timerState = 'stopped';
+            timerCurrentTime = 0;
+            clearInterval(timerInterval);
+            updateTimerDisplay();
+        }
 
-      const viewportMeta = document.querySelector('meta[name="viewport"]');
-      if (viewportMeta) {
-        viewportMeta.content = 'width=device-width, initial-scale=1.0';
-      }
+        function updateTimerDisplay() {
+            const totalSec = Math.floor(timerCurrentTime / 1000);
+            const m = Math.floor(totalSec / 60);
+            const s = totalSec % 60;
+            const cs = Math.floor((timerCurrentTime % 1000) / 10);
+            
+            document.getElementById('timer-display').textContent = 
+                `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}.${cs.toString().padStart(2, '0')}`;
+        }
 
-      const html = document.documentElement;
-      html.style.background = 'transparent';
-      window.location.reload(); // Recharger pour appliquer
-    }
+        // FPS Counter (réel)
+        function startFPSCounter() {
+            function updateFPS() {
+                frameCount++;
+                const currentTime = performance.now();
+                
+                if (currentTime - lastTime >= 1000) {
+                    fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+                    document.getElementById('fps-value').textContent = fps;
+                    
+                    // Changer la couleur selon les FPS
+                    const fpsEl = document.getElementById('fps-overlay');
+                    if (fps >= 55) {
+                        fpsEl.style.borderColor = '#00cc66';
+                        fpsEl.style.color = '#00cc66';
+                    } else if (fps >= 30) {
+                        fpsEl.style.borderColor = '#ffaa00';
+                        fpsEl.style.color = '#ffaa00';
+                    } else {
+                        fpsEl.style.borderColor = '#ff4444';
+                        fpsEl.style.color = '#ff4444';
+                    }
+                    
+                    frameCount = 0;
+                    lastTime = currentTime;
+                }
+                
+                requestAnimationFrame(updateFPS);
+            }
+            updateFPS();
+        }
 
-    // ================================
-    // TIMER MANAGEMENT (fusionné)
-    // ================================
+        // Gestion des thèmes
+        function changeTheme(themeName) {
+            document.body.classList.remove('theme-violet', 'theme-blue', 'theme-green', 'theme-red', 'theme-orange', 
+                                         'theme-purple', 'theme-pink', 'theme-cyan', 'theme-yellow', 'theme-midnight', 'theme-ocean');
+            document.body.classList.add(`theme-${themeName}`);
+            config.theme = themeName;
+            
+            // Mettre à jour les sélections de thème
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            document.querySelector(`.theme-option[data-theme="${themeName}"]`).classList.add('active');
+            
+            saveConfig();
+            showNotification(`Thème ${themeName} appliqué!`);
+        }
 
-    function toggleTimerVisibility() {
-      isVisible = !isVisible;
-      const timerEl = document.getElementById('timer-overlay');
-      timerEl.style.display = isVisible ? 'block' : 'none';
-      localStorage.setItem('timerVisible', isVisible);
-    }
+        // Fonctions d'interface
+        function openSettingsModal() {
+            document.getElementById('settings-modal').classList.add('active');
+        }
 
-    // Autres fonctions timer déjà présentes, fusionnées
+        function closeSettingsModal() {
+            document.getElementById('settings-modal').classList.remove('active');
+            resetKeyInput();
+        }
 
-    // ================================
-    // FPS MANAGEMENT
-    // ================================
+        function toggleBottomMenu() {
+            document.getElementById('bottom-menu').classList.toggle('visible');
+        }
 
-    function toggleFpsOverlay() {
-      fpsVisible = !fpsVisible;
-      fpsSettings.visible = fpsVisible;
-      const fpsEl = document.getElementById('fps-overlay');
-      fpsEl.style.display = fpsVisible ? 'block' : 'none';
-      localStorage.setItem('fpsSettings', JSON.stringify(fpsSettings));
-      return fpsVisible;
-    }
+        function toggleFullscreen() {
+            const gameFrame = document.querySelector('.game-frame');
+            
+            if (!document.fullscreenElement) {
+                if (gameFrame.requestFullscreen) {
+                    gameFrame.requestFullscreen();
+                } else if (gameFrame.webkitRequestFullscreen) {
+                    gameFrame.webkitRequestFullscreen();
+                } else if (gameFrame.msRequestFullscreen) {
+                    gameFrame.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
 
-    // ================================
-    // POPUP SCRIPT FUSIONNÉ (adapté)
-    // ================================
+        function toggleTimer() {
+            config.showTimer = !config.showTimer;
+            document.getElementById('speedrun-timer-overlay').style.display = config.showTimer ? 'block' : 'none';
+            document.getElementById('show-timer').checked = config.showTimer;
+            saveConfig();
+        }
 
-    let currentActiveKey = 'Control';
-    let isResolutionActive = false;
+        function toggleFPS() {
+            config.showFPS = !config.showFPS;
+            document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
+            document.getElementById('show-fps').checked = config.showFPS;
+            saveConfig();
+        }
 
-    // Easter Egg variables
-    let themeClickCount = 0;
-    let themeClickTimeout = null;
+        function toggleTop3() {
+            config.showTop3 = !config.showTop3;
+            document.getElementById('top3-overlay').style.display = config.showTop3 ? 'block' : 'none';
+            document.getElementById('show-top3').checked = config.showTop3;
+            saveConfig();
+        }
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initPopup);
-    } else {
-      initPopup();
-    }
+        function toggleStats() {
+            config.showStats = !config.showStats;
+            document.getElementById('stats-panel').style.display = config.showStats ? 'block' : 'none';
+            document.getElementById('show-stats').checked = config.showStats;
+            saveConfig();
+        }
 
-    function initPopup() {
-      console.log("Initializing popup...");
-      setupTabNavigation();
-      loadCurrentHotkey();
-      setupTimerEventListeners();
-      setupFpsEventListeners();
-      setupSubwayEventListeners();
-      setupSubwayCityEventListeners();
-      setupZqsdEventListeners();
-      setupResolutionEventListeners();
-      setupColorEventListeners();
-      console.log("Popup initialized successfully");
-    }
+        function focusGame() {
+            document.querySelector('.game-section').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('game-iframe').focus();
+        }
 
-    function setupTabNavigation() {
-      // Logique des tabs (adaptée si besoin pour le site)
-    }
+        function unlockAllCharacters() {
+            showNotification('Tous les personnages sont débloqués! Profitez du jeu!', 'success');
+        }
 
-    // ... (tout le code de popup.js adapté, en remplaçant chrome.runtime par localStorage et console.log pour les messages)
+        function hideLoading() {
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+            }, 2000);
+        }
 
-    // Exemple pour saveHotkey
-    function saveHotkey(hotkey) {
-      localStorage.setItem('customHotkey', hotkey);
-      currentHotkey = hotkey;
-    }
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const messageEl = document.getElementById('notification-message');
+            
+            messageEl.textContent = message;
+            
+            // Définir la couleur selon le type
+            if (type === 'success') {
+                notification.style.borderColor = 'var(--success)';
+            } else if (type === 'error') {
+                notification.style.borderColor = 'var(--danger)';
+            } else {
+                notification.style.borderColor = 'var(--primary)';
+            }
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
 
-    // Ajouter toutes les fonctions similaires
+        // Sauvegarde/Chargement de la configuration
+        function saveConfig() {
+            localStorage.setItem('mynvoConfig', JSON.stringify(config));
+        }
 
-    // ================================
-    // BACKGROUND SCRIPT FUSIONNÉ (adapté pour localStorage)
-    // ================================
+        function loadConfig() {
+            try {
+                const saved = localStorage.getItem('mynvoConfig');
+                if (saved) {
+                    const savedConfig = JSON.parse(saved);
+                    Object.assign(config, savedConfig);
+                }
+            } catch (e) {
+                console.warn('Impossible de charger la configuration');
+            }
+        }
 
-    console.log("Gaming Tools Suite Complete - Background script démarré");
+        function applyConfig() {
+            // Appliquer le thème
+            changeTheme(config.theme);
+            
+            // Appliquer l'état des overlays
+            document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
+            document.getElementById('top3-overlay').style.display = config.showTop3 ? 'block' : 'none';
+            document.getElementById('speedrun-timer-overlay').style.display = config.showTimer ? 'block' : 'none';
+            document.getElementById('stats-panel').style.display = config.showStats ? 'block' : 'none';
+            
+            // Appliquer les états des toggles
+            document.getElementById('show-fps').checked = config.showFPS;
+            document.getElementById('show-top3').checked = config.showTop3;
+            document.getElementById('show-timer').checked = config.showTimer;
+            document.getElementById('show-stats').checked = config.showStats;
+            
+            // Appliquer les contrôles personnalisés
+            document.getElementById('key-up').value = config.controls.up;
+            document.getElementById('key-down').value = config.controls.down;
+            document.getElementById('key-left').value = config.controls.left;
+            document.getElementById('key-right').value = config.controls.right;
+            document.getElementById('key-jump').value = config.controls.jump;
+            
+            // Mettre à jour les stats
+            document.getElementById('max-score').textContent = config.stats.maxScore.toLocaleString();
+            document.getElementById('total-distance').textContent = config.stats.totalDistance.toLocaleString() + 'm';
+            document.getElementById('total-coins').textContent = config.stats.totalCoins.toLocaleString();
+            document.getElementById('games-played').textContent = config.stats.gamesPlayed;
+        }
 
-    // Initialiser paramètres avec localStorage au lieu de chrome.storage
-    localStorage.setItem('customHotkey', localStorage.getItem('customHotkey') || 'Control');
-    // ... pour tous les paramètres
-
-    // Fonctions comme incrementBlockCount adaptées à localStorage
-
-    // ... (tout le code adapté)
-
-    // Gestion des messages (simulée avec events ou fonctions directes)
-
-    // ================================
-    // INITIALISATION COMPLÈTE
-    // ================================
-    document.addEventListener('DOMContentLoaded', () => {
-      // Appeler toutes les inits
-      initAdblock();
-      // etc.
-    });
-
-  </script>
+        console.log('🎮 Subway Surfers 2025 - Version Mynvo Chargée!');
+    </script>
 </body>
 </html>
