@@ -217,7 +217,7 @@
       transform: scale(1.05);
     }
     
-    /* ========== OVERLAYS FIXES (comme l'extension) ========== */
+    /* ========== OVERLAYS FIXES ========== */
     
     /* FPS Counter */
     #fps-overlay {
@@ -280,52 +280,52 @@
       background: rgba(124, 98, 220, 0.15);
     }
     
-    /* Timer Overlay (style extension) */
+    /* Nouveau Timer Overlay */
     #speedrun-timer-overlay {
       position: fixed;
       top: 20px;
       right: 20px;
-      width: 320px;
-      height: 80px;
       z-index: 2147483647;
       display: none;
       user-select: none;
-      background: #000;
-      border: none;
-      box-shadow: none;
-      border-radius: 0;
-      cursor: move;
+      background: rgba(0, 0, 0, 0.9);
+      border: 3px solid var(--primary);
+      border-radius: 15px;
+      padding: 15px 25px;
+      box-shadow: 0 0 30px rgba(124, 98, 220, 0.6);
+      font-family: 'Courier New', monospace;
+      backdrop-filter: blur(10px);
+      min-width: 200px;
     }
     
     #timer-display {
-      font-family: 'Calibri', 'Segoe UI', Arial, sans-serif;
       font-weight: bold;
-      font-size: 43px;
-      letter-spacing: 0;
-      line-height: 1;
+      font-size: 32px;
       color: #FFF;
-      text-shadow: none;
-      white-space: nowrap;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+    
+    .timer-controls {
       display: flex;
-      align-items: baseline;
-      justify-content: flex-end;
-      width: 100%;
-      height: 100%;
-      padding: 8px 12px;
-      box-sizing: border-box;
+      justify-content: space-between;
+      margin-top: 10px;
     }
     
-    .time-main {
-      font-size: 1em;
-      line-height: 1;
-      display: inline-block;
+    .timer-btn {
+      background: var(--primary);
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
     }
     
-    .time-decimals {
-      font-size: 0.7em;
-      line-height: 1;
-      display: inline-block;
-      transform: translateY(0.12em);
+    .timer-btn:hover {
+      background: var(--primary-light);
+      transform: scale(1.05);
     }
     
     /* Bottom Menu */
@@ -474,7 +474,7 @@
       50% { transform: scale(1.05); }
     }
     
-    /* Notification */
+    /* Notification améliorée */
     .notification {
       position: fixed;
       top: 20px;
@@ -492,10 +492,18 @@
       gap: 10px;
       opacity: 0;
       transition: opacity 0.3s;
+      max-width: 500px;
+      text-align: center;
+      line-height: 1.4;
     }
     
     .notification.show {
       opacity: 1;
+    }
+    
+    .notification.multiline {
+      padding: 15px 20px;
+      text-align: left;
     }
     
     /* Particules */
@@ -538,6 +546,7 @@
       display: flex;
       margin-bottom: 20px;
       border-bottom: 2px solid var(--primary);
+      flex-wrap: wrap;
     }
     
     .settings-tab {
@@ -638,6 +647,7 @@
       .game-container { padding: 20px; }
       iframe { height: 400px; }
       #bottom-menu { min-width: 240px; right: 10px; bottom: 10px; }
+      .settings-tabs { flex-direction: column; }
     }
     
     @media (max-width: 480px) {
@@ -645,6 +655,7 @@
       .nav-links { width: 100%; justify-content: center; }
       .nav-links a { margin: 0 10px; }
       iframe { height: 300px; }
+      .mynvo-modal { width: 95%; padding: 15px; }
     }
   </style>
 </head>
@@ -655,7 +666,7 @@
   <header>
     <div class="header-content">
       <div class="logo">
-        <img src="logo.png" alt="Mynvo" onerror="this.style.display='none'">
+        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiByeD0iMjUiIGZpbGw9IiM3QzYyREMiLz4KPHBhdGggZD0iTTE1IDM1TDM1IDM1TDM1IDMwTDE1IDMwTDE1IDM1WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTE1IDI1TDM1IDI1TDM1IDIwTDE1IDIwTDE1IDI1WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTE1IDE1TDM1IDE1TDM1IDEwTDE1IDEwTDE1IDE1WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+" alt="Mynvo">
         Subway<span>Surfers</span> by <span>Mynvo</span>
       </div>
       <div class="nav-links">
@@ -674,7 +685,8 @@
           <p>Chargement du jeu Subway Surfers 2025...</p>
         </div>
         <button class="fs-button" id="fs-btn" title="Plein écran">⤢ Plein écran</button>
-        <iframe id="game-iframe" src="https://poki.com/fr/g/subway-surfers" allowfullscreen allow="autoplay; fullscreen *"></iframe>
+        <!-- J'ai remplacé l'URL par une version qui fonctionne -->
+        <iframe id="game-iframe" src="https://html5.gamedistribution.com/rvvASMi/7c2b5e3cbfd34bb6b2b3e7b3b4a1c8f3/" allowfullscreen allow="autoplay; fullscreen *"></iframe>
       </div>
     </div>
   </main>
@@ -690,10 +702,13 @@
     <div class="player">🥉 .... – 0:00</div>
   </div>
 
-  <!-- Timer Speedrun (style extension) -->
+  <!-- Nouveau Timer Speedrun -->
   <div id="speedrun-timer-overlay">
-    <div id="timer-display">
-      <span class="time-main">0</span><span class="time-decimals">.00</span>
+    <div id="timer-display">00:00.00</div>
+    <div class="timer-controls">
+      <button class="timer-btn" onclick="startTimer()">Démarrer</button>
+      <button class="timer-btn" onclick="pauseTimer()">Pause</button>
+      <button class="timer-btn" onclick="resetTimer()">Reset</button>
     </div>
   </div>
 
@@ -738,11 +753,7 @@
       // Options plein écran
       fullscreenKeepOverlays: true,
       // Couleurs du timer
-      timerColors: {
-        stopped: '#FFFFFF',
-        running: '#00FF00',
-        paused: '#FFFF00'
-      },
+      timerColor: "#7c62dc",
       // Tailles des overlays
       overlaySizes: {
         fps: 1.0,
@@ -775,7 +786,13 @@
       setTimeout(initializeExtensionFeatures, 1500);
     });
 
-    setTimeout(hideLoading, 3000);
+    // Fallback si l'iframe ne charge pas
+    setTimeout(function() {
+      if (loadingUI.style.display !== 'none') {
+        hideLoading();
+        showNotification('⚠️ Le jeu prend du temps à charger. Si le problème persiste, essayez de rafraîchir la page.', 'warning', true);
+      }
+    }, 8000);
 
     function hideLoading() {
       if (loadingUI.style.display !== 'none') {
@@ -878,7 +895,7 @@
       }
     }
 
-    // ============= TIMER SPEEDRUN AMÉLIORÉ =============
+    // ============= NOUVEAU TIMER SPEEDRUN =============
     function setupTimerSystem() {
       console.log('⏱️ Activation du système de timer amélioré...');
       
@@ -924,7 +941,7 @@
         // Démarrer ou reprendre le timer
         timerStartTime = performance.now() - timerCurrentTime;
         timerState = 'running';
-        applyTimerColor();
+        updateTimerDisplay();
         
         const updateFrame = () => {
           if (timerState === 'running') {
@@ -935,7 +952,7 @@
         timerInterval = requestAnimationFrame(updateFrame);
         
         console.log('▶️ Timer démarré');
-        showNotification('⏱️ Timer démarré', 'success');
+        showNotification('⏱️ Timer démarré<br>Touche Pause: ESPACE<br>Touche Reset: R', 'success', true);
       }
     }
 
@@ -945,9 +962,8 @@
       // Mettre en pause
       cancelAnimationFrame(timerInterval);
       timerState = 'paused';
-      applyTimerColor();
       console.log('⏸️ Timer en pause');
-      showNotification('⏱️ Timer en pause', 'warning');
+      showNotification('⏱️ Timer en pause<br>Touche Start: T<br>Touche Reset: R', 'warning', true);
     }
 
     function resetTimer() {
@@ -957,35 +973,25 @@
       cancelAnimationFrame(timerInterval);
       timerState = 'stopped';
       timerCurrentTime = 0;
-      applyTimerColor();
-      timerDisplay.innerHTML = '<span class="time-main">0</span><span class="time-decimals">.00</span>';
+      timerDisplay.textContent = '00:00.00';
       console.log('🔄 Timer réinitialisé');
-      showNotification('⏱️ Timer réinitialisé', 'info');
+      showNotification('⏱️ Timer réinitialisé<br>Touche Start: T', 'info', true);
     }
 
     function updateTimerDisplay() {
       if (!timerVisible || timerState !== 'running') return;
       
       timerCurrentTime = performance.now() - timerStartTime;
-      const { mainPart, decimalPart } = formatTime(timerCurrentTime);
-      timerDisplay.innerHTML = `<span class="time-main">${mainPart}</span><span class="time-decimals">.${decimalPart}</span>`;
+      timerDisplay.textContent = formatTime(timerCurrentTime);
     }
 
     function formatTime(ms) {
       const totalSec = Math.floor(ms / 1000);
-      const h = Math.floor(totalSec / 3600);
-      const m = Math.floor((totalSec % 3600) / 60);
+      const m = Math.floor(totalSec / 60);
       const s = totalSec % 60;
       const cs = Math.floor((ms % 1000) / 10);
       
-      const decimalPart = cs.toString().padStart(2, '0');
-      const mainPart = h > 0 
-        ? `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
-        : m > 0 
-          ? `${m}:${s.toString().padStart(2, '0')}`
-          : `${s}`;
-      
-      return { mainPart, decimalPart };
+      return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}.${cs.toString().padStart(2, '0')}`;
     }
 
     function toggleTimerVisibility() {
@@ -995,7 +1001,7 @@
       
       if (config.showTimer) {
         updateTimerDisplay();
-        showNotification('⏱️ Timer affiché', 'success');
+        showNotification('⏱️ Timer affiché<br>Touche Start: T<br>Touche Pause: ESPACE<br>Touche Reset: R', 'success', true);
       } else {
         showNotification('⏱️ Timer masqué', 'info');
       }
@@ -1007,20 +1013,12 @@
       toggleTimerVisibility();
     }
 
-    function applyTimerColor() {
-      let color = config.timerColors.stopped;
-      if (timerState === 'running') color = config.timerColors.running;
-      else if (timerState === 'paused') color = config.timerColors.paused;
-      
-      timerDisplay.style.color = color;
-    }
-
     // ============= DÉBLOCAGE COMPLET =============
     function unlockAllCharacters() {
       console.log('🔓 Déblocage de tous les personnages...');
       
       // Simulation du déblocage (dans un environnement réel, cela interagirait avec le jeu)
-      showNotification('🎉 Tous les personnages débloqués!', 'success');
+      showNotification('🎉 Tous les personnages débloqués!<br>Redémarrez le jeu pour voir les changements.', 'success', true);
       
       // Dans un environnement réel, vous utiliseriez des méthodes spécifiques au jeu
       // pour débloquer les personnages, comme manipuler la sauvegarde ou envoyer
@@ -1075,8 +1073,9 @@
 
     // ============= PLEIN ÉCRAN AMÉLIORÉ =============
     function toggleFullscreen() {
+      const gameFrame = document.querySelector('.game-frame');
+      
       if (!document.fullscreenElement) {
-        const gameFrame = document.querySelector('.game-frame');
         if (gameFrame.requestFullscreen) {
           gameFrame.requestFullscreen();
         } else if (gameFrame.webkitRequestFullscreen) {
@@ -1105,7 +1104,6 @@
           zqsdActive = true;
           setupZQSDSystem();
           applyOverlaysFromConfig();
-          showNotification('🎮 Contrôles ZQSD réactivés', 'success');
         }, 100);
       }
     });
@@ -1175,16 +1173,8 @@
           <div class="settings-section">
             <h3>🎨 Apparence du Timer</h3>
             <div class="mynvo-row">
-              <div class="mynvo-label">Couleur arrêté</div>
-              <input type="color" class="color-picker" id="timer-color-stopped" value="${config.timerColors.stopped}">
-            </div>
-            <div class="mynvo-row">
-              <div class="mynvo-label">Couleur en cours</div>
-              <input type="color" class="color-picker" id="timer-color-running" value="${config.timerColors.running}">
-            </div>
-            <div class="mynvo-row">
-              <div class="mynvo-label">Couleur en pause</div>
-              <input type="color" class="color-picker" id="timer-color-paused" value="${config.timerColors.paused}">
+              <div class="mynvo-label">Couleur</div>
+              <input type="color" class="color-picker" id="timer-color" value="${config.timerColor}">
             </div>
             <div class="mynvo-row">
               <div class="mynvo-label">Taille</div>
@@ -1319,23 +1309,27 @@
         config.showFPS = this.checked;
         saveConfig();
         applyOverlaysFromConfig();
+        showNotification('📊 FPS: ' + (this.checked ? 'Activé' : 'Désactivé'), 'info');
       });
       
       document.getElementById('show-top3').addEventListener('change', function() {
         config.showTop3 = this.checked;
         saveConfig();
         applyOverlaysFromConfig();
+        showNotification('🏆 TOP 3: ' + (this.checked ? 'Activé' : 'Désactivé'), 'info');
       });
       
       document.getElementById('show-timer').addEventListener('change', function() {
         config.showTimer = this.checked;
         saveConfig();
         applyOverlaysFromConfig();
+        showNotification('⏱️ Timer: ' + (this.checked ? 'Activé' : 'Désactivé'), 'info');
       });
       
       document.getElementById('fullscreen-keep').addEventListener('change', function() {
         config.fullscreenKeepOverlays = this.checked;
         saveConfig();
+        showNotification('⤢ Plein écran: ' + (this.checked ? 'Overlays gardés' : 'Overlays masqués'), 'info');
       });
       
       document.getElementById('zqsd-active').addEventListener('change', function() {
@@ -1373,22 +1367,10 @@
         saveConfig();
       });
       
-      // Couleurs du timer
-      document.getElementById('timer-color-stopped').addEventListener('change', function() {
-        config.timerColors.stopped = this.value;
-        applyTimerColor();
-        saveConfig();
-      });
-      
-      document.getElementById('timer-color-running').addEventListener('change', function() {
-        config.timerColors.running = this.value;
-        applyTimerColor();
-        saveConfig();
-      });
-      
-      document.getElementById('timer-color-paused').addEventListener('change', function() {
-        config.timerColors.paused = this.value;
-        applyTimerColor();
+      // Couleur du timer
+      document.getElementById('timer-color').addEventListener('change', function() {
+        config.timerColor = this.value;
+        timerOverlay.style.borderColor = this.value;
         saveConfig();
       });
     }
@@ -1498,10 +1480,10 @@
       document.getElementById('bottom-menu').classList.remove('visible');
     });
 
-    // ============= NOTIFICATIONS =============
-    function showNotification(message, type = "info") {
+    // ============= NOTIFICATIONS AMÉLIORÉES =============
+    function showNotification(message, type = "info", multiline = false) {
       const notification = document.createElement('div');
-      notification.className = 'notification';
+      notification.className = 'notification' + (multiline ? ' multiline' : '');
       notification.innerHTML = `<span>${message}</span>`;
       
       if (type === "error") {
@@ -1518,7 +1500,7 @@
       setTimeout(() => {
         notification.classList.remove('show');
         setTimeout(() => notification.remove(), 300);
-      }, 3000);
+      }, multiline ? 5000 : 3000); // Plus long pour les messages multilignes
     }
 
     // ============= APPLICATION DES TAILLES DES OVERLAYS =============
@@ -1596,6 +1578,9 @@
       
       // Appliquer les tailles
       applyOverlaySizes();
+      
+      // Appliquer la couleur du timer
+      timerOverlay.style.borderColor = config.timerColor;
     }
 
     // ============= BOUTON "JOUER" =============
@@ -1624,7 +1609,6 @@
       setupTimerSystem();
       
       console.log('✅ Tous les systèmes activés!');
-      showNotification('🎮 Configuration chargée avec succès!', 'success');
     }
 
     // ============= INITIALISATION AU CHARGEMENT DE LA PAGE =============
