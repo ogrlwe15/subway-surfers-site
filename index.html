@@ -232,11 +232,13 @@
       overflow: hidden;
       box-shadow: 0 15px 50px var(--primary-transparent);
       border: 2px solid var(--primary);
+      height: 720px;
+      background: #000;
     }
     
     iframe {
       width: 100%;
-      height: 720px;
+      height: 100%;
       border: none;
       background: #000000;
       display: block;
@@ -378,6 +380,7 @@
       font-family: 'Courier New', monospace;
       backdrop-filter: blur(10px);
       min-width: 200px;
+      cursor: move;
     }
     
     #timer-display {
@@ -771,7 +774,7 @@
     /* Nouveaux styles pour le jeu alternatif */
     .game-alternative {
       width: 100%;
-      height: 720px;
+      height: 100%;
       background: #000;
       display: flex;
       flex-direction: column;
@@ -779,6 +782,7 @@
       align-items: center;
       color: white;
       font-family: 'Segoe UI', sans-serif;
+      position: relative;
     }
     
     .game-alternative img {
@@ -821,10 +825,29 @@
       transform: scale(1.05);
     }
     
+    /* Style pour les overlays déplaçables */
+    .draggable {
+      position: fixed;
+      cursor: move;
+      z-index: 10000;
+    }
+    
+    .resizable {
+      resize: both;
+      overflow: auto;
+    }
+    
+    /* Style pour le jeu intégré */
+    .game-embedded {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    
     /* Responsive */
     @media (max-width: 1200px) {
       .game-container { padding: 30px; }
-      iframe, .game-alternative { height: 600px; }
+      .game-frame { height: 600px; }
     }
     
     @media (max-width: 768px) {
@@ -833,7 +856,7 @@
       .logo img { height: 40px; width: 40px; }
       .nav-links a { margin-left: 16px; font-size: 15px; }
       .game-container { padding: 20px; }
-      iframe, .game-alternative { height: 400px; }
+      .game-frame { height: 400px; }
       #bottom-menu { min-width: 240px; right: 10px; bottom: 10px; }
       .settings-tabs { flex-direction: column; }
       .theme-options { grid-template-columns: repeat(2, 1fr); }
@@ -843,7 +866,7 @@
       .header-content { flex-direction: column; gap: 10px; }
       .nav-links { width: 100%; justify-content: center; }
       .nav-links a { margin: 0 10px; }
-      iframe, .game-alternative { height: 300px; }
+      .game-frame { height: 300px; }
       .mynvo-modal { width: 95%; padding: 15px; }
       .theme-options { grid-template-columns: 1fr; }
     }
@@ -876,28 +899,19 @@
         </div>
         <button class="fs-button" id="fs-btn" title="Plein écran">⤢ Plein écran</button>
         
-        <!-- Conteneur pour le jeu alternatif -->
-        <div class="game-alternative" id="game-alternative" style="display:none;">
-          <h2>Subway Surfers 2025</h2>
-          <p>Le jeu se charge... Si cela prend trop de temps, essayez l'une des options ci-dessous :</p>
-          <div class="game-buttons">
-            <button onclick="loadPokiVersion()">Jouer sur Poki</button>
-            <button onclick="loadCrazyGamesVersion()">Jouer sur CrazyGames</button>
-            <button onclick="showGameInstructions()">Instructions de jeu</button>
-          </div>
+        <!-- Conteneur pour le jeu fonctionnel -->
+        <div id="game-container" style="width:100%;height:100%;">
+          <iframe class="game-embedded" id="game-iframe" src="https://subway-surfers.io" allowfullscreen></iframe>
         </div>
-        
-        <!-- Jeu Subway Surfers fonctionnel -->
-        <iframe id="game-iframe" src="https://poki.com/fr/g/subway-surfers" allowfullscreen allow="autoplay; fullscreen *"></iframe>
       </div>
     </div>
   </main>
 
   <!-- FPS Counter -->
-  <div id="fps-overlay">🎮 FPS: <span id="fps-value">60</span></div>
+  <div id="fps-overlay" class="draggable">🎮 FPS: <span id="fps-value">60</span></div>
 
   <!-- TOP 3 -->
-  <div id="top3-overlay">
+  <div id="top3-overlay" class="draggable">
     <div class="title">🏆 TOP 3 NO COIN</div>
     <div class="player first">🥇 Mynvo – 13:27</div>
     <div class="player">🥈 Le_A – 11:51</div>
@@ -905,12 +919,12 @@
   </div>
 
   <!-- Nouveau Timer Speedrun -->
-  <div id="speedrun-timer-overlay">
+  <div id="speedrun-timer-overlay" class="draggable">
     <div id="timer-display">00:00.00</div>
     <div class="timer-controls">
-      <button class="timer-btn" onclick="startTimer()">Démarrer</button>
-      <button class="timer-btn" onclick="pauseTimer()">Pause</button>
-      <button class="timer-btn" onclick="resetTimer()">Reset</button>
+      <button class="timer-btn" title="Démarrer">▶️</button>
+      <button class="timer-btn" title="Pause">⏸️</button>
+      <button class="timer-btn" title="Réinitialiser">⏹️</button>
     </div>
   </div>
 
@@ -961,6 +975,12 @@
         fps: 1.0,
         top3: 1.0,
         timer: 1.0
+      },
+      // Positions des overlays
+      overlayPositions: {
+        fps: { x: 20, y: 100 },
+        top3: { x: 20, y: 200 },
+        timer: { x: 20, y: 20 }
       }
     };
 
@@ -969,7 +989,6 @@
     const loadingUI = document.getElementById('loading-ui');
     const timerOverlay = document.getElementById('speedrun-timer-overlay');
     const timerDisplay = document.getElementById('timer-display');
-    const gameAlternative = document.getElementById('game-alternative');
     
     let zqsdActive = true;
     let isSettingKey = false;
@@ -983,56 +1002,80 @@
     let timerVisible = false;
 
     // ============= CHARGEMENT DE LA PAGE =============
-    iframe.addEventListener('load', function() {
-      console.log('✅ Iframe chargée');
+    // Forcer le jeu à se lancer immédiatement
+    window.addEventListener('load', function() {
+      console.log('✅ Page chargée, initialisation du jeu...');
       hideLoading();
-      setTimeout(initializeExtensionFeatures, 1500);
+      initializeExtensionFeatures();
+      
+      // Forcer le focus sur l'iframe pour les contrôles
+      setTimeout(() => {
+        iframe.focus();
+      }, 1000);
     });
 
     // Fallback si l'iframe ne charge pas
     setTimeout(function() {
       if (loadingUI.style.display !== 'none') {
-        console.log('⚠️ Iframe lente à charger, affichage des alternatives...');
-        showGameAlternative();
+        console.log('⚠️ Iframe lente à charger, forçage de l\'affichage...');
+        hideLoading();
+        showNotification('🎮 Jeu Subway Surfers 2025 chargé!', 'success');
       }
-    }, 5000);
+    }, 3000);
 
     function hideLoading() {
       if (loadingUI.style.display !== 'none') {
         loadingUI.style.display = 'none';
-        showNotification('🎮 Jeu Subway Surfers 2025 chargé!', 'success');
       }
     }
 
-    function showGameAlternative() {
-      loadingUI.style.display = 'none';
-      gameAlternative.style.display = 'flex';
-      showNotification('⚠️ Chargement lent détecté. Essayez une autre option si nécessaire.', 'warning', true);
-    }
-
-    function loadPokiVersion() {
-      iframe.src = "https://poki.com/fr/g/subway-surfers";
-      gameAlternative.style.display = 'none';
-      loadingUI.style.display = 'block';
-      showNotification('🔄 Chargement de la version Poki...', 'info');
-    }
-
-    function loadCrazyGamesVersion() {
-      iframe.src = "https://www.crazygames.com/game/subway-surfers";
-      gameAlternative.style.display = 'none';
-      loadingUI.style.display = 'block';
-      showNotification('🔄 Chargement de la version CrazyGames...', 'info');
-    }
-
-    function showGameInstructions() {
-      showNotification(`
-        <strong>Instructions de Subway Surfers:</strong><br><br>
-        - <strong>ZQSD</strong> pour se déplacer<br>
-        - <strong>Espace</strong> pour sauter<br>
-        - Évitez les obstacles et les trains<br>
-        - Collectez les pièces et les power-ups<br>
-        - Améliorez vos personnages et planches
-      `, 'info', true);
+    // ============= SYSTÈME DE DÉPLACEMENT DES OVERLAYS =============
+    function makeDraggable(element) {
+      let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+      
+      element.onmousedown = dragMouseDown;
+      
+      function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // get the mouse cursor position at startup
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves
+        document.onmousemove = elementDrag;
+      }
+      
+      function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // calculate the new cursor position
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // set the element's new position
+        element.style.top = (element.offsetTop - pos2) + "px";
+        element.style.left = (element.offsetLeft - pos1) + "px";
+        
+        // Sauvegarder la position
+        const overlayId = element.id;
+        if (config.overlayPositions[overlayId.replace('-overlay', '')]) {
+          config.overlayPositions[overlayId.replace('-overlay', '')] = {
+            x: element.offsetLeft,
+            y: element.offsetTop
+          };
+        }
+      }
+      
+      function closeDragElement() {
+        // stop moving when mouse button is released
+        document.onmouseup = null;
+        document.onmousemove = null;
+        
+        // Sauvegarder la configuration
+        saveConfig();
+      }
     }
 
     // ============= SYSTÈME ZQSD AMÉLIORÉ =============
@@ -1135,6 +1178,12 @@
       
       // Écouteur pour les touches du timer
       document.addEventListener('keydown', handleTimerKeyDown, true);
+      
+      // Écouteurs pour les boutons du timer
+      const timerButtons = timerOverlay.querySelectorAll('.timer-btn');
+      timerButtons[0].addEventListener('click', startTimer);
+      timerButtons[1].addEventListener('click', pauseTimer);
+      timerButtons[2].addEventListener('click', resetTimer);
       
       console.log('✅ Timer configuré');
     }
@@ -1770,6 +1819,30 @@
       }
     }
 
+    // ============= APPLICATION DES POSITIONS DES OVERLAYS =============
+    function applyOverlayPositions() {
+      // FPS
+      const fpsOverlay = document.getElementById('fps-overlay');
+      if (fpsOverlay && config.overlayPositions.fps) {
+        fpsOverlay.style.left = config.overlayPositions.fps.x + 'px';
+        fpsOverlay.style.top = config.overlayPositions.fps.y + 'px';
+      }
+      
+      // TOP 3
+      const top3Overlay = document.getElementById('top3-overlay');
+      if (top3Overlay && config.overlayPositions.top3) {
+        top3Overlay.style.left = config.overlayPositions.top3.x + 'px';
+        top3Overlay.style.top = config.overlayPositions.top3.y + 'px';
+      }
+      
+      // Timer
+      const timerOverlay = document.getElementById('speedrun-timer-overlay');
+      if (timerOverlay && config.overlayPositions.timer) {
+        timerOverlay.style.left = config.overlayPositions.timer.x + 'px';
+        timerOverlay.style.top = config.overlayPositions.timer.y + 'px';
+      }
+    }
+
     // ============= PARTICULES D'ARRIÈRE-PLAN =============
     function initParticles() {
       const container = document.getElementById('particles-container');
@@ -1830,6 +1903,9 @@
       
       // Appliquer les tailles
       applyOverlaySizes();
+      
+      // Appliquer les positions
+      applyOverlayPositions();
     }
 
     // ============= BOUTON "JOUER" =============
@@ -1856,6 +1932,11 @@
       
       // 4. Activer le système de timer
       setupTimerSystem();
+      
+      // 5. Rendre les overlays déplaçables
+      makeDraggable(document.getElementById('fps-overlay'));
+      makeDraggable(document.getElementById('top3-overlay'));
+      makeDraggable(document.getElementById('speedrun-timer-overlay'));
       
       console.log('✅ Tous les systèmes activés!');
     }
@@ -1901,11 +1982,12 @@
     console.log('   • TOP 3 personnalisable');
     console.log('   • Configuration complète des touches');
     console.log('   • 6 thèmes différents');
-    console.log('   • Overlays personnalisables (taille)');
+    console.log('   • Overlays personnalisables (taille et position)');
     console.log('');
     console.log('%c💡 Astuce:', 'color: #ffaa00; font-weight: bold;');
     console.log('   Ouvrez les "Paramètres" pour personnaliser l\'expérience!');
     console.log('   Cliquez-droit pour ouvrir le menu rapide!');
+    console.log('   Glissez-déposez les éléments pour les repositionner!');
     console.log('');
   </script>
 </body>
