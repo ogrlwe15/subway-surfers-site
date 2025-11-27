@@ -232,13 +232,13 @@
       overflow: hidden;
       box-shadow: 0 15px 50px var(--primary-transparent);
       border: 2px solid var(--primary);
+      height: 720px;
+      background: #000;
     }
     
-    iframe {
+    #game-canvas {
       width: 100%;
-      height: 720px;
-      border: none;
-      background: #000000;
+      height: 100%;
       display: block;
     }
     
@@ -378,6 +378,7 @@
       font-family: 'Courier New', monospace;
       backdrop-filter: blur(10px);
       min-width: 200px;
+      cursor: move;
     }
     
     #timer-display {
@@ -768,63 +769,24 @@
       color: white;
     }
     
-    /* Nouveaux styles pour le jeu alternatif */
-    .game-alternative {
+    /* Style pour les overlays déplaçables */
+    .draggable {
+      position: fixed;
+      cursor: move;
+      z-index: 10000;
+    }
+    
+    /* Style pour le jeu intégré */
+    .game-embedded {
       width: 100%;
-      height: 720px;
-      background: #000;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      font-family: 'Segoe UI', sans-serif;
-    }
-    
-    .game-alternative img {
-      max-width: 100%;
-      max-height: 70%;
-      margin-bottom: 20px;
-    }
-    
-    .game-alternative h2 {
-      color: var(--primary);
-      margin-bottom: 10px;
-      font-size: 24px;
-    }
-    
-    .game-alternative p {
-      margin-bottom: 20px;
-      text-align: center;
-      max-width: 80%;
-    }
-    
-    .game-alternative .game-buttons {
-      display: flex;
-      gap: 15px;
-      margin-top: 20px;
-    }
-    
-    .game-alternative button {
-      background: var(--primary);
+      height: 100%;
       border: none;
-      color: white;
-      padding: 12px 24px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s;
-    }
-    
-    .game-alternative button:hover {
-      background: var(--primary-light);
-      transform: scale(1.05);
     }
     
     /* Responsive */
     @media (max-width: 1200px) {
       .game-container { padding: 30px; }
-      iframe, .game-alternative { height: 600px; }
+      .game-frame { height: 600px; }
     }
     
     @media (max-width: 768px) {
@@ -833,7 +795,7 @@
       .logo img { height: 40px; width: 40px; }
       .nav-links a { margin-left: 16px; font-size: 15px; }
       .game-container { padding: 20px; }
-      iframe, .game-alternative { height: 400px; }
+      .game-frame { height: 400px; }
       #bottom-menu { min-width: 240px; right: 10px; bottom: 10px; }
       .settings-tabs { flex-direction: column; }
       .theme-options { grid-template-columns: repeat(2, 1fr); }
@@ -843,7 +805,7 @@
       .header-content { flex-direction: column; gap: 10px; }
       .nav-links { width: 100%; justify-content: center; }
       .nav-links a { margin: 0 10px; }
-      iframe, .game-alternative { height: 300px; }
+      .game-frame { height: 300px; }
       .mynvo-modal { width: 95%; padding: 15px; }
       .theme-options { grid-template-columns: 1fr; }
     }
@@ -876,28 +838,17 @@
         </div>
         <button class="fs-button" id="fs-btn" title="Plein écran">⤢ Plein écran</button>
         
-        <!-- Conteneur pour le jeu alternatif -->
-        <div class="game-alternative" id="game-alternative" style="display:none;">
-          <h2>Subway Surfers 2025</h2>
-          <p>Le jeu se charge... Si cela prend trop de temps, essayez l'une des options ci-dessous :</p>
-          <div class="game-buttons">
-            <button onclick="loadPokiVersion()">Jouer sur Poki</button>
-            <button onclick="loadCrazyGamesVersion()">Jouer sur CrazyGames</button>
-            <button onclick="showGameInstructions()">Instructions de jeu</button>
-          </div>
-        </div>
-        
-        <!-- Jeu Subway Surfers fonctionnel -->
-        <iframe id="game-iframe" src="https://poki.com/fr/g/subway-surfers" allowfullscreen allow="autoplay; fullscreen *"></iframe>
+        <!-- Canvas pour le jeu Subway Surfers -->
+        <canvas id="game-canvas"></canvas>
       </div>
     </div>
   </main>
 
   <!-- FPS Counter -->
-  <div id="fps-overlay">🎮 FPS: <span id="fps-value">60</span></div>
+  <div id="fps-overlay" class="draggable">🎮 FPS: <span id="fps-value">60</span></div>
 
   <!-- TOP 3 -->
-  <div id="top3-overlay">
+  <div id="top3-overlay" class="draggable">
     <div class="title">🏆 TOP 3 NO COIN</div>
     <div class="player first">🥇 Mynvo – 13:27</div>
     <div class="player">🥈 Le_A – 11:51</div>
@@ -905,12 +856,12 @@
   </div>
 
   <!-- Nouveau Timer Speedrun -->
-  <div id="speedrun-timer-overlay">
+  <div id="speedrun-timer-overlay" class="draggable">
     <div id="timer-display">00:00.00</div>
     <div class="timer-controls">
-      <button class="timer-btn" onclick="startTimer()">Démarrer</button>
-      <button class="timer-btn" onclick="pauseTimer()">Pause</button>
-      <button class="timer-btn" onclick="resetTimer()">Reset</button>
+      <button class="timer-btn" onclick="startTimer()" title="Démarrer">▶️</button>
+      <button class="timer-btn" onclick="pauseTimer()" title="Pause">⏸️</button>
+      <button class="timer-btn" onclick="resetTimer()" title="Réinitialiser">⏹️</button>
     </div>
   </div>
 
@@ -961,15 +912,21 @@
         fps: 1.0,
         top3: 1.0,
         timer: 1.0
+      },
+      // Positions des overlays
+      overlayPositions: {
+        fps: { x: 20, y: 100 },
+        top3: { x: 20, y: 200 },
+        timer: { x: 20, y: 20 }
       }
     };
 
     // ============= VARIABLES GLOBALES =============
-    const iframe = document.getElementById('game-iframe');
+    const canvas = document.getElementById('game-canvas');
+    const ctx = canvas.getContext('2d');
     const loadingUI = document.getElementById('loading-ui');
     const timerOverlay = document.getElementById('speedrun-timer-overlay');
     const timerDisplay = document.getElementById('timer-display');
-    const gameAlternative = document.getElementById('game-alternative');
     
     let zqsdActive = true;
     let isSettingKey = false;
@@ -982,20 +939,382 @@
     let timerInterval = null;
     let timerVisible = false;
 
-    // ============= CHARGEMENT DE LA PAGE =============
-    iframe.addEventListener('load', function() {
-      console.log('✅ Iframe chargée');
-      hideLoading();
-      setTimeout(initializeExtensionFeatures, 1500);
-    });
+    // Variables du jeu
+    let gameState = 'menu'; // menu, playing, gameOver
+    let playerX = 50;
+    let playerY = 300;
+    let playerWidth = 40;
+    let playerHeight = 60;
+    let playerVelocityY = 0;
+    let isJumping = false;
+    let score = 0;
+    let coins = 0;
+    let obstacles = [];
+    let coinsList = [];
+    let gameSpeed = 5;
+    let gravity = 0.8;
+    let jumpForce = -15;
+    let keys = {};
+    let lastTime = 0;
 
-    // Fallback si l'iframe ne charge pas
-    setTimeout(function() {
-      if (loadingUI.style.display !== 'none') {
-        console.log('⚠️ Iframe lente à charger, affichage des alternatives...');
-        showGameAlternative();
+    // ============= JEU SUBWAY SURFERS SIMPLIFIÉ =============
+    function initGame() {
+      console.log('🎮 Initialisation du jeu Subway Surfers...');
+      
+      // Ajuster la taille du canvas
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+      
+      // Initialiser les événements
+      initGameEvents();
+      
+      // Démarrer la boucle de jeu
+      requestAnimationFrame(gameLoop);
+      
+      // Cacher l'écran de chargement
+      hideLoading();
+      
+      console.log('✅ Jeu initialisé');
+    }
+
+    function resizeCanvas() {
+      const gameFrame = document.querySelector('.game-frame');
+      canvas.width = gameFrame.clientWidth;
+      canvas.height = gameFrame.clientHeight;
+    }
+
+    function initGameEvents() {
+      // Écouteurs pour les touches
+      document.addEventListener('keydown', (e) => {
+        keys[e.key.toLowerCase()] = true;
+        
+        // Démarrer le jeu si on appuie sur espace et qu'on est au menu
+        if (e.key === ' ' && gameState === 'menu') {
+          startGame();
+        }
+        
+        // Redémarrer le jeu si on appuie sur espace et qu'on a perdu
+        if (e.key === ' ' && gameState === 'gameOver') {
+          resetGame();
+          startGame();
+        }
+      });
+      
+      document.addEventListener('keyup', (e) => {
+        keys[e.key.toLowerCase()] = false;
+      });
+    }
+
+    function startGame() {
+      gameState = 'playing';
+      score = 0;
+      coins = 0;
+      obstacles = [];
+      coinsList = [];
+      playerY = 300;
+      playerVelocityY = 0;
+      isJumping = false;
+      gameSpeed = 5;
+    }
+
+    function resetGame() {
+      gameState = 'menu';
+      playerX = 50;
+      playerY = 300;
+      playerVelocityY = 0;
+      isJumping = false;
+      obstacles = [];
+      coinsList = [];
+    }
+
+    function gameLoop(timestamp) {
+      // Calcul du delta time
+      const deltaTime = timestamp - lastTime || 0;
+      lastTime = timestamp;
+      
+      // Effacer le canvas
+      ctx.fillStyle = '#1a1a2e';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Dessiner les rails de métro
+      drawTracks();
+      
+      // Mettre à jour et dessiner le joueur
+      updatePlayer(deltaTime);
+      drawPlayer();
+      
+      // Mettre à jour et dessiner les obstacles
+      updateObstacles(deltaTime);
+      drawObstacles();
+      
+      // Mettre à jour et dessiner les pièces
+      updateCoins(deltaTime);
+      drawCoins();
+      
+      // Dessiner l'interface utilisateur
+      drawUI();
+      
+      // Gérer les collisions
+      handleCollisions();
+      
+      // Continuer la boucle de jeu
+      requestAnimationFrame(gameLoop);
+    }
+
+    function drawTracks() {
+      // Dessiner les rails
+      ctx.fillStyle = '#333';
+      ctx.fillRect(0, canvas.height - 100, canvas.width, 100);
+      
+      // Lignes de séparation des voies
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([20, 20]);
+      
+      const laneWidth = canvas.width / 3;
+      for (let i = 1; i < 3; i++) {
+        ctx.beginPath();
+        ctx.moveTo(i * laneWidth, canvas.height - 100);
+        ctx.lineTo(i * laneWidth, canvas.height);
+        ctx.stroke();
       }
-    }, 5000);
+      
+      ctx.setLineDash([]);
+    }
+
+    function updatePlayer(deltaTime) {
+      if (gameState !== 'playing') return;
+      
+      // Appliquer la gravité
+      playerVelocityY += gravity;
+      playerY += playerVelocityY;
+      
+      // Empêcher le joueur de tomber en dessous du sol
+      const groundLevel = canvas.height - 100 - playerHeight;
+      if (playerY > groundLevel) {
+        playerY = groundLevel;
+        playerVelocityY = 0;
+        isJumping = false;
+      }
+      
+      // Gérer les déplacements gauche/droite
+      const laneWidth = canvas.width / 3;
+      let targetLane = 1; // voie du milieu par défaut
+      
+      if (keys[config.customKeys.left] || keys['arrowleft']) {
+        targetLane = 0; // voie de gauche
+      } else if (keys[config.customKeys.right] || keys['arrowright']) {
+        targetLane = 2; // voie de droite
+      }
+      
+      // Animer le déplacement entre les voies
+      const targetX = 50 + targetLane * laneWidth;
+      const dx = targetX - playerX;
+      playerX += dx * 0.1;
+      
+      // Gérer le saut
+      if ((keys[config.customKeys.jump] || keys[' '] || keys['arrowup']) && !isJumping) {
+        playerVelocityY = jumpForce;
+        isJumping = true;
+      }
+      
+      // Augmenter le score
+      score += deltaTime * 0.01;
+    }
+
+    function drawPlayer() {
+      // Dessiner le personnage
+      ctx.fillStyle = '#ff6b6b';
+      ctx.fillRect(playerX, playerY, playerWidth, playerHeight);
+      
+      // Dessiner les détails du personnage
+      ctx.fillStyle = '#4ecdc4';
+      ctx.fillRect(playerX + 5, playerY + 5, playerWidth - 10, 15); // Casque
+      ctx.fillRect(playerX + 10, playerY + 25, playerWidth - 20, 30); // Corps
+    }
+
+    function updateObstacles(deltaTime) {
+      if (gameState !== 'playing') return;
+      
+      // Générer de nouveaux obstacles
+      if (Math.random() < 0.01) {
+        const lane = Math.floor(Math.random() * 3);
+        const laneWidth = canvas.width / 3;
+        const obstacleX = 50 + lane * laneWidth;
+        
+        obstacles.push({
+          x: obstacleX,
+          y: canvas.height - 100 - 40,
+          width: 40,
+          height: 40,
+          lane: lane
+        });
+      }
+      
+      // Mettre à jour la position des obstacles
+      for (let i = obstacles.length - 1; i >= 0; i--) {
+        obstacles[i].x -= gameSpeed;
+        
+        // Supprimer les obstacles hors écran
+        if (obstacles[i].x + obstacles[i].width < 0) {
+          obstacles.splice(i, 1);
+        }
+      }
+      
+      // Augmenter progressivement la difficulté
+      gameSpeed += deltaTime * 0.0001;
+    }
+
+    function drawObstacles() {
+      ctx.fillStyle = '#ff9e00';
+      
+      for (const obstacle of obstacles) {
+        // Dessiner un obstacle de type barrière
+        ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+        
+        // Détails de l'obstacle
+        ctx.fillStyle = '#ff6b00';
+        ctx.fillRect(obstacle.x + 5, obstacle.y + 5, obstacle.width - 10, 10);
+        ctx.fillStyle = '#ff9e00';
+      }
+    }
+
+    function updateCoins(deltaTime) {
+      if (gameState !== 'playing') return;
+      
+      // Générer de nouvelles pièces
+      if (Math.random() < 0.02) {
+        const lane = Math.floor(Math.random() * 3);
+        const laneWidth = canvas.width / 3;
+        const coinX = canvas.width + Math.random() * 100;
+        const coinY = canvas.height - 200 - Math.random() * 100;
+        
+        coinsList.push({
+          x: coinX,
+          y: coinY,
+          width: 20,
+          height: 20,
+          lane: lane,
+          collected: false
+        });
+      }
+      
+      // Mettre à jour la position des pièces
+      for (let i = coinsList.length - 1; i >= 0; i--) {
+        coinsList[i].x -= gameSpeed;
+        
+        // Supprimer les pièces hors écran
+        if (coinsList[i].x + coinsList[i].width < 0) {
+          coinsList.splice(i, 1);
+        }
+      }
+    }
+
+    function drawCoins() {
+      for (const coin of coinsList) {
+        if (!coin.collected) {
+          // Dessiner une pièce
+          ctx.fillStyle = '#ffd700';
+          ctx.beginPath();
+          ctx.arc(coin.x + coin.width/2, coin.y + coin.height/2, coin.width/2, 0, Math.PI * 2);
+          ctx.fill();
+          
+          // Détail au centre de la pièce
+          ctx.fillStyle = '#ffaa00';
+          ctx.beginPath();
+          ctx.arc(coin.x + coin.width/2, coin.y + coin.height/2, coin.width/4, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+
+    function handleCollisions() {
+      if (gameState !== 'playing') return;
+      
+      // Vérifier les collisions avec les obstacles
+      for (const obstacle of obstacles) {
+        if (
+          playerX < obstacle.x + obstacle.width &&
+          playerX + playerWidth > obstacle.x &&
+          playerY < obstacle.y + obstacle.height &&
+          playerY + playerHeight > obstacle.y
+        ) {
+          gameState = 'gameOver';
+          return;
+        }
+      }
+      
+      // Vérifier les collisions avec les pièces
+      for (let i = coinsList.length - 1; i >= 0; i--) {
+        const coin = coinsList[i];
+        
+        if (
+          !coin.collected &&
+          playerX < coin.x + coin.width &&
+          playerX + playerWidth > coin.x &&
+          playerY < coin.y + coin.height &&
+          playerY + playerHeight > coin.y
+        ) {
+          coin.collected = true;
+          coins++;
+          coinsList.splice(i, 1);
+        }
+      }
+    }
+
+    function drawUI() {
+      // Afficher le score
+      ctx.fillStyle = '#fff';
+      ctx.font = '20px Arial';
+      ctx.fillText(`Score: ${Math.floor(score)}`, 20, 30);
+      ctx.fillText(`Pièces: ${coins}`, 20, 60);
+      
+      // Afficher l'écran de menu
+      if (gameState === 'menu') {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = '#fff';
+        ctx.font = '40px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('SUBWAY SURFERS', canvas.width/2, canvas.height/2 - 50);
+        
+        ctx.font = '20px Arial';
+        ctx.fillText('Appuyez sur ESPACE pour commencer', canvas.width/2, canvas.height/2 + 20);
+        
+        ctx.fillText('ZQSD pour se déplacer, ESPACE pour sauter', canvas.width/2, canvas.height/2 + 60);
+        
+        ctx.textAlign = 'left';
+      }
+      
+      // Afficher l'écran de game over
+      if (gameState === 'gameOver') {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = '#fff';
+        ctx.font = '40px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('GAME OVER', canvas.width/2, canvas.height/2 - 50);
+        
+        ctx.font = '20px Arial';
+        ctx.fillText(`Score: ${Math.floor(score)}`, canvas.width/2, canvas.height/2);
+        ctx.fillText(`Pièces: ${coins}`, canvas.width/2, canvas.height/2 + 30);
+        
+        ctx.fillText('Appuyez sur ESPACE pour rejouer', canvas.width/2, canvas.height/2 + 80);
+        
+        ctx.textAlign = 'left';
+      }
+    }
+
+    // ============= CHARGEMENT DE LA PAGE =============
+    window.addEventListener('load', function() {
+      console.log('✅ Page chargée, initialisation du jeu...');
+      setTimeout(() => {
+        initGame();
+        initializeExtensionFeatures();
+      }, 500);
+    });
 
     function hideLoading() {
       if (loadingUI.style.display !== 'none') {
@@ -1004,128 +1323,52 @@
       }
     }
 
-    function showGameAlternative() {
-      loadingUI.style.display = 'none';
-      gameAlternative.style.display = 'flex';
-      showNotification('⚠️ Chargement lent détecté. Essayez une autre option si nécessaire.', 'warning', true);
-    }
-
-    function loadPokiVersion() {
-      iframe.src = "https://poki.com/fr/g/subway-surfers";
-      gameAlternative.style.display = 'none';
-      loadingUI.style.display = 'block';
-      showNotification('🔄 Chargement de la version Poki...', 'info');
-    }
-
-    function loadCrazyGamesVersion() {
-      iframe.src = "https://www.crazygames.com/game/subway-surfers";
-      gameAlternative.style.display = 'none';
-      loadingUI.style.display = 'block';
-      showNotification('🔄 Chargement de la version CrazyGames...', 'info');
-    }
-
-    function showGameInstructions() {
-      showNotification(`
-        <strong>Instructions de Subway Surfers:</strong><br><br>
-        - <strong>ZQSD</strong> pour se déplacer<br>
-        - <strong>Espace</strong> pour sauter<br>
-        - Évitez les obstacles et les trains<br>
-        - Collectez les pièces et les power-ups<br>
-        - Améliorez vos personnages et planches
-      `, 'info', true);
-    }
-
-    // ============= SYSTÈME ZQSD AMÉLIORÉ =============
-    function setupZQSDSystem() {
-      console.log('🎮 Activation du système ZQSD...');
+    // ============= SYSTÈME DE DÉPLACEMENT DES OVERLAYS =============
+    function makeDraggable(element) {
+      let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
       
-      // Nettoyer les anciens écouteurs
-      document.removeEventListener('keydown', handleZQSDKeyDown, true);
-      document.removeEventListener('keyup', handleZQSDKeyUp, true);
+      element.onmousedown = dragMouseDown;
       
-      // Ajouter les nouveaux écouteurs en phase de CAPTURE
-      document.addEventListener('keydown', handleZQSDKeyDown, true);
-      document.addEventListener('keyup', handleZQSDKeyUp, true);
-      
-      console.log('✅ ZQSD activé avec capture phase');
-    }
-
-    function handleZQSDKeyDown(e) {
-      if (!zqsdActive || e.repeat) return;
-      
-      const key = e.key.toLowerCase();
-      const mappedKey = getKeyMapping(key);
-      
-      if (mappedKey) {
+      function dragMouseDown(e) {
+        e = e || window.event;
         e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        
-        // Envoyer l'événement mappé
-        dispatchMappedKey(mappedKey, 'keydown');
+        // get the mouse cursor position at startup
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves
+        document.onmousemove = elementDrag;
       }
-    }
-
-    function handleZQSDKeyUp(e) {
-      if (!zqsdActive) return;
       
-      const key = e.key.toLowerCase();
-      const mappedKey = getKeyMapping(key);
-      
-      if (mappedKey) {
+      function elementDrag(e) {
+        e = e || window.event;
         e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
+        // calculate the new cursor position
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // set the element's new position
+        element.style.top = (element.offsetTop - pos2) + "px";
+        element.style.left = (element.offsetLeft - pos1) + "px";
         
-        dispatchMappedKey(mappedKey, 'keyup');
+        // Sauvegarder la position
+        const overlayId = element.id;
+        if (config.overlayPositions[overlayId.replace('-overlay', '')]) {
+          config.overlayPositions[overlayId.replace('-overlay', '')] = {
+            x: element.offsetLeft,
+            y: element.offsetTop
+          };
+        }
       }
-    }
-
-    function getKeyMapping(key) {
-      const keyMap = {
-        [config.customKeys.up]: { key: 'ArrowUp', code: 'ArrowUp', keyCode: 38 },
-        [config.customKeys.down]: { key: 'ArrowDown', code: 'ArrowDown', keyCode: 40 },
-        [config.customKeys.left]: { key: 'ArrowLeft', code: 'ArrowLeft', keyCode: 37 },
-        [config.customKeys.right]: { key: 'ArrowRight', code: 'ArrowRight', keyCode: 39 },
-        [config.customKeys.jump]: { key: ' ', code: 'Space', keyCode: 32 }
-      };
       
-      return keyMap[key] || null;
-    }
-
-    function dispatchMappedKey(mappedKey, eventType) {
-      try {
-        // Créer l'événement clavier
-        const event = new KeyboardEvent(eventType, {
-          key: mappedKey.key,
-          code: mappedKey.code,
-          keyCode: mappedKey.keyCode,
-          which: mappedKey.keyCode,
-          bubbles: true,
-          cancelable: true,
-          composed: true
-        });
+      function closeDragElement() {
+        // stop moving when mouse button is released
+        document.onmouseup = null;
+        document.onmousemove = null;
         
-        // Envoyer à l'iframe
-        if (iframe.contentWindow) {
-          iframe.contentWindow.dispatchEvent(event);
-        }
-        if (iframe.contentDocument) {
-          iframe.contentDocument.dispatchEvent(event);
-          iframe.contentDocument.documentElement?.dispatchEvent(event);
-        }
-        
-        // PostMessage de secours
-        iframe.contentWindow?.postMessage({
-          type: 'keyboard_event',
-          eventType: eventType,
-          key: mappedKey.key,
-          code: mappedKey.code,
-          keyCode: mappedKey.keyCode
-        }, '*');
-        
-      } catch (err) {
-        console.log('Dispatch key:', mappedKey.key);
+        // Sauvegarder la configuration
+        saveConfig();
       }
     }
 
@@ -1246,7 +1489,7 @@
       console.log('🔓 Déblocage de tous les personnages...');
       
       // Simulation du déblocage
-      showNotification('🎉 Tous les personnages débloqués! Rafraîchissez la page pour voir les changements.', 'success', true);
+      showNotification('🎉 Tous les personnages débloqués!', 'success');
     }
 
     // ============= FPS COUNTER =============
@@ -1321,8 +1564,7 @@
     document.addEventListener('fullscreenchange', function() {
       if (!document.fullscreenElement) {
         setTimeout(() => {
-          zqsdActive = true;
-          setupZQSDSystem();
+          resizeCanvas();
           applyOverlaysFromConfig();
         }, 100);
       }
@@ -1504,13 +1746,6 @@
           <div class="settings-section">
             <h3>🎮 Options de jeu</h3>
             <div class="mynvo-row">
-              <div class="mynvo-label">Contrôles ZQSD</div>
-              <label class="toggle-switch">
-                <input type="checkbox" id="zqsd-active" ${zqsdActive ? 'checked' : ''}>
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
-            <div class="mynvo-row">
               <button class="quick-btn give-piece-btn" onclick="unlockAllCharacters();" style="width:100%;">🔓 Débloquer Tous les Personnages</button>
             </div>
           </div>
@@ -1586,13 +1821,6 @@
       document.getElementById('fullscreen-keep').addEventListener('change', function() {
         config.fullscreenKeepOverlays = this.checked;
         saveConfig();
-      });
-      
-      document.getElementById('zqsd-active').addEventListener('change', function() {
-        zqsdActive = this.checked;
-        if (zqsdActive) {
-          setupZQSDSystem();
-        }
       });
       
       // Sliders de taille
@@ -1677,7 +1905,6 @@
         showNotification(`✅ Touche ${keyType} définie sur: ${displayValue}`, 'success');
         
         // Reconfigurer les contrôles
-        setupZQSDSystem();
         setupTimerSystem();
       };
       
@@ -1770,6 +1997,30 @@
       }
     }
 
+    // ============= APPLICATION DES POSITIONS DES OVERLAYS =============
+    function applyOverlayPositions() {
+      // FPS
+      const fpsOverlay = document.getElementById('fps-overlay');
+      if (fpsOverlay && config.overlayPositions.fps) {
+        fpsOverlay.style.left = config.overlayPositions.fps.x + 'px';
+        fpsOverlay.style.top = config.overlayPositions.fps.y + 'px';
+      }
+      
+      // TOP 3
+      const top3Overlay = document.getElementById('top3-overlay');
+      if (top3Overlay && config.overlayPositions.top3) {
+        top3Overlay.style.left = config.overlayPositions.top3.x + 'px';
+        top3Overlay.style.top = config.overlayPositions.top3.y + 'px';
+      }
+      
+      // Timer
+      const timerOverlay = document.getElementById('speedrun-timer-overlay');
+      if (timerOverlay && config.overlayPositions.timer) {
+        timerOverlay.style.left = config.overlayPositions.timer.x + 'px';
+        timerOverlay.style.top = config.overlayPositions.timer.y + 'px';
+      }
+    }
+
     // ============= PARTICULES D'ARRIÈRE-PLAN =============
     function initParticles() {
       const container = document.getElementById('particles-container');
@@ -1830,6 +2081,9 @@
       
       // Appliquer les tailles
       applyOverlaySizes();
+      
+      // Appliquer les positions
+      applyOverlayPositions();
     }
 
     // ============= BOUTON "JOUER" =============
@@ -1838,7 +2092,7 @@
         behavior: 'smooth', 
         block: 'center' 
       });
-      iframe.focus();
+      canvas.focus();
     });
 
     // ============= INITIALISATION DES SYSTÈMES =============
@@ -1851,11 +2105,19 @@
       // 2. Appliquer l'état des overlays
       applyOverlaysFromConfig();
       
-      // 3. Activer le système ZQSD
-      setupZQSDSystem();
-      
-      // 4. Activer le système de timer
+      // 3. Activer le système de timer
       setupTimerSystem();
+      
+      // 4. Rendre les overlays déplaçables
+      makeDraggable(document.getElementById('fps-overlay'));
+      makeDraggable(document.getElementById('top3-overlay'));
+      makeDraggable(document.getElementById('speedrun-timer-overlay'));
+      
+      // 5. Activer le menu contextuel
+      document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        toggleBottomMenu();
+      });
       
       console.log('✅ Tous les systèmes activés!');
     }
@@ -1873,39 +2135,35 @@
       // Appliquer l'état des overlays
       applyOverlaysFromConfig();
       
-      // Activer le menu rapide au clic droit
-      document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-        toggleBottomMenu();
-      });
-      
       console.log('✅ Page initialisée');
     });
 
     // ============= LOGS DE DÉMARRAGE =============
     console.log('%c╔════════════════════════════════════════╗', 'color: #7c62dc; font-weight: bold;');
     console.log('%c║  SUBWAY SURFERS 2025 - ÉDITION MYNVO  ║', 'color: #7c62dc; font-weight: bold;');
-    console.log('%c║  Extension Intégrée v3.0               ║', 'color: #7c62dc; font-weight: bold;');
+    console.log('%c║  Version Intégrée v4.0                ║', 'color: #7c62dc; font-weight: bold;');
     console.log('%c╚════════════════════════════════════════╝', 'color: #7c62dc; font-weight: bold;');
     console.log('');
     console.log('%c🎮 Touches:', 'color: #00cc66; font-weight: bold;');
-    console.log('   • ZQSD + Espace pour jouer');
+    console.log('   • ZQSD pour se déplacer');
+    console.log('   • ESPACE pour sauter');
     console.log('   • T = Démarrer timer');
     console.log('   • ESPACE = Pause timer');
     console.log('   • R = Reset timer');
     console.log('');
     console.log('%c⚙️ Fonctionnalités:', 'color: #7c62dc; font-weight: bold;');
-    console.log('   • Déblocage automatique de tous les personnages');
-    console.log('   • Timer speedrun amélioré avec touches séparées');
+    console.log('   • Jeu Subway Surfers intégré sans publicités');
+    console.log('   • Timer speedrun avec icônes');
     console.log('   • FPS Counter en temps réel');
     console.log('   • TOP 3 personnalisable');
     console.log('   • Configuration complète des touches');
     console.log('   • 6 thèmes différents');
-    console.log('   • Overlays personnalisables (taille)');
+    console.log('   • Overlays personnalisables (taille et position)');
     console.log('');
     console.log('%c💡 Astuce:', 'color: #ffaa00; font-weight: bold;');
     console.log('   Ouvrez les "Paramètres" pour personnaliser l\'expérience!');
     console.log('   Cliquez-droit pour ouvrir le menu rapide!');
+    console.log('   Glissez-déposez les éléments pour les repositionner!');
     console.log('');
   </script>
 </body>
