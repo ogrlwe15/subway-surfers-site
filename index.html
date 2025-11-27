@@ -20,7 +20,7 @@
       --warning: #ffaa00;
       --theme-name: "Violet";
     }
-    
+   
     /* Thème Blanc */
     .theme-white {
       --primary: #4a6fa5;
@@ -36,7 +36,7 @@
       --warning: #ffc107;
       --theme-name: "Blanc";
     }
-    
+   
     /* Thème Sombre */
     .theme-dark {
       --primary: #333333;
@@ -52,7 +52,7 @@
       --warning: #ffaa00;
       --theme-name: "Sombre";
     }
-    
+   
     /* Thème Rouge */
     .theme-red {
       --primary: #dc3545;
@@ -68,7 +68,7 @@
       --warning: #ffc107;
       --theme-name: "Rouge";
     }
-    
+   
     /* Thème Vert */
     .theme-green {
       --primary: #28a745;
@@ -84,7 +84,7 @@
       --warning: #ffc107;
       --theme-name: "Vert";
     }
-    
+   
     /* Thème Bleu */
     .theme-blue {
       --primary: #007bff;
@@ -100,13 +100,13 @@
       --warning: #ffc107;
       --theme-name: "Bleu";
     }
-    
+   
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    
+   
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
       background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a2e 100%);
@@ -117,7 +117,7 @@
       overflow-x: hidden;
       transition: all 0.3s ease;
     }
-    
+   
     /* Header */
     header {
       background: var(--primary-transparent);
@@ -131,7 +131,7 @@
       border-bottom: 2px solid var(--primary);
       box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
     }
-    
+   
     .header-content {
       max-width: 1400px;
       margin: 0 auto;
@@ -139,7 +139,7 @@
       justify-content: space-between;
       align-items: center;
     }
-    
+   
     .logo {
       font-size: 34px;
       font-weight: 900;
@@ -147,7 +147,7 @@
       align-items: center;
       gap: 14px;
     }
-    
+   
     .logo img {
       height: 50px;
       width: 50px;
@@ -156,17 +156,17 @@
       box-shadow: 0 0 20px var(--primary-transparent);
       object-fit: cover;
     }
-    
+   
     .logo span {
       color: var(--primary);
       text-shadow: 0 0 10px rgba(124, 98, 220, 0.5);
     }
-    
+   
     .nav-links {
       display: flex;
       align-items: center;
     }
-    
+   
     .nav-links a {
       color: var(--text-light);
       text-decoration: none;
@@ -178,11 +178,11 @@
       position: relative;
       padding: 8px 0;
     }
-    
+   
     .nav-links a:hover {
       color: var(--primary);
     }
-    
+   
     .nav-links a::after {
       content: '';
       position: absolute;
@@ -193,11 +193,11 @@
       background: var(--primary);
       transition: width 0.3s;
     }
-    
+   
     .nav-links a:hover::after {
       width: 100%;
     }
-    
+   
     /* Main content */
     main {
       flex: 1;
@@ -206,7 +206,7 @@
       justify-content: center;
       padding: 120px 20px 40px;
     }
-    
+   
     .game-container {
       width: 100%;
       max-width: 1350px;
@@ -220,30 +220,28 @@
       border: 2px solid var(--primary);
       animation: containerGlow 4s infinite alternate;
     }
-    
+   
     @keyframes containerGlow {
       0% { box-shadow: 0 25px 80px var(--primary-transparent); }
       100% { box-shadow: 0 25px 80px var(--primary-transparent); }
     }
-    
+   
     .game-frame {
       position: relative;
       border-radius: 20px;
       overflow: hidden;
       box-shadow: 0 15px 50px var(--primary-transparent);
       border: 2px solid var(--primary);
-      height: 720px;
-      background: #000;
     }
-    
+   
     iframe {
       width: 100%;
-      height: 100%;
+      height: 720px;
       border: none;
       background: #000000;
       display: block;
     }
-    
+   
     .loading {
       position: absolute;
       top: 50%;
@@ -256,7 +254,7 @@
       border-radius: 15px;
       border: 2px solid var(--primary);
     }
-    
+   
     .spinner {
       width: 70px;
       height: 70px;
@@ -266,11 +264,11 @@
       animation: spin 1s linear infinite;
       margin: 0 auto 20px;
     }
-    
+   
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
-    
+   
     footer {
       text-align: center;
       padding: 25px;
@@ -279,7 +277,7 @@
       background: var(--primary-transparent);
       color: var(--primary);
     }
-    
+   
     .fs-button {
       position: absolute;
       top: 18px;
@@ -294,15 +292,15 @@
       font-weight: 700;
       transition: all 0.3s;
     }
-    
+   
     .fs-button:hover {
       background: var(--primary);
       color: #000;
       transform: scale(1.05);
     }
-    
+   
     /* ========== OVERLAYS FIXES ========== */
-    
+   
     /* FPS Counter */
     #fps-overlay {
       position: fixed;
@@ -321,7 +319,7 @@
       pointer-events: none;
       display: none;
     }
-    
+   
     /* TOP 3 */
     #top3-overlay {
       position: fixed;
@@ -341,7 +339,7 @@
       min-width: 280px;
       backdrop-filter: blur(10px);
     }
-    
+   
     #top3-overlay .title {
       color: var(--primary);
       font-size: 16px;
@@ -349,21 +347,21 @@
       margin-bottom: 10px;
       text-align: center;
     }
-    
+   
     #top3-overlay .player {
       margin: 6px 0;
       padding: 6px;
       border-radius: 8px;
       background: var(--primary-transparent);
     }
-    
+   
     #top3-overlay .player.first {
       color: var(--primary);
       font-weight: 700;
       font-size: 15px;
       background: var(--primary-transparent);
     }
-    
+   
     /* Nouveau Timer Overlay */
     #speedrun-timer-overlay {
       position: fixed;
@@ -380,9 +378,8 @@
       font-family: 'Courier New', monospace;
       backdrop-filter: blur(10px);
       min-width: 200px;
-      cursor: move;
     }
-    
+   
     #timer-display {
       font-weight: bold;
       font-size: 32px;
@@ -391,13 +388,13 @@
       letter-spacing: 2px;
       text-shadow: 0 0 10px var(--primary-transparent);
     }
-    
+   
     .timer-controls {
       display: flex;
       justify-content: space-between;
       margin-top: 10px;
     }
-    
+   
     .timer-btn {
       background: var(--primary);
       border: none;
@@ -408,12 +405,12 @@
       font-size: 12px;
       transition: all 0.2s;
     }
-    
+   
     .timer-btn:hover {
       background: var(--primary-light);
       transform: scale(1.05);
     }
-    
+   
     /* Bottom Menu */
     #bottom-menu {
       position: fixed;
@@ -431,11 +428,11 @@
       backdrop-filter: blur(10px);
       display: none;
     }
-    
+   
     #bottom-menu.visible {
       display: block;
     }
-    
+   
     .quick-btn {
       width: 100%;
       padding: 10px 12px;
@@ -451,24 +448,24 @@
       align-items: center;
       gap: 8px;
     }
-    
+   
     .quick-btn:hover {
       background: var(--primary);
       color: #000;
       transform: translateX(5px);
     }
-    
+   
     .give-piece-btn {
       background: linear-gradient(135deg, #ffd700, #ffaa00);
       color: #000;
       border: none;
     }
-    
+   
     .give-piece-btn:hover {
       transform: scale(1.05);
       box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
     }
-    
+   
     /* Modal */
     .mynvo-modal {
       position: fixed;
@@ -489,7 +486,7 @@
       max-height: 90vh;
       overflow-y: auto;
     }
-    
+   
     @keyframes modalAppear {
       0% {
         opacity: 0;
@@ -500,7 +497,7 @@
         transform: translate(-50%, -50%) scale(1);
       }
     }
-    
+   
     .settings-section {
       background: rgba(20, 20, 30, 0.7);
       padding: 16px;
@@ -508,7 +505,7 @@
       margin-bottom: 16px;
       border: 1px solid var(--primary-transparent);
     }
-    
+   
     .settings-section h3 {
       color: var(--primary);
       margin-bottom: 12px;
@@ -517,19 +514,19 @@
       align-items: center;
       gap: 8px;
     }
-    
+   
     .mynvo-row {
       display: flex;
       gap: 12px;
       align-items: center;
       margin-bottom: 12px;
     }
-    
+   
     .mynvo-label {
       min-width: 120px;
       color: var(--text-muted);
     }
-    
+   
     .key-display {
       display: inline-block;
       min-width: 50px;
@@ -543,23 +540,23 @@
       cursor: pointer;
       transition: 0.2s;
     }
-    
+   
     .key-display:hover {
       border-color: var(--primary-light);
       background: #1a1a1a;
     }
-    
+   
     .key-display.active {
       border-color: var(--success);
       background: #1a4d1a;
       animation: pulse 0.5s;
     }
-    
+   
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.05); }
     }
-    
+   
     /* Notification améliorée */
     .notification {
       position: fixed;
@@ -582,16 +579,16 @@
       text-align: center;
       line-height: 1.4;
     }
-    
+   
     .notification.show {
       opacity: 1;
     }
-    
+   
     .notification.multiline {
       padding: 15px 20px;
       text-align: left;
     }
-    
+   
     /* Particules */
     .particles {
       position: fixed;
@@ -602,14 +599,14 @@
       z-index: -1;
       overflow: hidden;
     }
-    
+   
     .particle {
       position: absolute;
       background: var(--primary-transparent);
       border-radius: 50%;
       animation: float 15s infinite linear;
     }
-    
+   
     @keyframes float {
       0% {
         transform: translateY(0) translateX(0);
@@ -626,7 +623,7 @@
         opacity: 0;
       }
     }
-    
+   
     /* Nouveaux styles pour la configuration améliorée */
     .settings-tabs {
       display: flex;
@@ -634,7 +631,7 @@
       border-bottom: 2px solid var(--primary);
       flex-wrap: wrap;
     }
-    
+   
     .settings-tab {
       padding: 10px 20px;
       cursor: pointer;
@@ -642,33 +639,33 @@
       transition: all 0.3s;
       border-bottom: 3px solid transparent;
     }
-    
+   
     .settings-tab.active {
       color: var(--primary);
       border-bottom: 3px solid var(--primary);
     }
-    
+   
     .settings-tab-content {
       display: none;
     }
-    
+   
     .settings-tab-content.active {
       display: block;
     }
-    
+   
     .toggle-switch {
       position: relative;
       display: inline-block;
       width: 50px;
       height: 24px;
     }
-    
+   
     .toggle-switch input {
       opacity: 0;
       width: 0;
       height: 0;
     }
-    
+   
     .toggle-slider {
       position: absolute;
       cursor: pointer;
@@ -680,7 +677,7 @@
       transition: .4s;
       border-radius: 24px;
     }
-    
+   
     .toggle-slider:before {
       position: absolute;
       content: "";
@@ -692,25 +689,25 @@
       transition: .4s;
       border-radius: 50%;
     }
-    
+   
     input:checked + .toggle-slider {
       background-color: var(--primary);
     }
-    
+   
     input:checked + .toggle-slider:before {
       transform: translateX(26px);
     }
-    
+   
     .slider-container {
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    
+   
     .size-slider {
       width: 150px;
     }
-    
+   
     .color-picker {
       width: 50px;
       height: 30px;
@@ -718,7 +715,7 @@
       border-radius: 5px;
       cursor: pointer;
     }
-    
+   
     /* Thèmes */
     .theme-options {
       display: grid;
@@ -726,7 +723,7 @@
       gap: 10px;
       margin-top: 10px;
     }
-    
+   
     .theme-option {
       padding: 10px;
       border-radius: 8px;
@@ -735,42 +732,42 @@
       border: 2px solid transparent;
       transition: all 0.3s;
     }
-    
+   
     .theme-option.active {
       border-color: var(--primary);
       transform: scale(1.05);
     }
-    
+   
     .theme-option.violet {
       background: linear-gradient(135deg, #7c62dc, #6a50c9);
       color: white;
     }
-    
+   
     .theme-option.white {
       background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
       color: #333;
     }
-    
+   
     .theme-option.dark {
       background: linear-gradient(135deg, #333, #222);
       color: white;
     }
-    
+   
     .theme-option.red {
       background: linear-gradient(135deg, #dc3545, #c82333);
       color: white;
     }
-    
+   
     .theme-option.green {
       background: linear-gradient(135deg, #28a745, #218838);
       color: white;
     }
-    
+   
     .theme-option.blue {
       background: linear-gradient(135deg, #007bff, #0069d9);
       color: white;
     }
-    
+   
     /* Nouveaux styles pour le jeu alternatif */
     .game-alternative {
       width: 100%;
@@ -784,31 +781,31 @@
       font-family: 'Segoe UI', sans-serif;
       position: relative;
     }
-    
+   
     .game-alternative img {
       max-width: 100%;
       max-height: 70%;
       margin-bottom: 20px;
     }
-    
+   
     .game-alternative h2 {
       color: var(--primary);
       margin-bottom: 10px;
       font-size: 24px;
     }
-    
+   
     .game-alternative p {
       margin-bottom: 20px;
       text-align: center;
       max-width: 80%;
     }
-    
+   
     .game-alternative .game-buttons {
       display: flex;
       gap: 15px;
       margin-top: 20px;
     }
-    
+   
     .game-alternative button {
       background: var(--primary);
       border: none;
@@ -819,37 +816,37 @@
       font-weight: 600;
       transition: all 0.3s;
     }
-    
+   
     .game-alternative button:hover {
       background: var(--primary-light);
       transform: scale(1.05);
     }
-    
+   
     /* Style pour les overlays déplaçables */
     .draggable {
       position: fixed;
       cursor: move;
       z-index: 10000;
     }
-    
+   
     .resizable {
       resize: both;
       overflow: auto;
     }
-    
+   
     /* Style pour le jeu intégré */
     .game-embedded {
       width: 100%;
       height: 100%;
       border: none;
     }
-    
+   
     /* Responsive */
     @media (max-width: 1200px) {
       .game-container { padding: 30px; }
       .game-frame { height: 600px; }
     }
-    
+   
     @media (max-width: 768px) {
       header { padding: 14px 20px; }
       .logo { font-size: 24px; }
@@ -861,7 +858,7 @@
       .settings-tabs { flex-direction: column; }
       .theme-options { grid-template-columns: repeat(2, 1fr); }
     }
-    
+   
     @media (max-width: 480px) {
       .header-content { flex-direction: column; gap: 10px; }
       .nav-links { width: 100%; justify-content: center; }
@@ -875,7 +872,6 @@
 <body class="theme-violet">
   <!-- Particules d'arrière-plan -->
   <div class="particles" id="particles-container"></div>
-
   <header>
     <div class="header-content">
       <div class="logo">
@@ -889,7 +885,6 @@
       </div>
     </div>
   </header>
-
   <main>
     <div class="game-container">
       <div class="game-frame">
@@ -899,17 +894,24 @@
         </div>
         <button class="fs-button" id="fs-btn" title="Plein écran">⤢ Plein écran</button>
         
-        <!-- Conteneur pour le jeu fonctionnel -->
-        <div id="game-container" style="width:100%;height:100%;">
-          <iframe class="game-embedded" id="game-iframe" src="https://subway-surfers.io" allowfullscreen></iframe>
+        <!-- Conteneur pour le jeu alternatif -->
+        <div class="game-alternative" id="game-alternative" style="display:none;">
+          <h2>Subway Surfers 2025</h2>
+          <p>Le jeu se charge... Si cela prend trop de temps, essayez l'une des options ci-dessous :</p>
+          <div class="game-buttons">
+            <button onclick="loadPokiVersion()">Jouer sur Poki</button>
+            <button onclick="loadCrazyGamesVersion()">Jouer sur CrazyGames</button>
+            <button onclick="showGameInstructions()">Instructions de jeu</button>
+          </div>
         </div>
+        
+        <!-- Jeu Subway Surfers fonctionnel -->
+        <iframe id="game-iframe" src="https://poki.com/en/g/subway-surfers" allowfullscreen allow="autoplay; fullscreen *"></iframe>
       </div>
     </div>
   </main>
-
   <!-- FPS Counter -->
   <div id="fps-overlay" class="draggable">🎮 FPS: <span id="fps-value">60</span></div>
-
   <!-- TOP 3 -->
   <div id="top3-overlay" class="draggable">
     <div class="title">🏆 TOP 3 NO COIN</div>
@@ -917,24 +919,21 @@
     <div class="player">🥈 Le_A – 11:51</div>
     <div class="player">🥉 .... – 0:00</div>
   </div>
-
   <!-- Nouveau Timer Speedrun -->
   <div id="speedrun-timer-overlay" class="draggable">
     <div id="timer-display">00:00.00</div>
     <div class="timer-controls">
-      <button class="timer-btn" title="Démarrer">▶️</button>
-      <button class="timer-btn" title="Pause">⏸️</button>
-      <button class="timer-btn" title="Réinitialiser">⏹️</button>
+      <button class="timer-btn" onclick="startTimer()" title="Démarrer">▶️</button>
+      <button class="timer-btn" onclick="pauseTimer()" title="Pause">⏸️</button>
+      <button class="timer-btn" onclick="resetTimer()" title="Réinitialiser">⏹️</button>
     </div>
   </div>
-
   <!-- Bottom Menu -->
   <div id="bottom-menu">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
       <div style="font-size:16px;font-weight:700;color:var(--primary);">⚙️ Menu rapide</div>
       <button id="close-bottom-menu" style="background:var(--primary);border:none;color:#000;font-weight:700;border-radius:8px;padding:4px 10px;cursor:pointer;">✖</button>
     </div>
-
     <button class="quick-btn" onclick="openSettingsModal();">🎮 Configuration complète</button>
     <button class="quick-btn" onclick="toggleTimer();">⏱️ Timer Speedrun</button>
     <button class="quick-btn" onclick="toggleFPS();">📊 FPS (afficher/masquer)</button>
@@ -942,12 +941,10 @@
     <button class="quick-btn" onclick="toggleTop3();">🏆 TOP 3 (afficher/masquer)</button>
     <button class="quick-btn give-piece-btn" onclick="unlockAllCharacters();">🔓 Débloquer Tout (100%)</button>
   </div>
-
   <footer>Subway Surfers 2025 by Mynvo © 2025 - Tous droits réservés</footer>
-
   <script>
     console.log('%c[MYNVO] Système d\'extension intégré activé!', 'color: #7c62dc; font-weight: bold; font-size: 14px;');
-    
+   
     // ============= CONFIGURATION AMÉLIORÉE =============
     let config = {
       // Touches de jeu (ZQSD par défaut)
@@ -983,58 +980,81 @@
         timer: { x: 20, y: 20 }
       }
     };
-
     // ============= VARIABLES GLOBALES =============
     const iframe = document.getElementById('game-iframe');
     const loadingUI = document.getElementById('loading-ui');
     const timerOverlay = document.getElementById('speedrun-timer-overlay');
     const timerDisplay = document.getElementById('timer-display');
-    
+    const gameAlternative = document.getElementById('game-alternative');
+   
     let zqsdActive = true;
     let isSettingKey = false;
     let currentKeySetting = null;
-    
+   
     // Variables Timer améliorées
     let timerState = 'stopped'; // stopped, running, paused
     let timerStartTime = null;
     let timerCurrentTime = 0;
     let timerInterval = null;
     let timerVisible = false;
-
     // ============= CHARGEMENT DE LA PAGE =============
     // Forcer le jeu à se lancer immédiatement
     window.addEventListener('load', function() {
       console.log('✅ Page chargée, initialisation du jeu...');
       hideLoading();
       initializeExtensionFeatures();
-      
+     
       // Forcer le focus sur l'iframe pour les contrôles
       setTimeout(() => {
         iframe.focus();
       }, 1000);
     });
-
     // Fallback si l'iframe ne charge pas
     setTimeout(function() {
       if (loadingUI.style.display !== 'none') {
-        console.log('⚠️ Iframe lente à charger, forçage de l\'affichage...');
-        hideLoading();
-        showNotification('🎮 Jeu Subway Surfers 2025 chargé!', 'success');
+        console.log('⚠️ Iframe lente à charger, affichage des alternatives...');
+        showGameAlternative();
       }
-    }, 3000);
-
+    }, 5000);
     function hideLoading() {
       if (loadingUI.style.display !== 'none') {
         loadingUI.style.display = 'none';
+        showNotification('🎮 Jeu Subway Surfers 2025 chargé!', 'success');
       }
     }
-
+    function showGameAlternative() {
+      loadingUI.style.display = 'none';
+      gameAlternative.style.display = 'flex';
+      showNotification('⚠️ Chargement lent détecté. Essayez une autre option si nécessaire.', 'warning', true);
+    }
+    function loadPokiVersion() {
+      iframe.src = "https://poki.com/en/g/subway-surfers";
+      gameAlternative.style.display = 'none';
+      loadingUI.style.display = 'block';
+      showNotification('🔄 Chargement de la version Poki...', 'info');
+    }
+    function loadCrazyGamesVersion() {
+      iframe.src = "https://www.crazygames.com/game/subway-surfers";
+      gameAlternative.style.display = 'none';
+      loadingUI.style.display = 'block';
+      showNotification('🔄 Chargement de la version CrazyGames...', 'info');
+    }
+    function showGameInstructions() {
+      showNotification(`
+        <strong>Instructions de Subway Surfers:</strong><br><br>
+        - <strong>ZQSD</strong> pour se déplacer<br>
+        - <strong>Espace</strong> pour sauter<br>
+        - Évitez les obstacles et les trains<br>
+        - Collectez les pièces et les power-ups<br>
+        - Améliorez vos personnages et planches
+      `, 'info', true);
+    }
     // ============= SYSTÈME DE DÉPLACEMENT DES OVERLAYS =============
     function makeDraggable(element) {
       let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-      
+     
       element.onmousedown = dragMouseDown;
-      
+     
       function dragMouseDown(e) {
         e = e || window.event;
         e.preventDefault();
@@ -1045,7 +1065,7 @@
         // call a function whenever the cursor moves
         document.onmousemove = elementDrag;
       }
-      
+     
       function elementDrag(e) {
         e = e || window.event;
         e.preventDefault();
@@ -1057,73 +1077,64 @@
         // set the element's new position
         element.style.top = (element.offsetTop - pos2) + "px";
         element.style.left = (element.offsetLeft - pos1) + "px";
-        
+       
         // Sauvegarder la position
-        const overlayId = element.id;
-        if (config.overlayPositions[overlayId.replace('-overlay', '')]) {
-          config.overlayPositions[overlayId.replace('-overlay', '')] = {
-            x: element.offsetLeft,
-            y: element.offsetTop
-          };
-        }
-      }
-      
-      function closeDragElement() {
-        // stop moving when mouse button is released
-        document.onmouseup = null;
-        document.onmousemove = null;
-        
-        // Sauvegarder la configuration
+        const overlayId = element.id.replace('-overlay', '');
+        config.overlayPositions[overlayId] = {
+          x: element.offsetLeft,
+          y: element.offsetTop
+        };
         saveConfig();
       }
+     
+      function closeDragElement() {
+        document.onmouseup = null;
+        document.onmousemove = null;
+      }
     }
-
     // ============= SYSTÈME ZQSD AMÉLIORÉ =============
     function setupZQSDSystem() {
       console.log('🎮 Activation du système ZQSD...');
-      
+     
       // Nettoyer les anciens écouteurs
       document.removeEventListener('keydown', handleZQSDKeyDown, true);
       document.removeEventListener('keyup', handleZQSDKeyUp, true);
-      
+     
       // Ajouter les nouveaux écouteurs en phase de CAPTURE
       document.addEventListener('keydown', handleZQSDKeyDown, true);
       document.addEventListener('keyup', handleZQSDKeyUp, true);
-      
+     
       console.log('✅ ZQSD activé avec capture phase');
     }
-
     function handleZQSDKeyDown(e) {
       if (!zqsdActive || e.repeat) return;
-      
+     
       const key = e.key.toLowerCase();
       const mappedKey = getKeyMapping(key);
-      
+     
       if (mappedKey) {
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
-        
+       
         // Envoyer l'événement mappé
         dispatchMappedKey(mappedKey, 'keydown');
       }
     }
-
     function handleZQSDKeyUp(e) {
       if (!zqsdActive) return;
-      
+     
       const key = e.key.toLowerCase();
       const mappedKey = getKeyMapping(key);
-      
+     
       if (mappedKey) {
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
-        
+       
         dispatchMappedKey(mappedKey, 'keyup');
       }
     }
-
     function getKeyMapping(key) {
       const keyMap = {
         [config.customKeys.up]: { key: 'ArrowUp', code: 'ArrowUp', keyCode: 38 },
@@ -1132,10 +1143,9 @@
         [config.customKeys.right]: { key: 'ArrowRight', code: 'ArrowRight', keyCode: 39 },
         [config.customKeys.jump]: { key: ' ', code: 'Space', keyCode: 32 }
       };
-      
+     
       return keyMap[key] || null;
     }
-
     function dispatchMappedKey(mappedKey, eventType) {
       try {
         // Créer l'événement clavier
@@ -1148,7 +1158,7 @@
           cancelable: true,
           composed: true
         });
-        
+       
         // Envoyer à l'iframe
         if (iframe.contentWindow) {
           iframe.contentWindow.dispatchEvent(event);
@@ -1157,7 +1167,7 @@
           iframe.contentDocument.dispatchEvent(event);
           iframe.contentDocument.documentElement?.dispatchEvent(event);
         }
-        
+       
         // PostMessage de secours
         iframe.contentWindow?.postMessage({
           type: 'keyboard_event',
@@ -1166,66 +1176,57 @@
           code: mappedKey.code,
           keyCode: mappedKey.keyCode
         }, '*');
-        
+       
       } catch (err) {
         console.log('Dispatch key:', mappedKey.key);
       }
     }
-
     // ============= NOUVEAU TIMER SPEEDRUN =============
     function setupTimerSystem() {
       console.log('⏱️ Activation du système de timer amélioré...');
-      
+     
       // Écouteur pour les touches du timer
       document.addEventListener('keydown', handleTimerKeyDown, true);
-      
-      // Écouteurs pour les boutons du timer
-      const timerButtons = timerOverlay.querySelectorAll('.timer-btn');
-      timerButtons[0].addEventListener('click', startTimer);
-      timerButtons[1].addEventListener('click', pauseTimer);
-      timerButtons[2].addEventListener('click', resetTimer);
-      
+     
       console.log('✅ Timer configuré');
     }
-
     function handleTimerKeyDown(e) {
       if (e.repeat || isSettingKey) return;
-      
+     
       const key = e.key.toLowerCase();
-      
+     
       // Vérification des touches du timer
       if (key === config.timerStartKey.toLowerCase() && !e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) {
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
-        
+       
         startTimer();
-      } 
+      }
       else if (key === config.timerPauseKey.toLowerCase() && !e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) {
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
-        
+       
         pauseTimer();
       }
       else if (key === config.timerResetKey.toLowerCase() && !e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) {
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
-        
+       
         resetTimer();
       }
     }
-
     function startTimer() {
       if (!timerVisible) return;
-      
+     
       if (timerState === 'stopped' || timerState === 'paused') {
         // Démarrer ou reprendre le timer
         timerStartTime = performance.now() - timerCurrentTime;
         timerState = 'running';
         updateTimerDisplay();
-        
+       
         const updateFrame = () => {
           if (timerState === 'running') {
             updateTimerDisplay();
@@ -1233,23 +1234,21 @@
           }
         };
         timerInterval = requestAnimationFrame(updateFrame);
-        
+       
         console.log('▶️ Timer démarré');
       }
     }
-
     function pauseTimer() {
       if (!timerVisible || timerState !== 'running') return;
-      
+     
       // Mettre en pause
       cancelAnimationFrame(timerInterval);
       timerState = 'paused';
       console.log('⏸️ Timer en pause');
     }
-
     function resetTimer() {
       if (!timerVisible) return;
-      
+     
       // Reset
       cancelAnimationFrame(timerInterval);
       timerState = 'stopped';
@@ -1257,59 +1256,53 @@
       timerDisplay.textContent = '00:00.00';
       console.log('🔄 Timer réinitialisé');
     }
-
     function updateTimerDisplay() {
       if (!timerVisible || timerState !== 'running') return;
-      
+     
       timerCurrentTime = performance.now() - timerStartTime;
       timerDisplay.textContent = formatTime(timerCurrentTime);
     }
-
     function formatTime(ms) {
       const totalSec = Math.floor(ms / 1000);
       const m = Math.floor(totalSec / 60);
       const s = totalSec % 60;
       const cs = Math.floor((ms % 1000) / 10);
-      
+     
       return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}.${cs.toString().padStart(2, '0')}`;
     }
-
     function toggleTimerVisibility() {
       config.showTimer = !config.showTimer;
       timerOverlay.style.display = config.showTimer ? 'block' : 'none';
       timerVisible = config.showTimer;
-      
+     
       if (config.showTimer) {
         updateTimerDisplay();
       }
-      
+     
       saveConfig();
     }
-
     function toggleTimer() {
       toggleTimerVisibility();
     }
-
     // ============= DÉBLOCAGE COMPLET =============
     function unlockAllCharacters() {
       console.log('🔓 Déblocage de tous les personnages...');
-      
+     
       // Simulation du déblocage
       showNotification('🎉 Tous les personnages débloqués! Rafraîchissez la page pour voir les changements.', 'success', true);
     }
-
     // ============= FPS COUNTER =============
     let fpsFrames = 0;
     let fpsLastTime = performance.now();
-    
+   
     function updateFPS() {
       fpsFrames++;
       const now = performance.now();
-      
+     
       if (now - fpsLastTime >= 1000) {
         const fps = Math.round((fpsFrames * 1000) / (now - fpsLastTime));
         document.getElementById('fps-value').textContent = fps;
-        
+       
         const fpsEl = document.getElementById('fps-overlay');
         if (fps >= 55) {
           fpsEl.style.color = '#00cc66';
@@ -1321,38 +1314,35 @@
           fpsEl.style.color = '#ff4444';
           fpsEl.style.borderColor = '#ff4444';
         }
-        
+       
         fpsFrames = 0;
         fpsLastTime = now;
       }
-      
+     
       requestAnimationFrame(updateFPS);
     }
     updateFPS();
-
     function toggleFPS() {
       config.showFPS = !config.showFPS;
       document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
       saveConfig();
     }
-
     function toggleTop3() {
       config.showTop3 = !config.showTop3;
       document.getElementById('top3-overlay').style.display = config.showTop3 ? 'block' : 'none';
       saveConfig();
     }
-
     // ============= PLEIN ÉCRAN AMÉLIORÉ =============
     function toggleFullscreen() {
       const gameFrame = document.querySelector('.game-frame');
-      
+     
       if (!document.fullscreenElement) {
         if (gameFrame.requestFullscreen) {
           gameFrame.requestFullscreen();
         } else if (gameFrame.webkitRequestFullscreen) {
           gameFrame.webkitRequestFullscreen();
         }
-        
+       
         // Réappliquer les overlays si configuré
         if (config.fullscreenKeepOverlays) {
           setTimeout(() => {
@@ -1363,9 +1353,7 @@
         document.exitFullscreen();
       }
     }
-
     document.getElementById('fs-btn').addEventListener('click', toggleFullscreen);
-
     // Gérer la sortie du mode plein écran
     document.addEventListener('fullscreenchange', function() {
       if (!document.fullscreenElement) {
@@ -1376,35 +1364,33 @@
         }, 100);
       }
     });
-
     // ============= GESTION DES THÈMES =============
     function changeTheme(themeName) {
       // Retirer toutes les classes de thème
       document.body.classList.remove('theme-violet', 'theme-white', 'theme-dark', 'theme-red', 'theme-green', 'theme-blue');
-      
+     
       // Ajouter la nouvelle classe de thème
       document.body.classList.add(`theme-${themeName}`);
-      
+     
       // Mettre à jour la configuration
       config.theme = themeName;
       saveConfig();
-      
+     
       // Mettre à jour les particules
       initParticles();
-      
+     
       showNotification(`🎨 Thème ${themeName.charAt(0).toUpperCase() + themeName.slice(1)} appliqué!`, 'success');
     }
-
     // ============= MODAL DE CONFIGURATION AMÉLIORÉ =============
     function openSettingsModal() {
       if (document.getElementById('mynvo-settings')) return;
-      
+     
       const div = document.createElement('div');
       div.id = 'mynvo-settings';
       div.className = 'mynvo-modal';
       div.innerHTML = `
         <h3 style="color:var(--primary);margin-bottom:10px;text-align:center;">🎮 Configuration Complète</h3>
-        
+       
         <div class="settings-tabs">
           <div class="settings-tab active" data-tab="keys">Touches</div>
           <div class="settings-tab" data-tab="timer">Timer</div>
@@ -1412,7 +1398,7 @@
           <div class="settings-tab" data-tab="themes">Thèmes</div>
           <div class="settings-tab" data-tab="game">Jeu</div>
         </div>
-        
+       
         <!-- Onglet Touches -->
         <div class="settings-tab-content active" id="keys-tab">
           <div class="settings-section">
@@ -1439,7 +1425,7 @@
             </div>
           </div>
         </div>
-        
+       
         <!-- Onglet Timer -->
         <div class="settings-tab-content" id="timer-tab">
           <div class="settings-section">
@@ -1458,7 +1444,7 @@
             </div>
           </div>
         </div>
-        
+       
         <!-- Onglet Affichage -->
         <div class="settings-tab-content" id="display-tab">
           <div class="settings-section">
@@ -1492,7 +1478,7 @@
               </label>
             </div>
           </div>
-          
+         
           <div class="settings-section">
             <h3>📏 Tailles des éléments</h3>
             <div class="mynvo-row">
@@ -1518,13 +1504,13 @@
             </div>
           </div>
         </div>
-        
+       
         <!-- Onglet Thèmes -->
         <div class="settings-tab-content" id="themes-tab">
           <div class="settings-section">
             <h3>🎨 Thèmes du site</h3>
             <p style="margin-bottom: 15px; color: var(--text-muted);">Choisissez un thème pour personnaliser l'apparence du site :</p>
-            
+           
             <div class="theme-options">
               <div class="theme-option violet ${config.theme === 'violet' ? 'active' : ''}" onclick="changeTheme('violet')">
                 Violet
@@ -1547,7 +1533,7 @@
             </div>
           </div>
         </div>
-        
+       
         <!-- Onglet Jeu -->
         <div class="settings-tab-content" id="game-tab">
           <div class="settings-section">
@@ -1563,7 +1549,7 @@
               <button class="quick-btn give-piece-btn" onclick="unlockAllCharacters();" style="width:100%;">🔓 Débloquer Tous les Personnages</button>
             </div>
           </div>
-          
+         
           <div class="settings-section">
             <h3>🔄 Réinitialisation</h3>
             <div class="mynvo-row">
@@ -1571,20 +1557,19 @@
             </div>
           </div>
         </div>
-
         <div style="text-align:center;margin-top:12px;">
           <button onclick="closeSettingsModal()" style="background:var(--primary);color:#fff;padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-weight:700;">Fermer</button>
         </div>
       `;
-      
+     
       document.body.appendChild(div);
-      
+     
       // Initialiser les onglets
       initSettingsTabs();
-      
+     
       // Initialiser les écouteurs d'événements
       initSettingsEventListeners();
-      
+     
       // Ajouter les écouteurs pour changer les touches
       document.querySelectorAll('#mynvo-settings .key-display').forEach(display => {
         display.addEventListener('click', function() {
@@ -1592,26 +1577,24 @@
         });
       });
     }
-
     function initSettingsTabs() {
       const tabs = document.querySelectorAll('.settings-tab');
       const contents = document.querySelectorAll('.settings-tab-content');
-      
+     
       tabs.forEach(tab => {
         tab.addEventListener('click', function() {
           const tabId = this.dataset.tab;
-          
+         
           // Désactiver tous les onglets
           tabs.forEach(t => t.classList.remove('active'));
           contents.forEach(c => c.classList.remove('active'));
-          
+         
           // Activer l'onglet sélectionné
           this.classList.add('active');
           document.getElementById(`${tabId}-tab`).classList.add('active');
         });
       });
     }
-
     function initSettingsEventListeners() {
       // Toggle switches
       document.getElementById('show-fps').addEventListener('change', function() {
@@ -1619,31 +1602,31 @@
         saveConfig();
         applyOverlaysFromConfig();
       });
-      
+     
       document.getElementById('show-top3').addEventListener('change', function() {
         config.showTop3 = this.checked;
         saveConfig();
         applyOverlaysFromConfig();
       });
-      
+     
       document.getElementById('show-timer').addEventListener('change', function() {
         config.showTimer = this.checked;
         saveConfig();
         applyOverlaysFromConfig();
       });
-      
+     
       document.getElementById('fullscreen-keep').addEventListener('change', function() {
         config.fullscreenKeepOverlays = this.checked;
         saveConfig();
       });
-      
+     
       document.getElementById('zqsd-active').addEventListener('change', function() {
         zqsdActive = this.checked;
         if (zqsdActive) {
           setupZQSDSystem();
         }
       });
-      
+     
       // Sliders de taille
       document.getElementById('fps-size').addEventListener('input', function() {
         const value = this.value;
@@ -1652,7 +1635,7 @@
         applyOverlaySizes();
         saveConfig();
       });
-      
+     
       document.getElementById('top3-size').addEventListener('input', function() {
         const value = this.value;
         document.getElementById('top3-size-value').textContent = value + 'x';
@@ -1660,7 +1643,7 @@
         applyOverlaySizes();
         saveConfig();
       });
-      
+     
       document.getElementById('timer-size').addEventListener('input', function() {
         const value = this.value;
         document.getElementById('timer-size-value').textContent = value + 'x';
@@ -1669,31 +1652,30 @@
         saveConfig();
       });
     }
-
     function startKeySetting(keyType) {
       isSettingKey = true;
       currentKeySetting = keyType;
-      
+     
       const display = document.querySelector(`#mynvo-settings .key-display[data-key="${keyType}"]`);
       display.textContent = '...';
       display.classList.add('active');
-      
+     
       showNotification(`Appuyez sur une touche pour ${keyType}...`, 'info');
-      
+     
       // Écouteur temporaire pour capturer la nouvelle touche
       const keyListener = function(e) {
         e.preventDefault();
         e.stopPropagation();
-        
+       
         let keyValue = e.key.toLowerCase();
         let displayValue = e.key.toUpperCase();
-        
+       
         // Gestion spéciale pour la barre d'espace
         if (e.code === 'Space') {
           keyValue = ' ';
           displayValue = 'ESPACE';
         }
-        
+       
         // Gestion des touches modificatrices
         if (e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) {
           keyValue = 'Control';
@@ -1705,34 +1687,33 @@
           keyValue = 'Alt';
           displayValue = 'ALT';
         }
-        
+       
         // Affecter la nouvelle touche
         if (keyType.startsWith('timer')) {
           config[keyType] = keyValue;
         } else {
           config.customKeys[keyType] = keyValue;
         }
-        
+       
         // Mettre à jour l'affichage
         display.textContent = displayValue;
         display.classList.remove('active');
-        
+       
         // Sauvegarder et réinitialiser
         saveConfig();
         document.removeEventListener('keydown', keyListener);
         isSettingKey = false;
         currentKeySetting = null;
-        
+       
         showNotification(`✅ Touche ${keyType} définie sur: ${displayValue}`, 'success');
-        
+       
         // Reconfigurer les contrôles
         setupZQSDSystem();
         setupTimerSystem();
       };
-      
+     
       document.addEventListener('keydown', keyListener, { once: true });
     }
-
     function getKeyDisplayName(keyCode) {
       const keyNames = {
         'Control': 'CTRL',
@@ -1750,37 +1731,32 @@
       };
       return keyNames[keyCode] || keyCode.toUpperCase();
     }
-
     function closeSettingsModal() {
       const modal = document.getElementById('mynvo-settings');
       if (modal) modal.remove();
       isSettingKey = false;
       currentKeySetting = null;
     }
-
     function resetToDefaults() {
       if (confirm('Êtes-vous sûr de vouloir réinitialiser tous les paramètres aux valeurs par défaut?')) {
         localStorage.removeItem("mynvoConfig");
         location.reload();
       }
     }
-
     // ============= GESTION DU MENU RAPIDE =============
     function toggleBottomMenu() {
       const menu = document.getElementById('bottom-menu');
       menu.classList.toggle('visible');
     }
-
     document.getElementById('close-bottom-menu').addEventListener('click', function() {
       document.getElementById('bottom-menu').classList.remove('visible');
     });
-
     // ============= NOTIFICATIONS AMÉLIORÉES =============
     function showNotification(message, type = "info", multiline = false) {
       const notification = document.createElement('div');
       notification.className = 'notification' + (multiline ? ' multiline' : '');
       notification.innerHTML = `<span>${message}</span>`;
-      
+     
       if (type === "error") {
         notification.style.borderLeftColor = "var(--danger)";
       } else if (type === "success") {
@@ -1788,16 +1764,15 @@
       } else if (type === "warning") {
         notification.style.borderLeftColor = "var(--warning)";
       }
-      
+     
       document.body.appendChild(notification);
-      
+     
       setTimeout(() => notification.classList.add('show'), 10);
       setTimeout(() => {
         notification.classList.remove('show');
         setTimeout(() => notification.remove(), 300);
       }, multiline ? 5000 : 3000);
     }
-
     // ============= APPLICATION DES TAILLES DES OVERLAYS =============
     function applyOverlaySizes() {
       // FPS
@@ -1805,20 +1780,19 @@
       if (fpsOverlay) {
         fpsOverlay.style.transform = `scale(${config.overlaySizes.fps})`;
       }
-      
+     
       // TOP 3
       const top3Overlay = document.getElementById('top3-overlay');
       if (top3Overlay) {
         top3Overlay.style.transform = `scale(${config.overlaySizes.top3})`;
       }
-      
+     
       // Timer
       const timerOverlay = document.getElementById('speedrun-timer-overlay');
       if (timerOverlay) {
         timerOverlay.style.transform = `scale(${config.overlaySizes.timer})`;
       }
     }
-
     // ============= APPLICATION DES POSITIONS DES OVERLAYS =============
     function applyOverlayPositions() {
       // FPS
@@ -1827,14 +1801,14 @@
         fpsOverlay.style.left = config.overlayPositions.fps.x + 'px';
         fpsOverlay.style.top = config.overlayPositions.fps.y + 'px';
       }
-      
+     
       // TOP 3
       const top3Overlay = document.getElementById('top3-overlay');
       if (top3Overlay && config.overlayPositions.top3) {
         top3Overlay.style.left = config.overlayPositions.top3.x + 'px';
         top3Overlay.style.top = config.overlayPositions.top3.y + 'px';
       }
-      
+     
       // Timer
       const timerOverlay = document.getElementById('speedrun-timer-overlay');
       if (timerOverlay && config.overlayPositions.timer) {
@@ -1842,17 +1816,16 @@
         timerOverlay.style.top = config.overlayPositions.timer.y + 'px';
       }
     }
-
     // ============= PARTICULES D'ARRIÈRE-PLAN =============
     function initParticles() {
       const container = document.getElementById('particles-container');
       container.innerHTML = '';
       const particleCount = 30;
-      
+     
       for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
-        
+       
         const size = Math.random() * 5 + 2;
         particle.style.width = `${size}px`;
         particle.style.height = `${size}px`;
@@ -1860,134 +1833,127 @@
         particle.style.top = `${Math.random() * 100}%`;
         particle.style.animationDuration = `${Math.random() * 20 + 10}s`;
         particle.style.animationDelay = `${Math.random() * 5}s`;
-        
+       
         container.appendChild(particle);
       }
     }
-
     // ============= SAUVEGARDE/CHARGEMENT CONFIGURATION =============
     function saveConfig() {
       localStorage.setItem("mynvoConfig", JSON.stringify(config));
       console.log('💾 Configuration sauvegardée');
     }
-
     function loadConfig() {
       try {
         const saved = localStorage.getItem("mynvoConfig");
         if (saved) {
           const savedConfig = JSON.parse(saved);
           config = { ...config, ...savedConfig };
-          
+         
           // S'assurer que customKeys existe
           if (savedConfig.customKeys) {
             config.customKeys = { ...config.customKeys, ...savedConfig.customKeys };
           }
-          
+         
           // Appliquer le thème sauvegardé
           if (savedConfig.theme) {
             changeTheme(savedConfig.theme);
           }
-          
+         
           console.log('📂 Configuration chargée');
         }
       } catch(e) {
         console.warn('Impossible de charger la configuration');
       }
     }
-
     function applyOverlaysFromConfig() {
       document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
       document.getElementById('top3-overlay').style.display = config.showTop3 ? 'block' : 'none';
       document.getElementById('speedrun-timer-overlay').style.display = config.showTimer ? 'block' : 'none';
       timerVisible = config.showTimer;
-      
+     
       // Appliquer les tailles
       applyOverlaySizes();
-      
+     
       // Appliquer les positions
       applyOverlayPositions();
     }
-
     // ============= BOUTON "JOUER" =============
     document.getElementById('play-link').addEventListener('click', () => {
-      document.querySelector('.game-container')?.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'center' 
+      document.querySelector('.game-container')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
       });
       iframe.focus();
     });
-
     // ============= INITIALISATION DES SYSTÈMES =============
     function initializeExtensionFeatures() {
       console.log('🚀 Initialisation des fonctionnalités...');
-      
+     
       // 1. Charger la configuration
       loadConfig();
-      
+     
       // 2. Appliquer l'état des overlays
       applyOverlaysFromConfig();
-      
+     
       // 3. Activer le système ZQSD
       setupZQSDSystem();
-      
+     
       // 4. Activer le système de timer
       setupTimerSystem();
-      
+     
       // 5. Rendre les overlays déplaçables
       makeDraggable(document.getElementById('fps-overlay'));
       makeDraggable(document.getElementById('top3-overlay'));
       makeDraggable(document.getElementById('speedrun-timer-overlay'));
-      
+     
       console.log('✅ Tous les systèmes activés!');
     }
-
     // ============= INITIALISATION AU CHARGEMENT DE LA PAGE =============
     document.addEventListener('DOMContentLoaded', function() {
       console.log('📄 DOM chargé, initialisation...');
-      
+     
       // Initialiser les particules
       initParticles();
-      
+     
       // Charger la configuration
       loadConfig();
-      
+     
       // Appliquer l'état des overlays
       applyOverlaysFromConfig();
-      
+     
       // Activer le menu rapide au clic droit
       document.addEventListener('contextmenu', function(e) {
         e.preventDefault();
         toggleBottomMenu();
       });
-      
+     
       console.log('✅ Page initialisée');
     });
-
     // ============= LOGS DE DÉMARRAGE =============
     console.log('%c╔════════════════════════════════════════╗', 'color: #7c62dc; font-weight: bold;');
-    console.log('%c║  SUBWAY SURFERS 2025 - ÉDITION MYNVO  ║', 'color: #7c62dc; font-weight: bold;');
-    console.log('%c║  Extension Intégrée v3.0               ║', 'color: #7c62dc; font-weight: bold;');
+    console.log('%c║ SUBWAY SURFERS 2025 - ÉDITION MYNVO ║', 'color: #7c62dc; font-weight: bold;');
+    console.log('%c║ Extension Intégrée v3.0 ║', 'color: #7c62dc; font-weight: bold;');
     console.log('%c╚════════════════════════════════════════╝', 'color: #7c62dc; font-weight: bold;');
     console.log('');
     console.log('%c🎮 Touches:', 'color: #00cc66; font-weight: bold;');
-    console.log('   • ZQSD + Espace pour jouer');
-    console.log('   • T = Démarrer timer');
-    console.log('   • ESPACE = Pause timer');
-    console.log('   • R = Reset timer');
+    console.log(' • ZQSD + Espace pour jouer');
+    console.log(' • T = Démarrer timer');
+    console.log(' • ESPACE = Pause timer');
+    console.log(' • R = Reset timer');
     console.log('');
     console.log('%c⚙️ Fonctionnalités:', 'color: #7c62dc; font-weight: bold;');
-    console.log('   • Déblocage automatique de tous les personnages');
-    console.log('   • Timer speedrun amélioré avec touches séparées');
-    console.log('   • FPS Counter en temps réel');
-    console.log('   • TOP 3 personnalisable');
-    console.log('   • Configuration complète des touches');
-    console.log('   • 6 thèmes différents');
-    console.log('   • Overlays personnalisables (taille et position)');
+    console.log(' • Déblocage automatique de tous les personnages');
+    console.log(' • Timer speedrun amélioré avec touches séparées');
+    console.log(' • FPS Counter en temps réel');
+    console.log(' • TOP 3 personnalisable');
+    console.log(' • Configuration complète des touches');
+    console.log(' • 6 thèmes différents');
+    console.log(' • Overlays personnalisables (taille)');
     console.log('');
     console.log('%c💡 Astuce:', 'color: #ffaa00; font-weight: bold;');
-    console.log('   Ouvrez les "Paramètres" pour personnaliser l\'expérience!');
-    console.log('   Cliquez-droit pour ouvrir le menu rapide!');
-    console.log('   Glissez-déposez les éléments pour les repositionner!');
+    console.log(' Ouvrez les "Paramètres" pour personnaliser l\'expérience!');
+    console.log(' Cliquez-droit pour ouvrir le menu rapide!');
+    console.log(' Glissez-déposez les éléments pour les repositionner!');
     console.log('');
   </script>
 </body>
