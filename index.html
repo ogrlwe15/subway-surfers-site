@@ -775,7 +775,7 @@
       </div>
       <div class="nav-links">
         <a id="play-link">Jouer</a>
-        <a onclick="openSettingsModal();return false;">Paramètres</a>
+        <a id="settings-link">Paramètres</a>
         <a href="https://discord.gg/bQTtDXmF" target="_blank">Discord</a>
       </div>
     </div>
@@ -887,431 +887,14 @@
     let timerInterval = null;
     let timerVisible = false;
 
-    // ============= CHARGEMENT DE LA PAGE =============
-    iframe.addEventListener('load', function() {
-      console.log('✅ Iframe chargée');
-      hideLoading();
-      setTimeout(initializeExtensionFeatures, 1500);
-    });
-
-    // Fallback si l'iframe ne charge pas
-    setTimeout(function() {
-      if (loadingUI.style.display !== 'none') {
-        hideLoading();
-        showNotification('🎮 Jeu chargé! Utilisez ZQSD + ESPACE pour jouer.', 'success', true);
-      }
-    }, 3000);
-
-    function hideLoading() {
-      if (loadingUI.style.display !== 'none') {
-        loadingUI.style.display = 'none';
-      }
-    }
-
-    // ============= SYSTÈME ZQSD AMÉLIORÉ =============
-    function setupZQSDSystem() {
-      console.log('🎮 Activation du système ZQSD...');
-      
-      // Nettoyer les anciens écouteurs
-      document.removeEventListener('keydown', handleZQSDKeyDown, true);
-      document.removeEventListener('keyup', handleZQSDKeyUp, true);
-      
-      // Ajouter les nouveaux écouteurs en phase de CAPTURE
-      document.addEventListener('keydown', handleZQSDKeyDown, true);
-      document.addEventListener('keyup', handleZQSDKeyUp, true);
-      
-      console.log('✅ ZQSD activé avec capture phase');
-    }
-
-    function handleZQSDKeyDown(e) {
-      if (!zqsdActive || e.repeat) return;
-      
-      const key = e.key.toLowerCase();
-      const mappedKey = getKeyMapping(key);
-      
-      if (mappedKey) {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        
-        // Envoyer l'événement mappé
-        dispatchMappedKey(mappedKey, 'keydown');
-      }
-    }
-
-    function handleZQSDKeyUp(e) {
-      if (!zqsdActive) return;
-      
-      const key = e.key.toLowerCase();
-      const mappedKey = getKeyMapping(key);
-      
-      if (mappedKey) {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        
-        dispatchMappedKey(mappedKey, 'keyup');
-      }
-    }
-
-    function getKeyMapping(key) {
-      const keyMap = {
-        [config.customKeys.up]: { key: 'ArrowUp', code: 'ArrowUp', keyCode: 38 },
-        [config.customKeys.down]: { key: 'ArrowDown', code: 'ArrowDown', keyCode: 40 },
-        [config.customKeys.left]: { key: 'ArrowLeft', code: 'ArrowLeft', keyCode: 37 },
-        [config.customKeys.right]: { key: 'ArrowRight', code: 'ArrowRight', keyCode: 39 },
-        [config.customKeys.hoverboard]: { key: ' ', code: 'Space', keyCode: 32 }
-      };
-      
-      return keyMap[key] || null;
-    }
-
-    function dispatchMappedKey(mappedKey, eventType) {
-      try {
-        // Créer l'événement clavier
-        const event = new KeyboardEvent(eventType, {
-          key: mappedKey.key,
-          code: mappedKey.code,
-          keyCode: mappedKey.keyCode,
-          which: mappedKey.keyCode,
-          bubbles: true,
-          cancelable: true,
-          composed: true
-        });
-        
-        // Envoyer à l'iframe
-        if (iframe.contentWindow) {
-          iframe.contentWindow.dispatchEvent(event);
-        }
-        if (iframe.contentDocument) {
-          iframe.contentDocument.dispatchEvent(event);
-          iframe.contentDocument.documentElement?.dispatchEvent(event);
-        }
-        
-        // PostMessage de secours
-        iframe.contentWindow?.postMessage({
-          type: 'keyboard_event',
-          eventType: eventType,
-          key: mappedKey.key,
-          code: mappedKey.code,
-          keyCode: mappedKey.keyCode
-        }, '*');
-        
-      } catch (err) {
-        console.log('Dispatch key:', mappedKey.key);
-      }
-    }
-
-    // ============= NOUVEAU TIMER SPEEDRUN =============
-    function setupTimerSystem() {
-      console.log('⏱️ Activation du système de timer amélioré...');
-      
-      // Écouteur pour les touches du timer
-      document.addEventListener('keydown', handleTimerKeyDown, true);
-      
-      console.log('✅ Timer configuré');
-    }
-
-    function handleTimerKeyDown(e) {
-      if (e.repeat || isSettingKey) return;
-      
-      const key = e.key.toLowerCase();
-      
-      // Vérification des touches du timer
-      if (key === config.timerStartKey.toLowerCase() && !e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        
-        startTimer();
-      } 
-      else if (key === config.timerPauseKey.toLowerCase() && !e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        
-        pauseTimer();
-      }
-      else if (key === config.timerResetKey.toLowerCase() && !e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        
-        resetTimer();
-      }
-    }
-
-    function startTimer() {
-      if (!timerVisible) return;
-      
-      if (timerState === 'stopped' || timerState === 'paused') {
-        // Démarrer ou reprendre le timer
-        timerStartTime = performance.now() - timerCurrentTime;
-        timerState = 'running';
-        updateTimerDisplay();
-        
-        const updateFrame = () => {
-          if (timerState === 'running') {
-            updateTimerDisplay();
-            timerInterval = requestAnimationFrame(updateFrame);
-          }
-        };
-        timerInterval = requestAnimationFrame(updateFrame);
-        
-        console.log('▶️ Timer démarré');
-      }
-    }
-
-    function pauseTimer() {
-      if (!timerVisible || timerState !== 'running') return;
-      
-      // Mettre en pause
-      cancelAnimationFrame(timerInterval);
-      timerState = 'paused';
-      console.log('⏸️ Timer en pause');
-    }
-
-    function resetTimer() {
-      if (!timerVisible) return;
-      
-      // Reset
-      cancelAnimationFrame(timerInterval);
-      timerState = 'stopped';
-      timerCurrentTime = 0;
-      timerDisplay.textContent = '00:00.00';
-      console.log('🔄 Timer réinitialisé');
-    }
-
-    function updateTimerDisplay() {
-      if (!timerVisible || timerState !== 'running') return;
-      
-      timerCurrentTime = performance.now() - timerStartTime;
-      timerDisplay.textContent = formatTime(timerCurrentTime);
-    }
-
-    function formatTime(ms) {
-      const totalSec = Math.floor(ms / 1000);
-      const m = Math.floor(totalSec / 60);
-      const s = totalSec % 60;
-      const cs = Math.floor((ms % 1000) / 10);
-      
-      return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}.${cs.toString().padStart(2, '0')}`;
-    }
-
-    function toggleTimerVisibility() {
-      config.showTimer = !config.showTimer;
-      timerOverlay.style.display = config.showTimer ? 'block' : 'none';
-      timerVisible = config.showTimer;
-      
-      if (config.showTimer) {
-        updateTimerDisplay();
-      }
-      
-      saveConfig();
-    }
-
-    function toggleTimer() {
-      toggleTimerVisibility();
-    }
-
-    // ============= DÉBLOCAGE COMPLET =============
-    function unlockAllCharacters() {
-      console.log('🔓 Déblocage de tous les personnages...');
-      
-      // Simulation du déblocage
-      showNotification('🎉 Tous les personnages débloqués! Rafraîchissez la page pour voir les changements.', 'success', true);
-    }
-
-    // ============= FPS COUNTER =============
-    let fpsFrames = 0;
-    let fpsLastTime = performance.now();
+    // ============= FONCTIONS GLOBALES ACCESSIBLES =============
     
-    function updateFPS() {
-      fpsFrames++;
-      const now = performance.now();
-      
-      if (now - fpsLastTime >= 1000) {
-        const fps = Math.round((fpsFrames * 1000) / (now - fpsLastTime));
-        document.getElementById('fps-value').textContent = fps;
-        
-        fpsFrames = 0;
-        fpsLastTime = now;
-      }
-      
-      requestAnimationFrame(updateFPS);
-    }
-    updateFPS();
-
-    function toggleFPS() {
-      config.showFPS = !config.showFPS;
-      document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
-      saveConfig();
-    }
-
-    function toggleTop3() {
-      config.showTop3 = !config.showTop3;
-      document.getElementById('top3-overlay').style.display = config.showTop3 ? 'block' : 'none';
-      saveConfig();
-    }
-
-    // ============= PLEIN ÉCRAN AMÉLIORÉ =============
-    function toggleFullscreen() {
-      const gameFrame = document.querySelector('.game-frame');
-      
-      if (!document.fullscreenElement) {
-        if (gameFrame.requestFullscreen) {
-          gameFrame.requestFullscreen();
-        } else if (gameFrame.webkitRequestFullscreen) {
-          gameFrame.webkitRequestFullscreen();
-        }
-        
-        // Réappliquer les overlays si configuré
-        if (config.fullscreenKeepOverlays) {
-          setTimeout(() => {
-            applyOverlaysFromConfig();
-          }, 100);
-        }
-      } else {
-        document.exitFullscreen();
-      }
-    }
-
-    document.getElementById('fs-btn').addEventListener('click', toggleFullscreen);
-
-    // Gérer la sortie du mode plein écran
-    document.addEventListener('fullscreenchange', function() {
-      if (!document.fullscreenElement) {
-        setTimeout(() => {
-          zqsdActive = true;
-          setupZQSDSystem();
-          applyOverlaysFromConfig();
-        }, 100);
-      }
-    });
-
-    // ============= GESTION DES THÈMES =============
-    function changeTheme(themeName) {
-      // Retirer toutes les classes de thème
-      document.body.classList.remove('theme-violet', 'theme-white', 'theme-dark', 'theme-red', 'theme-green', 'theme-blue');
-      
-      // Ajouter la nouvelle classe de thème
-      document.body.classList.add(`theme-${themeName}`);
-      
-      // Mettre à jour la configuration
-      config.theme = themeName;
-      saveConfig();
-      
-      // Mettre à jour les particules
-      initParticles();
-      
-      showNotification(`🎨 Thème ${themeName.charAt(0).toUpperCase() + themeName.slice(1)} appliqué!`, 'success');
-    }
-
-    // ============= SYSTÈME DE DRAG & DROP =============
-    function setupDragAndDrop() {
-      const draggableElements = [
-        document.getElementById('fps-overlay'),
-        document.getElementById('top3-overlay'),
-        document.getElementById('speedrun-timer-overlay')
-      ];
-      
-      draggableElements.forEach(element => {
-        if (!element) return;
-        
-        element.addEventListener('mousedown', startDrag);
-        element.addEventListener('touchstart', startDragTouch, { passive: false });
-      });
-      
-      document.addEventListener('mousemove', drag);
-      document.addEventListener('touchmove', dragTouch, { passive: false });
-      document.addEventListener('mouseup', stopDrag);
-      document.addEventListener('touchend', stopDrag);
-    }
-    
-    function startDrag(e) {
-      isDragging = true;
-      currentDraggedElement = e.target;
-      
-      const rect = currentDraggedElement.getBoundingClientRect();
-      dragOffset.x = e.clientX - rect.left;
-      dragOffset.y = e.clientY - rect.top;
-      
-      currentDraggedElement.style.opacity = '0.7';
-      e.preventDefault();
-    }
-    
-    function startDragTouch(e) {
-      if (e.touches.length !== 1) return;
-      
-      isDragging = true;
-      currentDraggedElement = e.target;
-      
-      const rect = currentDraggedElement.getBoundingClientRect();
-      dragOffset.x = e.touches[0].clientX - rect.left;
-      dragOffset.y = e.touches[0].clientY - rect.top;
-      
-      currentDraggedElement.style.opacity = '0.7';
-      e.preventDefault();
-    }
-    
-    function drag(e) {
-      if (!isDragging || !currentDraggedElement) return;
-      
-      const x = e.clientX - dragOffset.x;
-      const y = e.clientY - dragOffset.y;
-      
-      currentDraggedElement.style.left = `${x}px`;
-      currentDraggedElement.style.top = `${y}px`;
-      currentDraggedElement.style.right = 'auto';
-      currentDraggedElement.style.bottom = 'auto';
-      
-      // Sauvegarder la position
-      saveOverlayPosition(currentDraggedElement.id, { left: `${x}px`, top: `${y}px` });
-    }
-    
-    function dragTouch(e) {
-      if (!isDragging || !currentDraggedElement || e.touches.length !== 1) return;
-      
-      const x = e.touches[0].clientX - dragOffset.x;
-      const y = e.touches[0].clientY - dragOffset.y;
-      
-      currentDraggedElement.style.left = `${x}px`;
-      currentDraggedElement.style.top = `${y}px`;
-      currentDraggedElement.style.right = 'auto';
-      currentDraggedElement.style.bottom = 'auto';
-      
-      // Sauvegarder la position
-      saveOverlayPosition(currentDraggedElement.id, { left: `${x}px`, top: `${y}px` });
-      
-      e.preventDefault();
-    }
-    
-    function stopDrag() {
-      if (!isDragging || !currentDraggedElement) return;
-      
-      currentDraggedElement.style.opacity = '';
-      isDragging = false;
-      currentDraggedElement = null;
-    }
-    
-    function saveOverlayPosition(id, position) {
-      const overlayKey = id.replace('-overlay', '');
-      config.overlayPositions[overlayKey] = position;
-      saveConfig();
-    }
-    
-    function applyOverlayPositions() {
-      Object.keys(config.overlayPositions).forEach(key => {
-        const element = document.getElementById(`${key}-overlay`);
-        if (element && config.overlayPositions[key]) {
-          Object.assign(element.style, config.overlayPositions[key]);
-        }
-      });
-    }
-
-    // ============= MODAL DE CONFIGURATION AMÉLIORÉ =============
+    // Fonction pour ouvrir les paramètres - CORRIGÉE
     function openSettingsModal() {
-      if (document.getElementById('mynvo-settings')) return;
+      console.log("Ouverture des paramètres...");
+      
+      // Fermer le modal existant s'il y en a un
+      closeSettingsModal();
       
       const div = document.createElement('div');
       div.id = 'mynvo-settings';
@@ -1506,74 +1089,92 @@
       });
     }
 
-    function initSettingsTabs() {
-      const tabs = document.querySelectorAll('.settings-tab');
-      const contents = document.querySelectorAll('.settings-tab-content');
-      
-      tabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-          const tabId = this.dataset.tab;
-          
-          // Désactiver tous les onglets
-          tabs.forEach(t => t.classList.remove('active'));
-          contents.forEach(c => c.classList.remove('active'));
-          
-          // Activer l'onglet sélectionné
-          this.classList.add('active');
-          document.getElementById(`${tabId}-tab`).classList.add('active');
-        });
-      });
+    function closeSettingsModal() {
+      const modal = document.getElementById('mynvo-settings');
+      if (modal) modal.remove();
+      isSettingKey = false;
+      currentKeySetting = null;
     }
 
-    function initSettingsEventListeners() {
-      // Toggle switches
-      document.getElementById('show-fps').addEventListener('change', function() {
-        config.showFPS = this.checked;
-        saveConfig();
-        applyOverlaysFromConfig();
-      });
+    function changeTheme(themeName) {
+      // Retirer toutes les classes de thème
+      document.body.classList.remove('theme-violet', 'theme-white', 'theme-dark', 'theme-red', 'theme-green', 'theme-blue');
       
-      document.getElementById('show-top3').addEventListener('change', function() {
-        config.showTop3 = this.checked;
-        saveConfig();
-        applyOverlaysFromConfig();
-      });
+      // Ajouter la nouvelle classe de thème
+      document.body.classList.add(`theme-${themeName}`);
       
-      document.getElementById('show-timer').addEventListener('change', function() {
-        config.showTimer = this.checked;
-        saveConfig();
-        applyOverlaysFromConfig();
-      });
+      // Mettre à jour la configuration
+      config.theme = themeName;
+      saveConfig();
       
-      document.getElementById('fullscreen-keep').addEventListener('change', function() {
-        config.fullscreenKeepOverlays = this.checked;
-        saveConfig();
-      });
+      // Mettre à jour les particules
+      initParticles();
       
-      // Sliders de taille
-      document.getElementById('fps-size').addEventListener('input', function() {
-        const value = this.value;
-        document.getElementById('fps-size-value').textContent = value + 'x';
-        config.overlaySizes.fps = parseFloat(value);
-        applyOverlaySizes();
-        saveConfig();
-      });
+      showNotification(`🎨 Thème ${themeName.charAt(0).toUpperCase() + themeName.slice(1)} appliqué!`, 'success');
+    }
+
+    function toggleTimer() {
+      config.showTimer = !config.showTimer;
+      document.getElementById('speedrun-timer-overlay').style.display = config.showTimer ? 'block' : 'none';
+      timerVisible = config.showTimer;
+      saveConfig();
+    }
+
+    function toggleFPS() {
+      config.showFPS = !config.showFPS;
+      document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
+      saveConfig();
+    }
+
+    function toggleTop3() {
+      config.showTop3 = !config.showTop3;
+      document.getElementById('top3-overlay').style.display = config.showTop3 ? 'block' : 'none';
+      saveConfig();
+    }
+
+    function toggleFullscreen() {
+      const gameFrame = document.querySelector('.game-frame');
       
-      document.getElementById('top3-size').addEventListener('input', function() {
-        const value = this.value;
-        document.getElementById('top3-size-value').textContent = value + 'x';
-        config.overlaySizes.top3 = parseFloat(value);
-        applyOverlaySizes();
-        saveConfig();
-      });
-      
-      document.getElementById('timer-size').addEventListener('input', function() {
-        const value = this.value;
-        document.getElementById('timer-size-value').textContent = value + 'x';
-        config.overlaySizes.timer = parseFloat(value);
-        applyOverlaySizes();
-        saveConfig();
-      });
+      if (!document.fullscreenElement) {
+        if (gameFrame.requestFullscreen) {
+          gameFrame.requestFullscreen();
+        } else if (gameFrame.webkitRequestFullscreen) {
+          gameFrame.webkitRequestFullscreen();
+        }
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    function unlockAllCharacters() {
+      showNotification('🎉 Tous les personnages débloqués! Rafraîchissez la page pour voir les changements.', 'success', true);
+    }
+
+    function resetToDefaults() {
+      if (confirm('Êtes-vous sûr de vouloir réinitialiser tous les paramètres aux valeurs par défaut?')) {
+        localStorage.removeItem("mynvoConfig");
+        location.reload();
+      }
+    }
+
+    // ============= FONCTIONS AUXILIAIRES =============
+    
+    function getKeyDisplayName(keyCode) {
+      const keyNames = {
+        'Control': 'CTRL',
+        'Shift': 'SHIFT',
+        'Alt': 'ALT',
+        'Meta': 'META',
+        ' ': 'ESPACE',
+        'Space': 'ESPACE',
+        'Enter': 'ENTRÉE',
+        'Tab': 'TAB',
+        'Escape': 'ESC',
+        'F1': 'F1', 'F2': 'F2', 'F3': 'F3', 'F4': 'F4',
+        'F5': 'F5', 'F6': 'F6', 'F7': 'F7', 'F8': 'F8',
+        'F9': 'F9', 'F10': 'F10', 'F11': 'F11', 'F12': 'F12'
+      };
+      return keyNames[keyCode] || keyCode.toUpperCase();
     }
 
     function startKeySetting(keyType) {
@@ -1598,18 +1199,6 @@
         if (e.code === 'Space') {
           keyValue = ' ';
           displayValue = 'ESPACE';
-        }
-        
-        // Gestion des touches modificatrices
-        if (e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) {
-          keyValue = 'Control';
-          displayValue = 'CTRL';
-        } else if (e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) {
-          keyValue = 'Shift';
-          displayValue = 'SHIFT';
-        } else if (e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
-          keyValue = 'Alt';
-          displayValue = 'ALT';
         }
         
         // Affecter la nouvelle touche
@@ -1639,49 +1228,273 @@
       document.addEventListener('keydown', keyListener, { once: true });
     }
 
-    function getKeyDisplayName(keyCode) {
-      const keyNames = {
-        'Control': 'CTRL',
-        'Shift': 'SHIFT',
-        'Alt': 'ALT',
-        'Meta': 'META',
-        ' ': 'ESPACE',
-        'Space': 'ESPACE',
-        'Enter': 'ENTRÉE',
-        'Tab': 'TAB',
-        'Escape': 'ESC',
-        'F1': 'F1', 'F2': 'F2', 'F3': 'F3', 'F4': 'F4',
-        'F5': 'F5', 'F6': 'F6', 'F7': 'F7', 'F8': 'F8',
-        'F9': 'F9', 'F10': 'F10', 'F11': 'F11', 'F12': 'F12'
-      };
-      return keyNames[keyCode] || keyCode.toUpperCase();
+    function initSettingsTabs() {
+      const tabs = document.querySelectorAll('.settings-tab');
+      const contents = document.querySelectorAll('.settings-tab-content');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          const tabId = this.dataset.tab;
+          
+          // Désactiver tous les onglets
+          tabs.forEach(t => t.classList.remove('active'));
+          contents.forEach(c => c.classList.remove('active'));
+          
+          // Activer l'onglet sélectionné
+          this.classList.add('active');
+          document.getElementById(`${tabId}-tab`).classList.add('active');
+        });
+      });
     }
 
-    function closeSettingsModal() {
-      const modal = document.getElementById('mynvo-settings');
-      if (modal) modal.remove();
-      isSettingKey = false;
-      currentKeySetting = null;
-    }
-
-    function resetToDefaults() {
-      if (confirm('Êtes-vous sûr de vouloir réinitialiser tous les paramètres aux valeurs par défaut?')) {
-        localStorage.removeItem("mynvoConfig");
-        location.reload();
+    function initSettingsEventListeners() {
+      // Toggle switches
+      const showFpsCheckbox = document.getElementById('show-fps');
+      const showTop3Checkbox = document.getElementById('show-top3');
+      const showTimerCheckbox = document.getElementById('show-timer');
+      const fullscreenKeepCheckbox = document.getElementById('fullscreen-keep');
+      
+      if (showFpsCheckbox) {
+        showFpsCheckbox.addEventListener('change', function() {
+          config.showFPS = this.checked;
+          saveConfig();
+          applyOverlaysFromConfig();
+        });
+      }
+      
+      if (showTop3Checkbox) {
+        showTop3Checkbox.addEventListener('change', function() {
+          config.showTop3 = this.checked;
+          saveConfig();
+          applyOverlaysFromConfig();
+        });
+      }
+      
+      if (showTimerCheckbox) {
+        showTimerCheckbox.addEventListener('change', function() {
+          config.showTimer = this.checked;
+          saveConfig();
+          applyOverlaysFromConfig();
+        });
+      }
+      
+      if (fullscreenKeepCheckbox) {
+        fullscreenKeepCheckbox.addEventListener('change', function() {
+          config.fullscreenKeepOverlays = this.checked;
+          saveConfig();
+        });
+      }
+      
+      // Sliders de taille
+      const fpsSizeSlider = document.getElementById('fps-size');
+      const top3SizeSlider = document.getElementById('top3-size');
+      const timerSizeSlider = document.getElementById('timer-size');
+      
+      if (fpsSizeSlider) {
+        fpsSizeSlider.addEventListener('input', function() {
+          const value = this.value;
+          const display = document.getElementById('fps-size-value');
+          if (display) display.textContent = value + 'x';
+          config.overlaySizes.fps = parseFloat(value);
+          applyOverlaySizes();
+          saveConfig();
+        });
+      }
+      
+      if (top3SizeSlider) {
+        top3SizeSlider.addEventListener('input', function() {
+          const value = this.value;
+          const display = document.getElementById('top3-size-value');
+          if (display) display.textContent = value + 'x';
+          config.overlaySizes.top3 = parseFloat(value);
+          applyOverlaySizes();
+          saveConfig();
+        });
+      }
+      
+      if (timerSizeSlider) {
+        timerSizeSlider.addEventListener('input', function() {
+          const value = this.value;
+          const display = document.getElementById('timer-size-value');
+          if (display) display.textContent = value + 'x';
+          config.overlaySizes.timer = parseFloat(value);
+          applyOverlaySizes();
+          saveConfig();
+        });
       }
     }
 
-    // ============= GESTION DU MENU RAPIDE =============
-    function toggleBottomMenu() {
-      const menu = document.getElementById('bottom-menu');
-      menu.classList.toggle('visible');
+    // ============= SYSTÈMES PRINCIPAUX =============
+    
+    function setupZQSDSystem() {
+      console.log('🎮 Activation du système ZQSD...');
+      
+      // Nettoyer les anciens écouteurs
+      document.removeEventListener('keydown', handleZQSDKeyDown, true);
+      document.removeEventListener('keyup', handleZQSDKeyUp, true);
+      
+      // Ajouter les nouveaux écouteurs en phase de CAPTURE
+      document.addEventListener('keydown', handleZQSDKeyDown, true);
+      document.addEventListener('keyup', handleZQSDKeyUp, true);
     }
 
-    document.getElementById('close-bottom-menu').addEventListener('click', function() {
-      document.getElementById('bottom-menu').classList.remove('visible');
-    });
+    function handleZQSDKeyDown(e) {
+      if (!zqsdActive || e.repeat) return;
+      
+      const key = e.key.toLowerCase();
+      const mappedKey = getKeyMapping(key);
+      
+      if (mappedKey) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        // Envoyer l'événement mappé
+        dispatchMappedKey(mappedKey, 'keydown');
+      }
+    }
 
-    // ============= NOTIFICATIONS AMÉLIORÉES =============
+    function handleZQSDKeyUp(e) {
+      if (!zqsdActive) return;
+      
+      const key = e.key.toLowerCase();
+      const mappedKey = getKeyMapping(key);
+      
+      if (mappedKey) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        dispatchMappedKey(mappedKey, 'keyup');
+      }
+    }
+
+    function getKeyMapping(key) {
+      const keyMap = {
+        [config.customKeys.up]: { key: 'ArrowUp', code: 'ArrowUp', keyCode: 38 },
+        [config.customKeys.down]: { key: 'ArrowDown', code: 'ArrowDown', keyCode: 40 },
+        [config.customKeys.left]: { key: 'ArrowLeft', code: 'ArrowLeft', keyCode: 37 },
+        [config.customKeys.right]: { key: 'ArrowRight', code: 'ArrowRight', keyCode: 39 },
+        [config.customKeys.hoverboard]: { key: ' ', code: 'Space', keyCode: 32 }
+      };
+      
+      return keyMap[key] || null;
+    }
+
+    function dispatchMappedKey(mappedKey, eventType) {
+      try {
+        // Créer l'événement clavier
+        const event = new KeyboardEvent(eventType, {
+          key: mappedKey.key,
+          code: mappedKey.code,
+          keyCode: mappedKey.keyCode,
+          which: mappedKey.keyCode,
+          bubbles: true,
+          cancelable: true,
+          composed: true
+        });
+        
+        // Envoyer à l'iframe
+        if (iframe.contentWindow) {
+          iframe.contentWindow.dispatchEvent(event);
+        }
+        if (iframe.contentDocument) {
+          iframe.contentDocument.dispatchEvent(event);
+          iframe.contentDocument.documentElement?.dispatchEvent(event);
+        }
+      } catch (err) {
+        console.log('Dispatch key:', mappedKey.key);
+      }
+    }
+
+    function setupTimerSystem() {
+      console.log('⏱️ Activation du système de timer amélioré...');
+      
+      // Écouteur pour les touches du timer
+      document.addEventListener('keydown', handleTimerKeyDown, true);
+    }
+
+    function handleTimerKeyDown(e) {
+      if (e.repeat || isSettingKey) return;
+      
+      const key = e.key.toLowerCase();
+      
+      // Vérification des touches du timer
+      if (key === config.timerStartKey.toLowerCase()) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        startTimer();
+      } 
+      else if (key === config.timerPauseKey.toLowerCase()) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        pauseTimer();
+      }
+      else if (key === config.timerResetKey.toLowerCase()) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        resetTimer();
+      }
+    }
+
+    function startTimer() {
+      if (!timerVisible) return;
+      
+      if (timerState === 'stopped' || timerState === 'paused') {
+        timerStartTime = performance.now() - timerCurrentTime;
+        timerState = 'running';
+        updateTimerDisplay();
+        
+        const updateFrame = () => {
+          if (timerState === 'running') {
+            updateTimerDisplay();
+            timerInterval = requestAnimationFrame(updateFrame);
+          }
+        };
+        timerInterval = requestAnimationFrame(updateFrame);
+      }
+    }
+
+    function pauseTimer() {
+      if (!timerVisible || timerState !== 'running') return;
+      
+      cancelAnimationFrame(timerInterval);
+      timerState = 'paused';
+    }
+
+    function resetTimer() {
+      if (!timerVisible) return;
+      
+      cancelAnimationFrame(timerInterval);
+      timerState = 'stopped';
+      timerCurrentTime = 0;
+      timerDisplay.textContent = '00:00.00';
+    }
+
+    function updateTimerDisplay() {
+      if (!timerVisible || timerState !== 'running') return;
+      
+      timerCurrentTime = performance.now() - timerStartTime;
+      timerDisplay.textContent = formatTime(timerCurrentTime);
+    }
+
+    function formatTime(ms) {
+      const totalSec = Math.floor(ms / 1000);
+      const m = Math.floor(totalSec / 60);
+      const s = totalSec % 60;
+      const cs = Math.floor((ms % 1000) / 10);
+      
+      return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}.${cs.toString().padStart(2, '0')}`;
+    }
+
+    // ============= AUTRES FONCTIONNALITÉS =============
+    
     function showNotification(message, type = "info", multiline = false) {
       const notification = document.createElement('div');
       notification.className = 'notification' + (multiline ? ' multiline' : '');
@@ -1704,28 +1517,6 @@
       }, multiline ? 5000 : 3000);
     }
 
-    // ============= APPLICATION DES TAILLES DES OVERLAYS =============
-    function applyOverlaySizes() {
-      // FPS
-      const fpsOverlay = document.getElementById('fps-overlay');
-      if (fpsOverlay) {
-        fpsOverlay.style.transform = `scale(${config.overlaySizes.fps})`;
-      }
-      
-      // TOP 3
-      const top3Overlay = document.getElementById('top3-overlay');
-      if (top3Overlay) {
-        top3Overlay.style.transform = `scale(${config.overlaySizes.top3})`;
-      }
-      
-      // Timer
-      const timerOverlay = document.getElementById('speedrun-timer-overlay');
-      if (timerOverlay) {
-        timerOverlay.style.transform = `scale(${config.overlaySizes.timer})`;
-      }
-    }
-
-    // ============= PARTICULES D'ARRIÈRE-PLAN =============
     function initParticles() {
       const container = document.getElementById('particles-container');
       container.innerHTML = '';
@@ -1747,10 +1538,8 @@
       }
     }
 
-    // ============= SAUVEGARDE/CHARGEMENT CONFIGURATION =============
     function saveConfig() {
       localStorage.setItem("mynvoConfig", JSON.stringify(config));
-      console.log('💾 Configuration sauvegardée');
     }
 
     function loadConfig() {
@@ -1760,17 +1549,13 @@
           const savedConfig = JSON.parse(saved);
           config = { ...config, ...savedConfig };
           
-          // S'assurer que customKeys existe
           if (savedConfig.customKeys) {
             config.customKeys = { ...config.customKeys, ...savedConfig.customKeys };
           }
           
-          // Appliquer le thème sauvegardé
           if (savedConfig.theme) {
             changeTheme(savedConfig.theme);
           }
-          
-          console.log('📂 Configuration chargée');
         }
       } catch(e) {
         console.warn('Impossible de charger la configuration');
@@ -1783,14 +1568,180 @@
       document.getElementById('speedrun-timer-overlay').style.display = config.showTimer ? 'block' : 'none';
       timerVisible = config.showTimer;
       
-      // Appliquer les tailles
       applyOverlaySizes();
-      
-      // Appliquer les positions
       applyOverlayPositions();
     }
 
-    // ============= BOUTON "JOUER" =============
+    function applyOverlaySizes() {
+      const fpsOverlay = document.getElementById('fps-overlay');
+      const top3Overlay = document.getElementById('top3-overlay');
+      const timerOverlay = document.getElementById('speedrun-timer-overlay');
+      
+      if (fpsOverlay) fpsOverlay.style.transform = `scale(${config.overlaySizes.fps})`;
+      if (top3Overlay) top3Overlay.style.transform = `scale(${config.overlaySizes.top3})`;
+      if (timerOverlay) timerOverlay.style.transform = `scale(${config.overlaySizes.timer})`;
+    }
+
+    function applyOverlayPositions() {
+      Object.keys(config.overlayPositions).forEach(key => {
+        const element = document.getElementById(`${key}-overlay`);
+        if (element && config.overlayPositions[key]) {
+          Object.assign(element.style, config.overlayPositions[key]);
+        }
+      });
+    }
+
+    function setupDragAndDrop() {
+      const draggableElements = [
+        document.getElementById('fps-overlay'),
+        document.getElementById('top3-overlay'),
+        document.getElementById('speedrun-timer-overlay')
+      ];
+      
+      draggableElements.forEach(element => {
+        if (!element) return;
+        
+        element.addEventListener('mousedown', startDrag);
+        element.addEventListener('touchstart', startDragTouch, { passive: false });
+      });
+      
+      document.addEventListener('mousemove', drag);
+      document.addEventListener('touchmove', dragTouch, { passive: false });
+      document.addEventListener('mouseup', stopDrag);
+      document.addEventListener('touchend', stopDrag);
+    }
+    
+    function startDrag(e) {
+      isDragging = true;
+      currentDraggedElement = e.target;
+      
+      const rect = currentDraggedElement.getBoundingClientRect();
+      dragOffset.x = e.clientX - rect.left;
+      dragOffset.y = e.clientY - rect.top;
+      
+      currentDraggedElement.style.opacity = '0.7';
+      e.preventDefault();
+    }
+    
+    function startDragTouch(e) {
+      if (e.touches.length !== 1) return;
+      
+      isDragging = true;
+      currentDraggedElement = e.target;
+      
+      const rect = currentDraggedElement.getBoundingClientRect();
+      dragOffset.x = e.touches[0].clientX - rect.left;
+      dragOffset.y = e.touches[0].clientY - rect.top;
+      
+      currentDraggedElement.style.opacity = '0.7';
+      e.preventDefault();
+    }
+    
+    function drag(e) {
+      if (!isDragging || !currentDraggedElement) return;
+      
+      const x = e.clientX - dragOffset.x;
+      const y = e.clientY - dragOffset.y;
+      
+      currentDraggedElement.style.left = `${x}px`;
+      currentDraggedElement.style.top = `${y}px`;
+      currentDraggedElement.style.right = 'auto';
+      currentDraggedElement.style.bottom = 'auto';
+      
+      saveOverlayPosition(currentDraggedElement.id, { left: `${x}px`, top: `${y}px` });
+    }
+    
+    function dragTouch(e) {
+      if (!isDragging || !currentDraggedElement || e.touches.length !== 1) return;
+      
+      const x = e.touches[0].clientX - dragOffset.x;
+      const y = e.touches[0].clientY - dragOffset.y;
+      
+      currentDraggedElement.style.left = `${x}px`;
+      currentDraggedElement.style.top = `${y}px`;
+      currentDraggedElement.style.right = 'auto';
+      currentDraggedElement.style.bottom = 'auto';
+      
+      saveOverlayPosition(currentDraggedElement.id, { left: `${x}px`, top: `${y}px` });
+      
+      e.preventDefault();
+    }
+    
+    function stopDrag() {
+      if (!isDragging || !currentDraggedElement) return;
+      
+      currentDraggedElement.style.opacity = '';
+      isDragging = false;
+      currentDraggedElement = null;
+    }
+    
+    function saveOverlayPosition(id, position) {
+      const overlayKey = id.replace('-overlay', '');
+      config.overlayPositions[overlayKey] = position;
+      saveConfig();
+    }
+
+    // ============= INITIALISATION =============
+    
+    function initializeExtensionFeatures() {
+      console.log('🚀 Initialisation des fonctionnalités...');
+      
+      loadConfig();
+      applyOverlaysFromConfig();
+      setupZQSDSystem();
+      setupTimerSystem();
+      setupDragAndDrop();
+      
+      console.log('✅ Tous les systèmes activés!');
+    }
+
+    // ============= CHARGEMENT DE LA PAGE =============
+    
+    iframe.addEventListener('load', function() {
+      console.log('✅ Iframe chargée');
+      hideLoading();
+      setTimeout(initializeExtensionFeatures, 1500);
+    });
+
+    function hideLoading() {
+      if (loadingUI.style.display !== 'none') {
+        loadingUI.style.display = 'none';
+      }
+    }
+
+    // Fallback si l'iframe ne charge pas
+    setTimeout(function() {
+      if (loadingUI.style.display !== 'none') {
+        hideLoading();
+        showNotification('🎮 Jeu chargé! Utilisez ZQSD + ESPACE pour jouer.', 'success', true);
+      }
+    }, 3000);
+
+    // FPS Counter
+    let fpsFrames = 0;
+    let fpsLastTime = performance.now();
+    
+    function updateFPS() {
+      fpsFrames++;
+      const now = performance.now();
+      
+      if (now - fpsLastTime >= 1000) {
+        const fps = Math.round((fpsFrames * 1000) / (now - fpsLastTime));
+        document.getElementById('fps-value').textContent = fps;
+        
+        fpsFrames = 0;
+        fpsLastTime = now;
+      }
+      
+      requestAnimationFrame(updateFPS);
+    }
+    updateFPS();
+
+    // Écouteurs d'événements
+    document.getElementById('fs-btn').addEventListener('click', toggleFullscreen);
+    
+    document.getElementById('settings-link').addEventListener('click', openSettingsModal);
+    
     document.getElementById('play-link').addEventListener('click', () => {
       document.querySelector('.game-container')?.scrollIntoView({ 
         behavior: 'smooth', 
@@ -1799,45 +1750,34 @@
       iframe.focus();
     });
 
-    // ============= INITIALISATION DES SYSTÈMES =============
-    function initializeExtensionFeatures() {
-      console.log('🚀 Initialisation des fonctionnalités...');
-      
-      // 1. Charger la configuration
-      loadConfig();
-      
-      // 2. Appliquer l'état des overlays
-      applyOverlaysFromConfig();
-      
-      // 3. Activer le système ZQSD
-      setupZQSDSystem();
-      
-      // 4. Activer le système de timer
-      setupTimerSystem();
-      
-      // 5. Activer le drag & drop
-      setupDragAndDrop();
-      
-      console.log('✅ Tous les systèmes activés!');
-    }
+    document.getElementById('close-bottom-menu').addEventListener('click', function() {
+      document.getElementById('bottom-menu').classList.remove('visible');
+    });
 
-    // ============= INITIALISATION AU CHARGEMENT DE LA PAGE =============
+    // Gestion du menu rapide
+    let bottomMenuVisible = false;
+    document.addEventListener('keydown', function(e) {
+      // Ctrl+M pour le menu rapide
+      if (e.ctrlKey && e.key === 'm') {
+        e.preventDefault();
+        const menu = document.getElementById('bottom-menu');
+        menu.classList.toggle('visible');
+        bottomMenuVisible = !bottomMenuVisible;
+      }
+    });
+
+    // Initialisation au chargement
     document.addEventListener('DOMContentLoaded', function() {
       console.log('📄 DOM chargé, initialisation...');
       
-      // Initialiser les particules
       initParticles();
-      
-      // Charger la configuration
       loadConfig();
-      
-      // Appliquer l'état des overlays
       applyOverlaysFromConfig();
       
       console.log('✅ Page initialisée');
     });
 
-    // ============= LOGS DE DÉMARRAGE =============
+    // Logs de démarrage
     console.log('%c╔════════════════════════════════════════╗', 'color: #7c62dc; font-weight: bold;');
     console.log('%c║  SUBWAY SURFERS 2025 - ÉDITION MYNVO  ║', 'color: #7c62dc; font-weight: bold;');
     console.log('%c║  Extension Intégrée v4.0               ║', 'color: #7c62dc; font-weight: bold;');
@@ -1848,6 +1788,7 @@
     console.log('   • T = Démarrer timer');
     console.log('   • ESPACE = Pause timer');
     console.log('   • R = Reset timer');
+    console.log('   • Ctrl+M = Menu rapide');
     console.log('');
     console.log('%c⚙️ Fonctionnalités:', 'color: #7c62dc; font-weight: bold;');
     console.log('   • Déblocage automatique de tous les personnages');
