@@ -1,7 +1,5 @@
-
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -30,15 +28,158 @@
                 'SanFrancisco.wasm.framework.unityweb': 90693,
             },
         };
+
+        // === SCRIPT DE DÉBLOCAGE ===
+        window.addEventListener('load', function() {
+            console.log('🔓 Initialisation du système de déblocage...');
+            
+            // Attendre que le jeu soit chargé
+            setTimeout(function() {
+                unlockAllCharacters();
+            }, 5000);
+        });
+
+        function unlockAllCharacters() {
+            console.log('🎮 Tentative de déblocage des personnages...');
+            
+            // Méthode 1: Intercepter le localStorage
+            const originalSetItem = localStorage.setItem;
+            localStorage.setItem = function(key, value) {
+                console.log('📝 Sauvegarde détectée:', key);
+                
+                if (key.includes('unity') || key.includes('save') || key.includes('game')) {
+                    try {
+                        let saveData = JSON.parse(value);
+                        console.log('💾 Données de sauvegarde originales:', saveData);
+                        
+                        // Modifier les données pour débloquer tout
+                        let modifiedSave = modifySaveData(saveData);
+                        console.log('✨ Données modifiées:', modifiedSave);
+                        
+                        return originalSetItem.call(this, key, JSON.stringify(modifiedSave));
+                    } catch(e) {
+                        console.log('❌ Impossible de parser JSON, sauvegarde brute');
+                    }
+                }
+                return originalSetItem.apply(this, arguments);
+            };
+
+            // Méthode 2: Forcer le déblocage via l'objet jeu
+            setTimeout(() => {
+                if (window.Module && window.Module.unityGame) {
+                    console.log('🎯 Module Unity détecté');
+                    forceUnlockThroughUnity();
+                }
+            }, 3000);
+
+            // Méthode 3: Modifier les sauvegardes existantes
+            modifyExistingSaves();
+        }
+
+        function modifySaveData(saveData) {
+            // Essayer différents formats de sauvegarde Unity
+            if (typeof saveData === 'object') {
+                // Format 1: Données directes
+                if (saveData.characters) {
+                    saveData.characters.forEach(char => {
+                        char.unlocked = true;
+                        char.purchased = true;
+                    });
+                }
+                
+                // Format 2: Progress data
+                if (saveData.playerProgress) {
+                    saveData.playerProgress.allCharactersUnlocked = true;
+                    saveData.playerProgress.coins = 999999;
+                    saveData.playerProgress.keys = 999;
+                }
+                
+                // Format 3: Simple flags
+                saveData.allUnlocked = true;
+                saveData.unlockedAll = true;
+                saveData.coins = 999999;
+                saveData.totalCoins = 999999;
+                saveData.keys = 999;
+                
+                // Format 4: Array de personnages débloqués
+                saveData.unlockedCharacters = ['all'];
+                saveData.purchasedItems = ['all'];
+            }
+            
+            return saveData;
+        }
+
+        function modifyExistingSaves() {
+            // Modifier toutes les sauvegardes existantes
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.includes('unity') || key.includes('save') || key.includes('game') || key.includes('progress')) {
+                    try {
+                        const value = localStorage.getItem(key);
+                        const saveData = JSON.parse(value);
+                        const modifiedSave = modifySaveData(saveData);
+                        localStorage.setItem(key, JSON.stringify(modifiedSave));
+                        console.log('✅ Sauvegarde modifiée:', key);
+                    } catch(e) {
+                        // Ignorer les erreurs de parsing
+                    }
+                }
+            }
+        }
+
+        function forceUnlockThroughUnity() {
+            // Essayer d'accéder à l'instance Unity
+            if (window.Module && window.Module.SendMessage) {
+                // Envoyer des commandes au jeu
+                try {
+                    // Commandes courantes pour débloquer
+                    const commands = [
+                        'UnlockAll',
+                        'UnlockAllCharacters', 
+                        'AddCoins:999999',
+                        'AddKeys:999',
+                        'CompleteAllMissions'
+                    ];
+                    
+                    commands.forEach(cmd => {
+                        try {
+                            window.Module.SendMessage('GameManager', cmd, '');
+                            console.log('📨 Commande envoyée:', cmd);
+                        } catch(e) {}
+                    });
+                } catch(e) {
+                    console.log('❌ Impossible d\'envoyer des commandes Unity');
+                }
+            }
+        }
+
+        // Fonction accessible depuis l'extérieur
+        window.unlockAllCharactersManual = function() {
+            unlockAllCharacters();
+            alert('🎉 Déblocage manuel activé! Recharge la page.');
+        };
+
+        console.log('🔓 Système de déblocage chargé - Utilise unlockAllCharactersManual() dans la console');
+        
     </script>
 </head>
 
 <body>
     <script src="master-loader.js"></script>
-
+    
+    <!-- Bouton de déblocage manuel -->
+    <div style="position: fixed; top: 10px; left: 10px; z-index: 10000;">
+        <button onclick="unlockAllCharactersManual()" style="
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: black;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
+            font-size: 14px;
+        ">🔓 DÉBLOQUER TOUT</button>
+    </div>
 </body>
-
-
-</body>
-
 </html>
