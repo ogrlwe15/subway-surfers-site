@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Subway Surfers by Mynvo - Jeu en ligne gratuit</title>
-  <meta name="description" content="Jouez à Subway Surfers version Mynvo avec TOP 3 et FPS. Jeu gratuit en ligne avec personnalisation des touches et paramètres avancés.">
-  <meta name="keywords" content="subway surfers, jeu en ligne, mynvo, jeu gratuit, subway surfers mod">
+  <title>Subway Surfers by Mynvo - Édition Complète</title>
+  <meta name="description" content="Jouez à Subway Surfers version Mynvo avec tous les personnages débloqués, ZQSD, Timer, FPS et plus encore!">
   <style>
     :root {
       --primary: #7c62dc;
@@ -37,7 +36,7 @@
       overflow-x: hidden;
     }
     
-    /* Header amélioré */
+    /* Header */
     header {
       background: var(--primary-transparent);
       backdrop-filter: blur(12px);
@@ -141,12 +140,8 @@
     }
     
     @keyframes containerGlow {
-      0% {
-        box-shadow: 0 25px 80px rgba(124, 98, 220, 0.25);
-      }
-      100% {
-        box-shadow: 0 25px 80px rgba(124, 98, 220, 0.4);
-      }
+      0% { box-shadow: 0 25px 80px rgba(124, 98, 220, 0.25); }
+      100% { box-shadow: 0 25px 80px rgba(124, 98, 220, 0.4); }
     }
     
     .game-frame {
@@ -185,13 +180,11 @@
       border-top: 8px solid var(--primary);
       border-radius: 50%;
       animation: spin 1s linear infinite;
-      margin-bottom: 20px;
+      margin: 0 auto 20px;
     }
     
     @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
+      to { transform: rotate(360deg); }
     }
     
     footer {
@@ -224,25 +217,28 @@
       transform: scale(1.05);
     }
     
-    /* Overlays qui restent en plein écran */
+    /* ========== OVERLAYS FIXES (comme l'extension) ========== */
+    
+    /* FPS Counter */
     #fps-overlay {
       position: fixed;
       top: 100px;
       left: 20px;
       z-index: 2147483647;
       background: rgba(0, 0, 0, 0.95);
-      color: var(--primary);
+      color: var(--success);
       padding: 10px 18px;
       border-radius: 12px;
       font-size: 18px;
       font-weight: 700;
-      border: 2px solid var(--primary);
-      box-shadow: 0 0 20px rgba(124, 98, 220, 0.4);
+      border: 2px solid var(--success);
+      box-shadow: 0 0 20px rgba(0, 204, 102, 0.4);
       font-family: system-ui, sans-serif;
       pointer-events: none;
-      transition: all 0.3s;
+      display: none;
     }
     
+    /* TOP 3 */
     #top3-overlay {
       position: fixed;
       bottom: 20px;
@@ -275,7 +271,6 @@
       padding: 6px;
       border-radius: 8px;
       background: rgba(124, 98, 220, 0.08);
-      transition: all 0.3s;
     }
     
     #top3-overlay .player.first {
@@ -285,49 +280,55 @@
       background: rgba(124, 98, 220, 0.15);
     }
     
-    /* Timer overlay - reste en plein écran */
-    #timer-overlay {
+    /* Timer Overlay (style extension) */
+    #speedrun-timer-overlay {
       position: fixed;
       top: 20px;
       right: 20px;
-      background: rgba(0, 0, 0, 0.9);
-      color: #fff;
-      padding: 12px 16px;
-      border-radius: 12px;
-      border: 2px solid var(--primary);
+      width: 320px;
+      height: 80px;
       z-index: 2147483647;
-      font-weight: 700;
-      font-size: 18px;
       display: none;
-      box-shadow: 0 0 20px rgba(124, 98, 220, 0.4);
-      backdrop-filter: blur(5px);
-      pointer-events: none;
+      user-select: none;
+      background: #000;
+      border: none;
+      box-shadow: none;
+      border-radius: 0;
+      cursor: move;
     }
     
-    #timer-overlay.running {
-      border-color: var(--success);
-      animation: pulse 2s infinite;
-    }
-    
-    #timer-overlay.stopped {
-      border-color: var(--danger);
-    }
-    
-    .timer-display {
-      font-family: 'Courier New', monospace;
-      font-size: 24px;
+    #timer-display {
+      font-family: 'Calibri', 'Segoe UI', Arial, sans-serif;
       font-weight: bold;
-      color: var(--success);
-      text-shadow: 0 0 10px rgba(0, 204, 102, 0.5);
+      font-size: 43px;
+      letter-spacing: 0;
+      line-height: 1;
+      color: #FFF;
+      text-shadow: none;
+      white-space: nowrap;
+      display: flex;
+      align-items: baseline;
+      justify-content: flex-end;
+      width: 100%;
+      height: 100%;
+      padding: 8px 12px;
+      box-sizing: border-box;
     }
     
-    .timer-status {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 4px;
+    .time-main {
+      font-size: 1em;
+      line-height: 1;
+      display: inline-block;
     }
     
-    /* Bottom menu - CACHÉ PAR DÉFAUT */
+    .time-decimals {
+      font-size: 0.7em;
+      line-height: 1;
+      display: inline-block;
+      transform: translateY(0.12em);
+    }
+    
+    /* Bottom Menu */
     #bottom-menu {
       position: fixed;
       bottom: 20px;
@@ -342,7 +343,6 @@
       min-width: 260px;
       box-shadow: 0 0 25px rgba(124, 98, 220, 0.55);
       backdrop-filter: blur(10px);
-      transition: all 0.3s;
       display: none;
     }
     
@@ -372,64 +372,18 @@
       transform: translateX(5px);
     }
     
-    /* Style pour le bouton Give Piece */
     .give-piece-btn {
       background: linear-gradient(135deg, #ffd700, #ffaa00);
       color: #000;
       border: none;
-      border-radius: 10px;
-      padding: 12px 16px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
     }
     
     .give-piece-btn:hover {
       transform: scale(1.05);
       box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
     }
-
-    /* Nouveau style pour les boutons Subway Surfers */
-    .subway-tools-btn {
-      background: linear-gradient(135deg, #4caf50, #388e3c);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 12px 16px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
-      margin-top: 8px;
-      width: 100%;
-    }
     
-    .subway-tools-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 30px rgba(76, 175, 80, 0.6);
-    }
-    
-    .subway-danger-btn {
-      background: linear-gradient(135deg, #f44336, #d32f2f);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 12px 16px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 0 20px rgba(244, 67, 54, 0.4);
-      margin-top: 8px;
-      width: 100%;
-    }
-    
-    .subway-danger-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 30px rgba(244, 67, 54, 0.6);
-    }
-    
-    /* Modal amélioré */
+    /* Modal */
     .mynvo-modal {
       position: fixed;
       top: 50%;
@@ -446,6 +400,8 @@
       box-shadow: 0 0 60px rgba(124, 98, 220, 0.55);
       backdrop-filter: blur(15px);
       animation: modalAppear 0.3s ease-out;
+      max-height: 90vh;
+      overflow-y: auto;
     }
     
     @keyframes modalAppear {
@@ -457,6 +413,23 @@
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
       }
+    }
+    
+    .settings-section {
+      background: rgba(20, 20, 30, 0.7);
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(124, 98, 220, 0.3);
+    }
+    
+    .settings-section h3 {
+      color: var(--primary);
+      margin-bottom: 12px;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     
     .mynvo-row {
@@ -497,33 +470,35 @@
     }
     
     @keyframes pulse {
-      0%, 100% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.05);
-      }
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
     }
     
-    /* Nouveau style pour les sections de paramètres */
-    .settings-section {
-      background: rgba(20, 20, 30, 0.7);
-      padding: 16px;
-      border-radius: 12px;
-      margin-bottom: 16px;
-      border: 1px solid rgba(124, 98, 220, 0.3);
-    }
-    
-    .settings-section h3 {
-      color: var(--primary);
-      margin-bottom: 12px;
-      font-size: 18px;
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-card);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      border-left: 4px solid var(--primary);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      z-index: 100001;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      opacity: 0;
+      transition: opacity 0.3s;
     }
     
-    /* Animation de particules en arrière-plan */
+    .notification.show {
+      opacity: 1;
+    }
+    
+    /* Particules */
     .particles {
       position: fixed;
       top: 0;
@@ -558,93 +533,27 @@
       }
     }
     
-    /* Style pour les notifications */
-    .notification {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--bg-card);
-      color: white;
-      padding: 12px 20px;
-      border-radius: 8px;
-      border-left: 4px solid var(--primary);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      z-index: 100001;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    
-    .notification.show {
-      opacity: 1;
-    }
-    
-    /* Améliorations responsive */
+    /* Responsive */
     @media (max-width: 1200px) {
-      .game-container {
-        padding: 30px;
-      }
-      
-      iframe {
-        height: 600px;
-      }
+      .game-container { padding: 30px; }
+      iframe { height: 600px; }
     }
     
     @media (max-width: 768px) {
-      header {
-        padding: 14px 20px;
-      }
-      
-      .logo {
-        font-size: 24px;
-      }
-      
-      .logo img {
-        height: 40px;
-        width: 40px;
-      }
-      
-      .nav-links a {
-        margin-left: 16px;
-        font-size: 15px;
-      }
-      
-      .game-container {
-        padding: 20px;
-      }
-      
-      iframe {
-        height: 400px;
-      }
-      
-      #bottom-menu {
-        min-width: 240px;
-        right: 10px;
-        bottom: 10px;
-      }
+      header { padding: 14px 20px; }
+      .logo { font-size: 24px; }
+      .logo img { height: 40px; width: 40px; }
+      .nav-links a { margin-left: 16px; font-size: 15px; }
+      .game-container { padding: 20px; }
+      iframe { height: 400px; }
+      #bottom-menu { min-width: 240px; right: 10px; bottom: 10px; }
     }
     
     @media (max-width: 480px) {
-      .header-content {
-        flex-direction: column;
-        gap: 10px;
-      }
-      
-      .nav-links {
-        width: 100%;
-        justify-content: center;
-      }
-      
-      .nav-links a {
-        margin: 0 10px;
-      }
-      
-      iframe {
-        height: 300px;
-      }
+      .header-content { flex-direction: column; gap: 10px; }
+      .nav-links { width: 100%; justify-content: center; }
+      .nav-links a { margin: 0 10px; }
+      iframe { height: 300px; }
     }
   </style>
 </head>
@@ -669,17 +578,20 @@
   <main>
     <div class="game-container">
       <div class="game-frame">
-        <div class="loading" id="loading-ui"><div class="spinner"></div><p>Chargement du jeu...</p></div>
+        <div class="loading" id="loading-ui">
+          <div class="spinner"></div>
+          <p>Chargement du jeu...</p>
+        </div>
         <button class="fs-button" id="fs-btn" title="Plein écran">⤢ Plein écran</button>
         <iframe id="game-iframe" src="./game/" allowfullscreen allow="autoplay; fullscreen *"></iframe>
       </div>
     </div>
   </main>
 
-  <!-- FPS Counter - RESTE EN PLEIN ÉCRAN -->
+  <!-- FPS Counter -->
   <div id="fps-overlay">🎮 FPS: <span id="fps-value">60</span></div>
 
-  <!-- TOP 3 - RESTE EN PLEIN ÉCRAN -->
+  <!-- TOP 3 -->
   <div id="top3-overlay">
     <div class="title">🏆 TOP 3 NO COIN</div>
     <div class="player first">🥇 Mynvo – 13:27</div>
@@ -687,13 +599,14 @@
     <div class="player">🥉 .... – 0:00</div>
   </div>
 
-  <!-- TIMER overlay - RESTE EN PLEIN ÉCRAN -->
-  <div id="timer-overlay">
-    <div class="timer-display"><span id="timer-value">00:00.00</span></div>
-    <div class="timer-status" id="timer-status">En attente...</div>
+  <!-- Timer Speedrun (style extension) -->
+  <div id="speedrun-timer-overlay">
+    <div id="timer-display">
+      <span class="time-main">0</span><span class="time-decimals">.00</span>
+    </div>
   </div>
 
-  <!-- Bottom menu - CACHÉ PAR DÉFAUT -->
+  <!-- Bottom Menu -->
   <div id="bottom-menu">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
       <div style="font-size:16px;font-weight:700;color:#7c62dc;">⚙️ Menu rapide</div>
@@ -701,55 +614,65 @@
     </div>
 
     <button class="quick-btn" onclick="openKeySettings();">🎮 Touches (ZQSD)</button>
-    <button class="quick-btn" onclick="openTimerSettings();">⏱️ Timer Manuel</button>
+    <button class="quick-btn" onclick="toggleTimer();">⏱️ Timer Speedrun</button>
     <button class="quick-btn" onclick="toggleFPS();">📊 FPS (afficher/masquer)</button>
     <button class="quick-btn" onclick="toggleFullscreen();">⤢ Plein écran</button>
-    <button class="quick-btn" onclick="openSongMenu();">🎵 Son du jeu</button>
-    <button class="quick-btn" onclick="openMapMenu();">🗺️ Map/TOP3</button>
-    
-    <!-- NOUVEAUX BOUTONS SUBWAY SURFERS -->
-    <button class="subway-tools-btn" onclick="openSubwayTools();">🚇 Outils Subway Surfers</button>
-    <button class="give-piece-btn" onclick="giveResources();">💰 Give Piece & Keys</button>
+    <button class="quick-btn" onclick="toggleTop3();">🏆 TOP 3 (afficher/masquer)</button>
+    <button class="quick-btn give-piece-btn" onclick="unlockAllCharacters();">🔓 Débloquer Tout (100%)</button>
   </div>
 
-  <footer>Subway Surfers by Mynvo © 2023 - Tous droits réservés</footer>
+  <footer>Subway Surfers by Mynvo © 2025 - Tous droits réservés</footer>
 
   <script>
-    // ============= CONFIG AMÉLIORÉE =============
+    console.log('%c[MYNVO] Système d\'extension intégré activé!', 'color: #7c62dc; font-weight: bold; font-size: 14px;');
+    
+    // ============= CONFIGURATION (basée sur l'extension) =============
     let config = {
-      up: "z", down: "s", left: "q", right: "d", jump: " ",
-      showFPS: true, showTop3: true,
-      top3Position: "bottom-left",
-      volume: 1,
-      timerStartKey: "F1",
-      timerStopKey: "F2", 
-      timerResetKey: "F3",
-      timerRunning: false,
-      // NOUVEAU: Configuration des touches modifiables
+      // Touches de jeu (ZQSD par défaut)
       customKeys: {
         up: "z",
-        down: "s", 
+        down: "s",
         left: "q",
         right: "d",
-        jump: " ",
-        timerStart: "F1",
-        timerStop: "F2",
-        timerReset: "F3"
+        jump: " "
+      },
+      // Touches du timer
+      timerStartKey: "Control",
+      timerStopKey: "Control",
+      timerResetKey: "Control",
+      // Affichage
+      showFPS: true,
+      showTop3: true,
+      // Couleurs du timer (style LiveSplit)
+      timerColors: {
+        stopped: '#FFFFFF',
+        running: '#FFFFFF',
+        paused: '#FFFFFF'
       }
     };
 
     // ============= VARIABLES GLOBALES =============
     const iframe = document.getElementById('game-iframe');
     const loadingUI = document.getElementById('loading-ui');
+    const timerOverlay = document.getElementById('speedrun-timer-overlay');
+    const timerDisplay = document.getElementById('timer-display');
+    
+    let zqsdActive = true;
     let isSettingKey = false;
     let currentKeySetting = null;
-    let zqsdActive = true;
+    
+    // Variables Timer (basées sur l'extension)
+    let timerState = 'stopped'; // stopped, running, paused
+    let timerStartTime = null;
+    let timerCurrentTime = 0;
+    let timerInterval = null;
+    let timerVisible = false;
 
-    // ============= GESTION DU CHARGEMENT =============
+    // ============= CHARGEMENT DE LA PAGE =============
     iframe.addEventListener('load', function() {
       console.log('✅ Iframe chargée');
       hideLoading();
-      setTimeout(initializeGameSystems, 1500);
+      setTimeout(initializeExtensionFeatures, 1500);
     });
 
     setTimeout(hideLoading, 3000);
@@ -761,34 +684,53 @@
       }
     }
 
-    // ============= SYSTÈME ZQSD ULTRA-ROBUSTE =============
-    function setupZQSDKeys() {
+    // ============= SYSTÈME ZQSD (COPIÉ DE L'EXTENSION) =============
+    function setupZQSDSystem() {
+      console.log('🎮 Activation du système ZQSD (méthode extension)...');
+      
       // Nettoyer les anciens écouteurs
-      document.removeEventListener('keydown', handleZQSDKey);
-      document.removeEventListener('keyup', handleZQSDKey);
+      document.removeEventListener('keydown', handleZQSDKeyDown, true);
+      document.removeEventListener('keyup', handleZQSDKeyUp, true);
       
-      document.addEventListener('keydown', handleZQSDKey);
-      document.addEventListener('keyup', handleZQSDKey);
+      // Ajouter les nouveaux écouteurs en phase de CAPTURE (true) comme l'extension
+      document.addEventListener('keydown', handleZQSDKeyDown, true);
+      document.addEventListener('keyup', handleZQSDKeyUp, true);
       
-      console.log('✅ Système ZQSD activé (ultra-robuste)');
+      console.log('✅ ZQSD activé avec capture phase');
     }
 
-    function handleZQSDKey(e) {
-      if (!zqsdActive) return;
+    function handleZQSDKeyDown(e) {
+      if (!zqsdActive || e.repeat) return;
       
       const key = e.key.toLowerCase();
-      const mappedKey = getMappedKey(key, e.type);
+      const mappedKey = getKeyMapping(key);
       
       if (mappedKey) {
         e.preventDefault();
-        e.stopImmediatePropagation();
+        e.stopPropagation();
+        e.stopImmediatePropagation(); // Priorité maximale comme l'extension
         
-        // Envoyer l'événement à l'iframe de manière agressive
-        sendKeyToIframe(mappedKey, e.type);
+        // Envoyer l'événement mappé
+        dispatchMappedKey(mappedKey, 'keydown');
       }
     }
 
-    function getMappedKey(key, eventType) {
+    function handleZQSDKeyUp(e) {
+      if (!zqsdActive) return;
+      
+      const key = e.key.toLowerCase();
+      const mappedKey = getKeyMapping(key);
+      
+      if (mappedKey) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        dispatchMappedKey(mappedKey, 'keyup');
+      }
+    }
+
+    function getKeyMapping(key) {
       const keyMap = {
         [config.customKeys.up]: { key: 'ArrowUp', code: 'ArrowUp', keyCode: 38 },
         [config.customKeys.down]: { key: 'ArrowDown', code: 'ArrowDown', keyCode: 40 },
@@ -797,11 +739,12 @@
         [config.customKeys.jump]: { key: ' ', code: 'Space', keyCode: 32 }
       };
       
-      return keyMap[key];
+      return keyMap[key] || null;
     }
 
-    function sendKeyToIframe(mappedKey, eventType) {
+    function dispatchMappedKey(mappedKey, eventType) {
       try {
+        // Créer l'événement clavier
         const event = new KeyboardEvent(eventType, {
           key: mappedKey.key,
           code: mappedKey.code,
@@ -812,25 +755,275 @@
           composed: true
         });
         
-        // Multiples méthodes d'envoi
-        iframe.contentWindow?.dispatchEvent(event);
-        iframe.contentDocument?.dispatchEvent(event);
-        iframe.contentWindow?.document?.dispatchEvent(event);
+        // Envoyer à l'iframe (multiples cibles comme l'extension)
+        if (iframe.contentWindow) {
+          iframe.contentWindow.dispatchEvent(event);
+        }
+        if (iframe.contentDocument) {
+          iframe.contentDocument.dispatchEvent(event);
+          iframe.contentDocument.documentElement?.dispatchEvent(event);
+        }
         
         // PostMessage de secours
         iframe.contentWindow?.postMessage({
           type: 'keyboard_event',
           eventType: eventType,
           key: mappedKey.key,
+          code: mappedKey.code,
           keyCode: mappedKey.keyCode
         }, '*');
         
       } catch (err) {
-        console.log('Envoi clé à iframe:', mappedKey.key);
+        console.log('Dispatch key:', mappedKey.key);
       }
     }
 
-    // ============= GESTION PLEIN ÉCRAN AMÉLIORÉE =============
+    // ============= TIMER SPEEDRUN (STYLE EXTENSION) =============
+    function setupTimerSystem() {
+      console.log('⏱️ Activation du système de timer...');
+      
+      // Écouteur pour les touches du timer (phase capture comme l'extension)
+      document.addEventListener('keydown', handleTimerKeyDown, true);
+      
+      console.log('✅ Timer configuré');
+    }
+
+    function handleTimerKeyDown(e) {
+      if (e.repeat || isSettingKey) return;
+      
+      // Vérification de la touche de contrôle du timer
+      const isTimerKey = checkTimerHotkey(e);
+      
+      if (isTimerKey) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        controlTimer();
+      }
+      
+      // Shift + Hotkey pour toggle visibilité
+      if (checkTimerVisibilityHotkey(e)) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        toggleTimerVisibility();
+      }
+    }
+
+    function checkTimerHotkey(e) {
+      const hotkey = config.timerStartKey;
+      
+      // Vérification pour les touches modificatrices
+      if (hotkey === 'Control' && e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) return true;
+      if (hotkey === 'Shift' && e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) return true;
+      if (hotkey === 'Alt' && e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey) return true;
+      if (hotkey === 'Meta' && e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey) return true;
+      
+      // Vérification pour Space
+      if (hotkey === 'Space' && (e.key === ' ' || e.code === 'Space') && !e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) return true;
+      
+      // Vérification pour les autres touches
+      if (hotkey === e.code && !e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) return true;
+      
+      return false;
+    }
+
+    function checkTimerVisibilityHotkey(e) {
+      const hotkey = config.timerStartKey;
+      
+      if (hotkey === 'Space' && (e.key === ' ' || e.code === 'Space') && e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) return true;
+      
+      if (!['Shift', 'Control', 'Alt', 'Meta'].includes(hotkey) && hotkey === e.code && e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) return true;
+      
+      return false;
+    }
+
+    function controlTimer() {
+      if (!timerVisible) return;
+      
+      if (timerState === 'stopped') {
+        // Démarrer le timer
+        timerStartTime = performance.now();
+        timerCurrentTime = 0;
+        timerState = 'running';
+        applyTimerColor();
+        
+        const updateFrame = () => {
+          if (timerState === 'running') {
+            updateTimerDisplay();
+            timerInterval = requestAnimationFrame(updateFrame);
+          }
+        };
+        timerInterval = requestAnimationFrame(updateFrame);
+        
+        console.log('▶️ Timer démarré');
+      } 
+      else if (timerState === 'running') {
+        // Mettre en pause
+        cancelAnimationFrame(timerInterval);
+        timerState = 'paused';
+        applyTimerColor();
+        console.log('⏸️ Timer en pause');
+      } 
+      else {
+        // Reset
+        cancelAnimationFrame(timerInterval);
+        timerState = 'stopped';
+        timerCurrentTime = 0;
+        applyTimerColor();
+        timerDisplay.innerHTML = '<span class="time-main">0</span><span class="time-decimals">.00</span>';
+        console.log('🔄 Timer réinitialisé');
+      }
+    }
+
+    function updateTimerDisplay() {
+      if (!timerVisible || timerState !== 'running') return;
+      
+      timerCurrentTime = performance.now() - timerStartTime;
+      const { mainPart, decimalPart } = formatTime(timerCurrentTime);
+      timerDisplay.innerHTML = `<span class="time-main">${mainPart}</span><span class="time-decimals">.${decimalPart}</span>`;
+    }
+
+    function formatTime(ms) {
+      const totalSec = Math.floor(ms / 1000);
+      const h = Math.floor(totalSec / 3600);
+      const m = Math.floor((totalSec % 3600) / 60);
+      const s = totalSec % 60;
+      const cs = Math.floor((ms % 1000) / 10);
+      
+      const decimalPart = cs.toString().padStart(2, '0');
+      const mainPart = h > 0 
+        ? `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
+        : m > 0 
+          ? `${m}:${s.toString().padStart(2, '0')}`
+          : `${s}`;
+      
+      return { mainPart, decimalPart };
+    }
+
+    function toggleTimerVisibility() {
+      timerVisible = !timerVisible;
+      timerOverlay.style.display = timerVisible ? 'block' : 'none';
+      
+      if (timerVisible) {
+        updateTimerDisplay();
+        showNotification('⏱️ Timer affiché', 'success');
+      } else {
+        showNotification('⏱️ Timer masqué', 'info');
+      }
+    }
+
+    function toggleTimer() {
+      toggleTimerVisibility();
+    }
+
+    function applyTimerColor() {
+      let color = config.timerColors.stopped;
+      if (timerState === 'running') color = config.timerColors.running;
+      else if (timerState === 'paused') color = config.timerColors.paused;
+      
+      timerDisplay.style.color = color;
+    }
+
+    // ============= DÉBLOCAGE COMPLET (BASÉ SUR L'EXTENSION) =============
+    function unlockAllCharacters() {
+      console.log('🔓 Déblocage de tous les personnages...');
+      
+      // Attendre que l'iframe soit chargée
+      setTimeout(() => {
+        try {
+          const iframeWindow = iframe.contentWindow || iframe.contentDocument.defaultView;
+          
+          // Données de sauvegarde 100% (extrait de l'extension)
+          const save100Data = {
+            "timestamp": new Date(1759601884673),
+            "mode": 33206,
+            "contents": new Uint8Array([20, 0, 0, 0, 184, 192, 155, 241, 18, 6, 252, 30, 67, 105, 29, 56, 104, 105, 212, 64, 251, 30, 68, 64, 190, 45, 0, 0, 190, 45, 0, 0])
+          };
+          
+          // Ouvrir IndexedDB
+          const request = indexedDB.open("/idbfs");
+          
+          request.onsuccess = function(event) {
+            const db = event.target.result;
+            const transaction = db.transaction(["FILE_DATA"], "readwrite");
+            const store = transaction.objectStore("FILE_DATA");
+            
+            // Insérer les données de sauvegarde 100%
+            const putRequest = store.put(save100Data, "/idbfs/5bc32e1a17c4bdfdd5da57ab99ff0a2c/Save/cloud");
+            
+            putRequest.onsuccess = function() {
+              showNotification('🎉 Tous les personnages débloqués! Rechargement...', 'success');
+              setTimeout(() => {
+                location.reload();
+              }, 1500);
+            };
+            
+            putRequest.onerror = function() {
+              showNotification('❌ Erreur lors du déblocage', 'error');
+            };
+          };
+          
+          request.onerror = function() {
+            showNotification('❌ Impossible d\'accéder à la base de données', 'error');
+          };
+          
+        } catch (error) {
+          console.error('Erreur déblocage:', error);
+          showNotification('❌ Erreur lors du déblocage', 'error');
+        }
+      }, 1000);
+    }
+
+    // ============= FPS COUNTER =============
+    let fpsFrames = 0;
+    let fpsLastTime = performance.now();
+    
+    function updateFPS() {
+      fpsFrames++;
+      const now = performance.now();
+      
+      if (now - fpsLastTime >= 1000) {
+        const fps = Math.round((fpsFrames * 1000) / (now - fpsLastTime));
+        document.getElementById('fps-value').textContent = fps;
+        
+        const fpsEl = document.getElementById('fps-overlay');
+        if (fps >= 55) {
+          fpsEl.style.color = '#00cc66';
+          fpsEl.style.borderColor = '#00cc66';
+        } else if (fps >= 30) {
+          fpsEl.style.color = '#ffaa00';
+          fpsEl.style.borderColor = '#ffaa00';
+        } else {
+          fpsEl.style.color = '#ff4444';
+          fpsEl.style.borderColor = '#ff4444';
+        }
+        
+        fpsFrames = 0;
+        fpsLastTime = now;
+      }
+      
+      requestAnimationFrame(updateFPS);
+    }
+    updateFPS();
+
+    function toggleFPS() {
+      config.showFPS = !config.showFPS;
+      document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
+      saveConfig();
+      showNotification(config.showFPS ? "📊 FPS affiché" : "📊 FPS masqué", "info");
+    }
+
+    function toggleTop3() {
+      config.showTop3 = !config.showTop3;
+      document.getElementById('top3-overlay').style.display = config.showTop3 ? 'block' : 'none';
+      saveConfig();
+      showNotification(config.showTop3 ? "🏆 TOP 3 affiché" : "🏆 TOP 3 masqué", "info");
+    }
+
+    // ============= PLEIN ÉCRAN =============
     function toggleFullscreen() {
       if (!document.fullscreenElement) {
         if (iframe.requestFullscreen) {
@@ -852,442 +1045,13 @@
       if (!document.fullscreenElement) {
         setTimeout(() => {
           zqsdActive = true;
-          setupZQSDKeys();
+          setupZQSDSystem();
           showNotification('🎮 Contrôles ZQSD réactivés', 'success');
         }, 100);
       }
     });
 
-    // ============= SYSTÈME GIVE CORRIGÉ =============
-    let giveInProgress = false;
-
-    function intelligentAutoGive() {
-      if (giveInProgress) return;
-      giveInProgress = true;
-      
-      setTimeout(() => executeSubwaySurfersGive("auto"), 3000);
-      setTimeout(() => executeSubwaySurfersGive("auto"), 6000);
-      
-      setTimeout(() => {
-        giveInProgress = false;
-      }, 9000);
-    }
-
-    function executeSubwaySurfersGive(mode = "manual") {
-      try {
-        const iframeWindow = iframe.contentWindow;
-        const amount = 99999;
-        
-        if (!iframeWindow.unityGame) {
-          if (mode === "manual") showNotification('⏳ Unity pas encore chargé, réessayez', 'warning');
-          return;
-        }
-
-        // Méthode principale
-        try {
-          const subwayObjects = ['GameManager', 'PlayerController', 'Player', 'CoinManager', 'PokiBridge'];
-          const subwayMethods = ['AddCoins', 'AddMoney', 'AddCurrency', 'AddKeys'];
-          
-          subwayObjects.forEach(obj => {
-            subwayMethods.forEach(method => {
-              try {
-                iframeWindow.unityGame.SendMessage(obj, method, amount);
-              } catch(e) {}
-            });
-          });
-        } catch(e) {}
-        
-        // Vérification
-        setTimeout(() => {
-          if (mode === "manual") {
-            showNotification(`💰 ${amount.toLocaleString()} pièces/clés ajoutées!`, 'success');
-          }
-        }, 1500);
-        
-      } catch (error) {
-        if (mode === "manual") {
-          showNotification('❌ Erreur Give Subway', 'error');
-        }
-      }
-    }
-
-    function giveResources() {
-      executeSubwaySurfersGive("manual");
-    }
-
-    // ============= NOUVELLES FONCTIONS SUBWAY SURFERS =============
-    function openSubwayTools() {
-      if (document.getElementById('mynvo-subway-tools')) return;
-      
-      const div = document.createElement('div');
-      div.id = 'mynvo-subway-tools';
-      div.className = 'mynvo-modal';
-      div.innerHTML = `
-        <h3 style="color:#7c62dc;margin-bottom:10px;text-align:center;">🚇 Outils Subway Surfers</h3>
-        
-        <div class="settings-section">
-          <h3>💾 Sauvegarde & Restauration</h3>
-          <button class="subway-tools-btn" onclick="backupSubwayData()">📥 Faire Backup</button>
-          <button class="subway-tools-btn" onclick="restoreSubwayData()">📤 Restaurer Backup</button>
-        </div>
-
-        <div class="settings-section">
-          <h3>🎮 Déblocage Complet</h3>
-          <button class="subway-tools-btn" onclick="unlockAllSubway()">🔓 Débloquer 100%</button>
-          <button class="subway-tools-btn" onclick="giveMaxResources()">💰 Ressources Max</button>
-        </div>
-
-        <div class="settings-section">
-          <h3>⚠️ Actions Dangereuses</h3>
-          <button class="subway-danger-btn" onclick="cleanSubwayData()">🗑️ Effacer Données</button>
-        </div>
-
-        <div style="text-align:center;margin-top:12px;">
-          <button onclick="closeSubwayTools()" style="background:#ff4444;color:#fff;padding:8px 14px;border:none;border-radius:8px;cursor:pointer;">Fermer</button>
-        </div>
-      `;
-      
-      document.body.appendChild(div);
-    }
-
-    function closeSubwayTools() {
-      const modal = document.getElementById('mynvo-subway-tools');
-      if (modal) modal.remove();
-    }
-
-    // ============= FONCTIONS SUBWAY SURFERS COMPLÈTES =============
-    function backupSubwayData() {
-      try {
-        const iframeWindow = iframe.contentWindow;
-        
-        if (!iframeWindow.indexedDB) {
-          showNotification('❌ IndexedDB non disponible', 'error');
-          return;
-        }
-
-        // Fonction de backup complète
-        const backupData = function() {
-          const dbName = "/idbfs";
-          const storeName = "FILE_DATA";
-          const keyPath = "/idbfs/5bc32e1a17c4bdfdd5da57ab99ff0a2c/Save/cloud";
-
-          const request = indexedDB.open(dbName);
-
-          request.onsuccess = function (event) {
-            const db = event.target.result;
-            const transaction = db.transaction([storeName], "readonly");
-            const store = transaction.objectStore(storeName);
-            const getRequest = store.get(keyPath);
-
-            getRequest.onsuccess = function () {
-              const data = getRequest.result;
-              if (data) {
-                function convertToScript(data) {
-                  if (Array.isArray(data)) {
-                    return `[${data.map(item => convertToScript(item)).join(', ')}]`;
-                  } else if (data instanceof Date) {
-                    return `new Date(${data.getTime()})`;
-                  } else if (data instanceof Uint8Array) {
-                    return `new Uint8Array([${Array.from(data).join(', ')}])`;
-                  } else if (typeof data === 'object' && data !== null) {
-                    let result = '{';
-                    for (const key in data) {
-                      if (data.hasOwnProperty(key)) {
-                        const value = data[key];
-                        result += `${JSON.stringify(key)}: ${convertToScript(value)}, `;
-                      }
-                    }
-                    return result.slice(0, -2) + '}';
-                  } else {
-                    return JSON.stringify(data);
-                  }
-                }
-
-                const script = convertToScript(data);
-                const blob = new Blob([script], { type: "application/octet-stream" });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                const timestamp = new Date().getTime();
-                a.download = `subway_backup_${timestamp}.bin`;
-                a.click();
-                URL.revokeObjectURL(url);
-                
-                showNotification('✅ Backup créé avec succès!', 'success');
-              } else {
-                showNotification('❌ Aucune donnée trouvée', 'error');
-              }
-            };
-          };
-        };
-
-        // Injecter et exécuter la fonction dans l'iframe
-        const script = document.createElement('script');
-        script.textContent = `(${backupData})();`;
-        iframe.contentDocument.head.appendChild(script);
-        
-      } catch (error) {
-        showNotification('❌ Erreur lors du backup', 'error');
-        console.error('Backup error:', error);
-      }
-    }
-
-    function restoreSubwayData() {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = '.bin';
-      input.onchange = async (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        try {
-          const fileText = await file.text();
-          
-          // Fonction de restauration
-          const restoreData = function(content) {
-            const request = indexedDB.open("/idbfs");
-            request.onsuccess = function (event) {
-              const db = event.target.result;
-              const transaction = db.transaction(["FILE_DATA"], "readwrite");
-              const store = transaction.objectStore("FILE_DATA");
-
-              const data = (() => {
-                const timestampMatch = /"timestamp": new Date\((\d+)\)/.exec(content);
-                const modeMatch = /"mode": (\d+)/.exec(content);
-                const contentsMatch = /"contents": new Uint8Array\(\[(.*?)\]\)/.exec(content);
-
-                if (!timestampMatch || !modeMatch || !contentsMatch) {
-                  throw new Error("Format invalide");
-                }
-
-                return {
-                  timestamp: new Date(Number(timestampMatch[1])),
-                  mode: Number(modeMatch[1]),
-                  contents: new Uint8Array(contentsMatch[1].split(',').map(Number)),
-                };
-              })();
-
-              const putRequest = store.put(data, "/idbfs/5bc32e1a17c4bdfdd5da57ab99ff0a2c/Save/cloud");
-              putRequest.onsuccess = function () {
-                showNotification('✅ Données restaurées! Rechargement...', 'success');
-                setTimeout(() => location.reload(), 1000);
-              };
-            };
-          };
-
-          // Injecter dans l'iframe
-          const script = document.createElement('script');
-          script.textContent = `(${restoreData})(${JSON.stringify(fileText)});`;
-          iframe.contentDocument.head.appendChild(script);
-          
-        } catch (error) {
-          showNotification('❌ Erreur lors de la restauration', 'error');
-        }
-      };
-      input.click();
-    }
-
-    function unlockAllSubway() {
-      try {
-        // Données complètes pour déblocage 100%
-        const saveData = function() {
-          const request = indexedDB.open("/idbfs");
-          request.onsuccess = function (event) {
-            const db = event.target.result;
-            const transaction = db.transaction(["FILE_DATA"], "readwrite");
-            const store = transaction.objectStore("FILE_DATA");
-
-            // Données complètes de sauvegarde (simplifiées pour l'exemple)
-            const data = { 
-              "timestamp": new Date(1732485593978), 
-              "mode": 33206, 
-              "contents": new Uint8Array([20, 0, 0, 0, 218, 47, 51, 223, 211, 235, 36, 203, 232, 4, 109, 30, 183, 217, 129, 209, 226, 12, 85, 89, 244, 45, 0, 0, 244, 45, 0, 0, 16, 111, 98, 102, 117, 115, 99, 97, 116, 101, 100, 67, 111, 105, 110, 115, 0, 81, 178, 127, 59, 16, 111, 98, 102, 117, 115, 99, 97, 116, 101, 100, 75, 101, 121, 115, 0, 240, 163, 125, 0])
-            };
-
-            const putRequest = store.put(data, "/idbfs/5bc32e1a17c4bdfdd5da57ab99ff0a2c/Save/cloud");
-            putRequest.onsuccess = function () {
-              showNotification('✅ 100% Débloqué! Rechargement...', 'success');
-              setTimeout(() => location.reload(), 1000);
-            };
-          };
-        };
-
-        const script = document.createElement('script');
-        script.textContent = `(${saveData})();`;
-        iframe.contentDocument.head.appendChild(script);
-        
-      } catch (error) {
-        showNotification('❌ Erreur déblocage', 'error');
-      }
-    }
-
-    function giveMaxResources() {
-      executeSubwaySurfersGive("manual");
-    }
-
-    function cleanSubwayData() {
-      if (!confirm('⚠️ ATTENTION! Cela va supprimer TOUTES vos données Subway Surfers. Continuer?')) return;
-      
-      try {
-        const cleanData = function() {
-          const request = indexedDB.open("/idbfs");
-          request.onsuccess = function (event) {
-            const db = event.target.result;
-            const transaction = db.transaction(["FILE_DATA"], "readwrite");
-            const store = transaction.objectStore("FILE_DATA");
-            const clearRequest = store.clear();
-            
-            clearRequest.onsuccess = function () {
-              showNotification('🗑️ Données effacées! Rechargement...', 'success');
-              setTimeout(() => location.reload(), 1000);
-            };
-          };
-        };
-
-        const script = document.createElement('script');
-        script.textContent = `(${cleanData})();`;
-        iframe.contentDocument.head.appendChild(script);
-        
-      } catch (error) {
-        showNotification('❌ Erreur nettoyage', 'error');
-      }
-    }
-
-    // ============= TIMER CORRIGÉ =============
-    let timerInterval = null;
-    let timerStart = 0;
-    let timerElapsed = 0;
-    let timerActive = false;
-
-    function setupTimerKeys() {
-      document.addEventListener('keydown', function(e) {
-        if (e.key === config.customKeys.timerStart && !timerActive) {
-          startTimer();
-        }
-        else if (e.key === config.customKeys.timerStop && timerActive) {
-          stopTimer();
-        }
-        else if (e.key === config.customKeys.timerReset) {
-          resetTimer();
-        }
-      });
-    }
-
-    function startTimer() {
-      if (timerActive) return;
-      
-      timerStart = Date.now() - timerElapsed;
-      timerActive = true;
-      
-      const timerEl = document.getElementById('timer-overlay');
-      timerEl.style.display = 'block';
-      timerEl.classList.remove('stopped');
-      timerEl.classList.add('running');
-      
-      document.getElementById('timer-status').textContent = 'En cours...';
-      
-      timerInterval = setInterval(() => {
-        timerElapsed = Date.now() - timerStart;
-        document.getElementById('timer-value').textContent = formatTime(timerElapsed);
-      }, 10);
-    }
-
-    function stopTimer() {
-      if (!timerActive) return;
-      
-      clearInterval(timerInterval);
-      timerActive = false;
-      
-      const timerEl = document.getElementById('timer-overlay');
-      timerEl.classList.remove('running');
-      timerEl.classList.add('stopped');
-      document.getElementById('timer-status').textContent = 'Arrêté';
-    }
-
-    function resetTimer() {
-      clearInterval(timerInterval);
-      timerActive = false;
-      timerElapsed = 0;
-      
-      const timerEl = document.getElementById('timer-overlay');
-      timerEl.style.display = 'none';
-      timerEl.classList.remove('running', 'stopped');
-      document.getElementById('timer-value').textContent = '00:00.00';
-      document.getElementById('timer-status').textContent = 'En attente...';
-    }
-
-    function formatTime(ms) {
-      const total = Math.max(0, ms);
-      const minutes = Math.floor(total / 60000);
-      const seconds = Math.floor((total % 60000) / 1000);
-      const centiseconds = Math.floor((total % 1000) / 10);
-      
-      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(centiseconds).padStart(2, '0')}`;
-    }
-
-    // ============= FPS COUNTER =============
-    let fpsFrames = 0;
-    let fpsLastTime = performance.now();
-    
-    function updateFPS() {
-      fpsFrames++;
-      const now = performance.now();
-      
-      if (now - fpsLastTime >= 1000) {
-        const fps = Math.round((fpsFrames * 1000) / (now - fpsLastTime));
-        document.getElementById('fps-value').textContent = fps;
-        
-        const fpsEl = document.getElementById('fps-overlay');
-        if (fps >= 55) {
-          fpsEl.style.color = '#7c62dc';
-          fpsEl.style.borderColor = '#7c62dc';
-        } else if (fps >= 30) {
-          fpsEl.style.color = '#f59e0b';
-          fpsEl.style.borderColor = '#f59e0b';
-        } else {
-          fpsEl.style.color = '#ef4444';
-          fpsEl.style.borderColor = '#ef4444';
-        }
-        
-        fpsFrames = 0;
-        fpsLastTime = now;
-      }
-      
-      requestAnimationFrame(updateFPS);
-    }
-    updateFPS();
-
-    function toggleFPS() {
-      config.showFPS = !config.showFPS;
-      document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
-      saveConfig();
-      showNotification(config.showFPS ? "📊 FPS affiché" : "📊 FPS masqué", "info");
-    }
-
-    // ============= NOTIFICATIONS =============
-    function showNotification(message, type = "info") {
-      const notification = document.createElement('div');
-      notification.className = 'notification';
-      notification.innerHTML = `<span>${message}</span>`;
-      
-      if (type === "error") {
-        notification.style.borderLeftColor = "var(--danger)";
-      } else if (type === "success") {
-        notification.style.borderLeftColor = "var(--success)";
-      } else if (type === "warning") {
-        notification.style.borderLeftColor = "var(--warning)";
-      }
-      
-      document.body.appendChild(notification);
-      
-      setTimeout(() => notification.classList.add('show'), 10);
-      setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => notification.remove(), 300);
-      }, 3000);
-    }
-
-    // ============= FONCTIONS DES MODALS CORRIGÉES =============
+    // ============= MODAL CONFIGURATION DES TOUCHES =============
     function openKeySettings() {
       if (document.getElementById('mynvo-keys')) return;
       
@@ -1298,7 +1062,7 @@
         <h3 style="color:#7c62dc;margin-bottom:10px;text-align:center;">🎮 Configuration des Touches</h3>
         
         <div class="settings-section">
-          <h3>🎯 Touches de Jeu</h3>
+          <h3>🎯 Touches de Jeu (ZQSD)</h3>
           <div class="mynvo-row">
             <div class="mynvo-label">Haut</div>
             <div class="key-display" data-key="up">${config.customKeys.up.toUpperCase()}</div>
@@ -1322,23 +1086,21 @@
         </div>
 
         <div class="settings-section">
-          <h3>⏱️ Touches du Timer</h3>
+          <h3>⏱️ Touche du Timer</h3>
           <div class="mynvo-row">
-            <div class="mynvo-label">Démarrer</div>
-            <div class="key-display" data-key="timerStart">${config.customKeys.timerStart}</div>
+            <div class="mynvo-label">Contrôle Timer</div>
+            <div class="key-display" data-key="timerControl">${getKeyDisplayName(config.timerStartKey)}</div>
           </div>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Arrêter</div>
-            <div class="key-display" data-key="timerStop">${config.customKeys.timerStop}</div>
-          </div>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Réinitialiser</div>
-            <div class="key-display" data-key="timerReset">${config.customKeys.timerReset}</div>
+          <div style="font-size:12px;color:#aaa;margin-top:8px;">
+            • Appuyez une fois pour démarrer<br>
+            • Appuyez à nouveau pour pause<br>
+            • Appuyez une 3ème fois pour reset<br>
+            • Shift + Touche = Afficher/Masquer
           </div>
         </div>
 
         <div style="text-align:center;margin-top:12px;">
-          <button onclick="closeKeySettings()" style="background:#ff4444;color:#fff;padding:8px 14px;border:none;border-radius:8px;cursor:pointer;">Fermer</button>
+          <button onclick="closeKeySettings()" style="background:#7c62dc;color:#fff;padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-weight:700;">Fermer</button>
         </div>
       `;
       
@@ -1367,17 +1129,36 @@
         e.preventDefault();
         e.stopPropagation();
         
-        let keyValue = e.key;
+        let keyValue = e.key.toLowerCase();
+        let displayValue = e.key.toUpperCase();
         
         // Gestion spéciale pour la barre d'espace
         if (e.code === 'Space') {
           keyValue = ' ';
+          displayValue = 'ESPACE';
         }
         
-        config.customKeys[keyType] = keyValue.toLowerCase();
+        // Gestion des touches modificatrices
+        if (e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) {
+          keyValue = 'Control';
+          displayValue = 'CTRL';
+        } else if (e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) {
+          keyValue = 'Shift';
+          displayValue = 'SHIFT';
+        } else if (e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
+          keyValue = 'Alt';
+          displayValue = 'ALT';
+        }
+        
+        // Affecter la nouvelle touche
+        if (keyType === 'timerControl') {
+          config.timerStartKey = e.code || keyValue;
+        } else {
+          config.customKeys[keyType] = keyValue;
+        }
         
         // Mettre à jour l'affichage
-        display.textContent = keyValue === ' ' ? 'ESPACE' : keyValue.toUpperCase();
+        display.textContent = displayValue;
         display.classList.remove('active');
         
         // Sauvegarder et réinitialiser
@@ -1386,14 +1167,31 @@
         isSettingKey = false;
         currentKeySetting = null;
         
-        showNotification(`✅ Touche ${keyType} définie sur: ${keyValue.toUpperCase()}`, 'success');
+        showNotification(`✅ Touche ${keyType} définie sur: ${displayValue}`, 'success');
         
         // Reconfigurer les contrôles
-        setupZQSDKeys();
-        setupTimerKeys();
+        setupZQSDSystem();
+        setupTimerSystem();
       };
       
       document.addEventListener('keydown', keyListener, { once: true });
+    }
+
+    function getKeyDisplayName(keyCode) {
+      const keyNames = {
+        'Control': 'CTRL',
+        'Shift': 'SHIFT',
+        'Alt': 'ALT',
+        'Meta': 'META',
+        'Space': 'ESPACE',
+        'Enter': 'ENTRÉE',
+        'Tab': 'TAB',
+        'Escape': 'ESC',
+        'F1': 'F1', 'F2': 'F2', 'F3': 'F3', 'F4': 'F4',
+        'F5': 'F5', 'F6': 'F6', 'F7': 'F7', 'F8': 'F8',
+        'F9': 'F9', 'F10': 'F10', 'F11': 'F11', 'F12': 'F12'
+      };
+      return keyNames[keyCode] || keyCode;
     }
 
     function closeKeySettings() {
@@ -1401,44 +1199,6 @@
       if (modal) modal.remove();
       isSettingKey = false;
       currentKeySetting = null;
-    }
-
-    function openTimerSettings() {
-      if (document.getElementById('mynvo-timer-settings')) return;
-      
-      const div = document.createElement('div');
-      div.id = 'mynvo-timer-settings';
-      div.className = 'mynvo-modal';
-      div.innerHTML = `
-        <h3 style="color:#7c62dc;margin-bottom:10px;text-align:center;">⏱️ Configuration du Timer</h3>
-        
-        <div class="settings-section">
-          <h3>🎮 Touches du Timer</h3>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Démarrer</div>
-            <div class="key-display">${config.customKeys.timerStart}</div>
-          </div>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Arrêter</div>
-            <div class="key-display">${config.customKeys.timerStop}</div>
-          </div>
-          <div class="mynvo-row">
-            <div class="mynvo-label">Réinitialiser</div>
-            <div class="key-display">${config.customKeys.timerReset}</div>
-          </div>
-        </div>
-
-        <div style="text-align:center;margin-top:12px;">
-          <button onclick="closeTimerSettings()" style="background:#ff4444;color:#fff;padding:8px 14px;border:none;border-radius:8px;cursor:pointer;">Fermer</button>
-        </div>
-      `;
-      
-      document.body.appendChild(div);
-    }
-
-    function closeTimerSettings() {
-      const modal = document.getElementById('mynvo-timer-settings');
-      if (modal) modal.remove();
     }
 
     // ============= GESTION DU MENU RAPIDE =============
@@ -1451,12 +1211,30 @@
       document.getElementById('bottom-menu').classList.remove('visible');
     });
 
-    // ============= FONCTIONS EXISTANTES =============
-    function applyOverlaysFromConfig() {
-      document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
-      document.getElementById('top3-overlay').style.display = config.showTop3 ? 'block' : 'none';
+    // ============= NOTIFICATIONS =============
+    function showNotification(message, type = "info") {
+      const notification = document.createElement('div');
+      notification.className = 'notification';
+      notification.innerHTML = `<span>${message}</span>`;
+      
+      if (type === "error") {
+        notification.style.borderLeftColor = "var(--danger)";
+      } else if (type === "success") {
+        notification.style.borderLeftColor = "var(--success)";
+      } else if (type === "warning") {
+        notification.style.borderLeftColor = "var(--warning)";
+      }
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => notification.classList.add('show'), 10);
+      setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
     }
 
+    // ============= PARTICULES D'ARRIÈRE-PLAN =============
     function initParticles() {
       const container = document.getElementById('particles-container');
       const particleCount = 30;
@@ -1477,54 +1255,108 @@
       }
     }
 
+    // ============= SAUVEGARDE/CHARGEMENT CONFIGURATION =============
     function saveConfig() {
       localStorage.setItem("mynvoConfig", JSON.stringify(config));
+      console.log('💾 Configuration sauvegardée');
     }
 
-    function openSongMenu() {
-      showNotification("🎵 Ouverture des paramètres audio...", "info");
-    }
-
-    function openMapMenu() {
-      showNotification("🗺️ Ouverture des paramètres de map...", "info");
-    }
-
-    document.getElementById('play-link').addEventListener('click', () => {
-      document.querySelector('.game-container')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      iframe.focus();
-    });
-
-    // ============= INITIALISATION FINALE =============
-    function initializeGameSystems() {
-      console.log('🎮 Initialisation des systèmes de jeu...');
-      setupZQSDKeys();
-      setupTimerKeys();
-      setTimeout(intelligentAutoGive, 2000);
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-      initParticles();
-      
+    function loadConfig() {
       try {
         const saved = localStorage.getItem("mynvoConfig");
         if (saved) {
           const savedConfig = JSON.parse(saved);
           config = { ...config, ...savedConfig };
+          
           // S'assurer que customKeys existe
           if (savedConfig.customKeys) {
             config.customKeys = { ...config.customKeys, ...savedConfig.customKeys };
           }
+          
+          console.log('📂 Configuration chargée');
         }
-      } catch(e) {}
-      
-      applyOverlaysFromConfig();
+      } catch(e) {
+        console.warn('Impossible de charger la configuration');
+      }
+    }
+
+    function applyOverlaysFromConfig() {
+      document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
+      document.getElementById('top3-overlay').style.display = config.showTop3 ? 'block' : 'none';
+    }
+
+    // ============= BOUTON "JOUER" =============
+    document.getElementById('play-link').addEventListener('click', () => {
+      document.querySelector('.game-container')?.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center' 
+      });
+      iframe.focus();
     });
 
-    console.log('%c[MYNVO Parent] Système initialisé!', 'color: #7c62dc; font-weight: bold;');
-    console.log('🎮 Touches: ZQSD + Espace');
-    console.log('⏱️ Timer: F1=Start, F2=Stop, F3=Reset');
-    console.log('💰 Give Piece disponible dans le menu Paramètres');
-    console.log('🚇 Nouveaux outils Subway Surfers ajoutés!');
+    // ============= INITIALISATION DES SYSTÈMES (BASÉ SUR L'EXTENSION) =============
+    function initializeExtensionFeatures() {
+      console.log('🚀 Initialisation des fonctionnalités de l\'extension...');
+      
+      // 1. Charger la configuration
+      loadConfig();
+      
+      // 2. Appliquer l'état des overlays
+      applyOverlaysFromConfig();
+      
+      // 3. Activer le système ZQSD
+      setupZQSDSystem();
+      
+      // 4. Activer le système de timer
+      setupTimerSystem();
+      
+      // 5. Déblocage automatique après 3 secondes
+      setTimeout(() => {
+        console.log('🎮 Tentative de déblocage automatique...');
+        unlockAllCharacters();
+      }, 3000);
+      
+      console.log('✅ Tous les systèmes activés!');
+      showNotification('🎮 Extension intégrée activée!', 'success');
+    }
+
+    // ============= INITIALISATION AU CHARGEMENT DE LA PAGE =============
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('📄 DOM chargé, initialisation...');
+      
+      // Initialiser les particules
+      initParticles();
+      
+      // Charger la configuration
+      loadConfig();
+      
+      // Appliquer l'état des overlays
+      applyOverlaysFromConfig();
+      
+      console.log('✅ Page initialisée');
+    });
+
+    // ============= LOGS DE DÉMARRAGE =============
+    console.log('%c╔════════════════════════════════════════╗', 'color: #7c62dc; font-weight: bold;');
+    console.log('%c║  SUBWAY SURFERS - ÉDITION MYNVO       ║', 'color: #7c62dc; font-weight: bold;');
+    console.log('%c║  Extension Intégrée v1.0               ║', 'color: #7c62dc; font-weight: bold;');
+    console.log('%c╚════════════════════════════════════════╝', 'color: #7c62dc; font-weight: bold;');
+    console.log('');
+    console.log('%c🎮 Touches:', 'color: #00cc66; font-weight: bold;');
+    console.log('   • ZQSD + Espace pour jouer');
+    console.log('   • CTRL = Start/Pause/Reset timer');
+    console.log('   • SHIFT + CTRL = Afficher/Masquer timer');
+    console.log('');
+    console.log('%c⚙️ Fonctionnalités:', 'color: #7c62dc; font-weight: bold;');
+    console.log('   • Déblocage automatique de tous les personnages');
+    console.log('   • Timer speedrun style LiveSplit');
+    console.log('   • FPS Counter en temps réel');
+    console.log('   • TOP 3 personnalisable');
+    console.log('   • Configuration des touches personnalisée');
+    console.log('');
+    console.log('%c💡 Astuce:', 'color: #ffaa00; font-weight: bold;');
+    console.log('   Ouvrez le menu "Paramètres" pour personnaliser!');
+    console.log('');
   </script>
 </body>
 </html>
