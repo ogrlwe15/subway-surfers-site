@@ -18,7 +18,6 @@
       --success: #00cc66;
       --danger: #ff4444;
       --warning: #ffaa00;
-      --theme-name: "Violet";
     }
     
     /* Thème Blanc */
@@ -34,7 +33,6 @@
       --success: #28a745;
       --danger: #dc3545;
       --warning: #ffc107;
-      --theme-name: "Blanc";
     }
     
     /* Thème Sombre */
@@ -50,7 +48,6 @@
       --success: #00cc66;
       --danger: #ff4444;
       --warning: #ffaa00;
-      --theme-name: "Sombre";
     }
     
     /* Thème Rouge */
@@ -66,7 +63,6 @@
       --success: #28a745;
       --danger: #dc3545;
       --warning: #ffc107;
-      --theme-name: "Rouge";
     }
     
     /* Thème Vert */
@@ -82,7 +78,6 @@
       --success: #28a745;
       --danger: #dc3545;
       --warning: #ffc107;
-      --theme-name: "Vert";
     }
     
     /* Thème Bleu */
@@ -98,7 +93,6 @@
       --success: #28a745;
       --danger: #dc3545;
       --warning: #ffc107;
-      --theme-name: "Bleu";
     }
     
     * {
@@ -232,13 +226,11 @@
       overflow: hidden;
       box-shadow: 0 15px 50px var(--primary-transparent);
       border: 2px solid var(--primary);
-      height: 720px;
-      background: #000;
     }
     
     iframe {
       width: 100%;
-      height: 100%;
+      height: 720px;
       border: none;
       background: #000000;
       display: block;
@@ -310,16 +302,17 @@
       left: 20px;
       z-index: 2147483647;
       background: rgba(0, 0, 0, 0.95);
-      color: var(--success);
+      color: var(--primary);
       padding: 10px 18px;
       border-radius: 12px;
       font-size: 18px;
       font-weight: 700;
-      border: 2px solid var(--success);
-      box-shadow: 0 0 20px rgba(0, 204, 102, 0.4);
+      border: 2px solid var(--primary);
+      box-shadow: 0 0 20px var(--primary-transparent);
       font-family: system-ui, sans-serif;
       pointer-events: none;
       display: none;
+      cursor: move;
     }
     
     /* TOP 3 */
@@ -340,6 +333,7 @@
       pointer-events: none;
       min-width: 280px;
       backdrop-filter: blur(10px);
+      cursor: move;
     }
     
     #top3-overlay .title {
@@ -390,28 +384,6 @@
       text-align: center;
       letter-spacing: 2px;
       text-shadow: 0 0 10px var(--primary-transparent);
-    }
-    
-    .timer-controls {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 10px;
-    }
-    
-    .timer-btn {
-      background: var(--primary);
-      border: none;
-      color: white;
-      padding: 5px 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 12px;
-      transition: all 0.2s;
-    }
-    
-    .timer-btn:hover {
-      background: var(--primary-light);
-      transform: scale(1.05);
     }
     
     /* Bottom Menu */
@@ -711,14 +683,6 @@
       width: 150px;
     }
     
-    .color-picker {
-      width: 50px;
-      height: 30px;
-      border: 2px solid var(--primary);
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    
     /* Thèmes */
     .theme-options {
       display: grid;
@@ -771,60 +735,10 @@
       color: white;
     }
     
-    /* Style pour les overlays déplaçables */
-    .draggable {
-      position: fixed;
-      cursor: move;
-      z-index: 10000;
-    }
-    
-    /* Style pour le jeu intégré */
-    .game-embedded {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    
-    /* Game Selection */
-    .game-selection {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      padding: 20px;
-      text-align: center;
-    }
-    
-    .game-option {
-      background: var(--primary-transparent);
-      border: 2px solid var(--primary);
-      border-radius: 12px;
-      padding: 20px;
-      cursor: pointer;
-      transition: all 0.3s;
-      width: 100%;
-      max-width: 400px;
-    }
-    
-    .game-option:hover {
-      background: var(--primary);
-      transform: translateY(-5px);
-    }
-    
-    .game-option h3 {
-      color: var(--primary);
-      margin-bottom: 10px;
-    }
-    
-    .game-option:hover h3 {
-      color: white;
-    }
-    
     /* Responsive */
     @media (max-width: 1200px) {
       .game-container { padding: 30px; }
-      .game-frame { height: 600px; }
+      iframe { height: 600px; }
     }
     
     @media (max-width: 768px) {
@@ -833,7 +747,7 @@
       .logo img { height: 40px; width: 40px; }
       .nav-links a { margin-left: 16px; font-size: 15px; }
       .game-container { padding: 20px; }
-      .game-frame { height: 400px; }
+      iframe { height: 400px; }
       #bottom-menu { min-width: 240px; right: 10px; bottom: 10px; }
       .settings-tabs { flex-direction: column; }
       .theme-options { grid-template-columns: repeat(2, 1fr); }
@@ -843,7 +757,7 @@
       .header-content { flex-direction: column; gap: 10px; }
       .nav-links { width: 100%; justify-content: center; }
       .nav-links a { margin: 0 10px; }
-      .game-frame { height: 300px; }
+      iframe { height: 300px; }
       .mynvo-modal { width: 95%; padding: 15px; }
       .theme-options { grid-template-columns: 1fr; }
     }
@@ -875,34 +789,26 @@
           <p>Chargement du jeu Subway Surfers 2025...</p>
         </div>
         <button class="fs-button" id="fs-btn" title="Plein écran">⤢ Plein écran</button>
-        
-        <!-- Conteneur pour le jeu Subway Surfers -->
-        <div id="game-container">
-          <iframe class="game-embedded" id="game-iframe" src="https://subway-surfers.io" allowfullscreen></iframe>
-        </div>
+        <!-- Jeu Subway Surfers fonctionnel -->
+        <iframe id="game-iframe" src="./game/index.html" allowfullscreen allow="autoplay; fullscreen *"></iframe>
       </div>
     </div>
   </main>
 
   <!-- FPS Counter -->
-  <div id="fps-overlay" class="draggable">🎮 FPS: <span id="fps-value">60</span></div>
+  <div id="fps-overlay">🎮 FPS: <span id="fps-value">60</span></div>
 
   <!-- TOP 3 -->
-  <div id="top3-overlay" class="draggable">
+  <div id="top3-overlay">
     <div class="title">🏆 TOP 3 NO COIN</div>
     <div class="player first">🥇 Mynvo – 13:27</div>
     <div class="player">🥈 Le_A – 11:51</div>
-    <div class="player">🥉 .... – 0:00</div>
+    <div class="player">🥉 Dimitri – 8:12</div>
   </div>
 
   <!-- Nouveau Timer Speedrun -->
-  <div id="speedrun-timer-overlay" class="draggable">
+  <div id="speedrun-timer-overlay">
     <div id="timer-display">00:00.00</div>
-    <div class="timer-controls">
-      <button class="timer-btn" onclick="startTimer()" title="Démarrer">▶️</button>
-      <button class="timer-btn" onclick="pauseTimer()" title="Pause">⏸️</button>
-      <button class="timer-btn" onclick="resetTimer()" title="Réinitialiser">⏹️</button>
-    </div>
   </div>
 
   <!-- Bottom Menu -->
@@ -933,7 +839,7 @@
         down: "s",
         left: "q",
         right: "d",
-        jump: " "
+        hoverboard: " "
       },
       // Touches du timer
       timerStartKey: "t",
@@ -955,9 +861,9 @@
       },
       // Positions des overlays
       overlayPositions: {
-        fps: { x: 20, y: 100 },
-        top3: { x: 20, y: 200 },
-        timer: { x: 20, y: 20 }
+        fps: { top: "100px", left: "20px" },
+        top3: { bottom: "20px", left: "20px" },
+        timer: { top: "20px", right: "20px" }
       }
     };
 
@@ -970,6 +876,9 @@
     let zqsdActive = true;
     let isSettingKey = false;
     let currentKeySetting = null;
+    let isDragging = false;
+    let currentDraggedElement = null;
+    let dragOffset = { x: 0, y: 0 };
     
     // Variables Timer améliorées
     let timerState = 'stopped'; // stopped, running, paused
@@ -979,73 +888,23 @@
     let timerVisible = false;
 
     // ============= CHARGEMENT DE LA PAGE =============
-    window.addEventListener('load', function() {
-      console.log('✅ Page chargée, initialisation du jeu...');
+    iframe.addEventListener('load', function() {
+      console.log('✅ Iframe chargée');
       hideLoading();
-      initializeExtensionFeatures();
+      setTimeout(initializeExtensionFeatures, 1500);
     });
 
     // Fallback si l'iframe ne charge pas
     setTimeout(function() {
       if (loadingUI.style.display !== 'none') {
-        console.log('⚠️ Iframe lente à charger, forçage de l\'affichage...');
         hideLoading();
-        showNotification('🎮 Jeu Subway Surfers 2025 chargé!', 'success');
+        showNotification('🎮 Jeu chargé! Utilisez ZQSD + ESPACE pour jouer.', 'success', true);
       }
-    }, 5000);
+    }, 3000);
 
     function hideLoading() {
       if (loadingUI.style.display !== 'none') {
         loadingUI.style.display = 'none';
-      }
-    }
-
-    // ============= SYSTÈME DE DÉPLACEMENT DES OVERLAYS =============
-    function makeDraggable(element) {
-      let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-      
-      element.onmousedown = dragMouseDown;
-      
-      function dragMouseDown(e) {
-        e = e || window.event;
-        e.preventDefault();
-        // get the mouse cursor position at startup
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        document.onmouseup = closeDragElement;
-        // call a function whenever the cursor moves
-        document.onmousemove = elementDrag;
-      }
-      
-      function elementDrag(e) {
-        e = e || window.event;
-        e.preventDefault();
-        // calculate the new cursor position
-        pos1 = pos3 - e.clientX;
-        pos2 = pos4 - e.clientY;
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        // set the element's new position
-        element.style.top = (element.offsetTop - pos2) + "px";
-        element.style.left = (element.offsetLeft - pos1) + "px";
-        
-        // Sauvegarder la position
-        const overlayId = element.id;
-        if (config.overlayPositions[overlayId.replace('-overlay', '')]) {
-          config.overlayPositions[overlayId.replace('-overlay', '')] = {
-            x: element.offsetLeft,
-            y: element.offsetTop
-          };
-        }
-      }
-      
-      function closeDragElement() {
-        // stop moving when mouse button is released
-        document.onmouseup = null;
-        document.onmousemove = null;
-        
-        // Sauvegarder la configuration
-        saveConfig();
       }
     }
 
@@ -1101,7 +960,7 @@
         [config.customKeys.down]: { key: 'ArrowDown', code: 'ArrowDown', keyCode: 40 },
         [config.customKeys.left]: { key: 'ArrowLeft', code: 'ArrowLeft', keyCode: 37 },
         [config.customKeys.right]: { key: 'ArrowRight', code: 'ArrowRight', keyCode: 39 },
-        [config.customKeys.jump]: { key: ' ', code: 'Space', keyCode: 32 }
+        [config.customKeys.hoverboard]: { key: ' ', code: 'Space', keyCode: 32 }
       };
       
       return keyMap[key] || null;
@@ -1260,7 +1119,7 @@
       console.log('🔓 Déblocage de tous les personnages...');
       
       // Simulation du déblocage
-      showNotification('🎉 Tous les personnages débloqués!', 'success');
+      showNotification('🎉 Tous les personnages débloqués! Rafraîchissez la page pour voir les changements.', 'success', true);
     }
 
     // ============= FPS COUNTER =============
@@ -1274,18 +1133,6 @@
       if (now - fpsLastTime >= 1000) {
         const fps = Math.round((fpsFrames * 1000) / (now - fpsLastTime));
         document.getElementById('fps-value').textContent = fps;
-        
-        const fpsEl = document.getElementById('fps-overlay');
-        if (fps >= 55) {
-          fpsEl.style.color = '#00cc66';
-          fpsEl.style.borderColor = '#00cc66';
-        } else if (fps >= 30) {
-          fpsEl.style.color = '#ffaa00';
-          fpsEl.style.borderColor = '#ffaa00';
-        } else {
-          fpsEl.style.color = '#ff4444';
-          fpsEl.style.borderColor = '#ff4444';
-        }
         
         fpsFrames = 0;
         fpsLastTime = now;
@@ -1360,6 +1207,108 @@
       showNotification(`🎨 Thème ${themeName.charAt(0).toUpperCase() + themeName.slice(1)} appliqué!`, 'success');
     }
 
+    // ============= SYSTÈME DE DRAG & DROP =============
+    function setupDragAndDrop() {
+      const draggableElements = [
+        document.getElementById('fps-overlay'),
+        document.getElementById('top3-overlay'),
+        document.getElementById('speedrun-timer-overlay')
+      ];
+      
+      draggableElements.forEach(element => {
+        if (!element) return;
+        
+        element.addEventListener('mousedown', startDrag);
+        element.addEventListener('touchstart', startDragTouch, { passive: false });
+      });
+      
+      document.addEventListener('mousemove', drag);
+      document.addEventListener('touchmove', dragTouch, { passive: false });
+      document.addEventListener('mouseup', stopDrag);
+      document.addEventListener('touchend', stopDrag);
+    }
+    
+    function startDrag(e) {
+      isDragging = true;
+      currentDraggedElement = e.target;
+      
+      const rect = currentDraggedElement.getBoundingClientRect();
+      dragOffset.x = e.clientX - rect.left;
+      dragOffset.y = e.clientY - rect.top;
+      
+      currentDraggedElement.style.opacity = '0.7';
+      e.preventDefault();
+    }
+    
+    function startDragTouch(e) {
+      if (e.touches.length !== 1) return;
+      
+      isDragging = true;
+      currentDraggedElement = e.target;
+      
+      const rect = currentDraggedElement.getBoundingClientRect();
+      dragOffset.x = e.touches[0].clientX - rect.left;
+      dragOffset.y = e.touches[0].clientY - rect.top;
+      
+      currentDraggedElement.style.opacity = '0.7';
+      e.preventDefault();
+    }
+    
+    function drag(e) {
+      if (!isDragging || !currentDraggedElement) return;
+      
+      const x = e.clientX - dragOffset.x;
+      const y = e.clientY - dragOffset.y;
+      
+      currentDraggedElement.style.left = `${x}px`;
+      currentDraggedElement.style.top = `${y}px`;
+      currentDraggedElement.style.right = 'auto';
+      currentDraggedElement.style.bottom = 'auto';
+      
+      // Sauvegarder la position
+      saveOverlayPosition(currentDraggedElement.id, { left: `${x}px`, top: `${y}px` });
+    }
+    
+    function dragTouch(e) {
+      if (!isDragging || !currentDraggedElement || e.touches.length !== 1) return;
+      
+      const x = e.touches[0].clientX - dragOffset.x;
+      const y = e.touches[0].clientY - dragOffset.y;
+      
+      currentDraggedElement.style.left = `${x}px`;
+      currentDraggedElement.style.top = `${y}px`;
+      currentDraggedElement.style.right = 'auto';
+      currentDraggedElement.style.bottom = 'auto';
+      
+      // Sauvegarder la position
+      saveOverlayPosition(currentDraggedElement.id, { left: `${x}px`, top: `${y}px` });
+      
+      e.preventDefault();
+    }
+    
+    function stopDrag() {
+      if (!isDragging || !currentDraggedElement) return;
+      
+      currentDraggedElement.style.opacity = '';
+      isDragging = false;
+      currentDraggedElement = null;
+    }
+    
+    function saveOverlayPosition(id, position) {
+      const overlayKey = id.replace('-overlay', '');
+      config.overlayPositions[overlayKey] = position;
+      saveConfig();
+    }
+    
+    function applyOverlayPositions() {
+      Object.keys(config.overlayPositions).forEach(key => {
+        const element = document.getElementById(`${key}-overlay`);
+        if (element && config.overlayPositions[key]) {
+          Object.assign(element.style, config.overlayPositions[key]);
+        }
+      });
+    }
+
     // ============= MODAL DE CONFIGURATION AMÉLIORÉ =============
     function openSettingsModal() {
       if (document.getElementById('mynvo-settings')) return;
@@ -1399,8 +1348,8 @@
               <div class="key-display" data-key="right">${config.customKeys.right.toUpperCase()}</div>
             </div>
             <div class="mynvo-row">
-              <div class="mynvo-label">Saut</div>
-              <div class="key-display" data-key="jump">${config.customKeys.jump === ' ' ? 'ESPACE' : config.customKeys.jump.toUpperCase()}</div>
+              <div class="mynvo-label">Hoverboard</div>
+              <div class="key-display" data-key="hoverboard">${config.customKeys.hoverboard === ' ' ? 'ESPACE' : config.customKeys.hoverboard.toUpperCase()}</div>
             </div>
           </div>
         </div>
@@ -1459,7 +1408,7 @@
           </div>
           
           <div class="settings-section">
-            <h3>📏 Tailles des éléments</h3>
+            <h3>📏 Tailles et Déplacement</h3>
             <div class="mynvo-row">
               <div class="mynvo-label">Taille FPS</div>
               <div class="slider-container">
@@ -1479,6 +1428,12 @@
               <div class="slider-container">
                 <input type="range" min="0.5" max="2" step="0.1" value="${config.overlaySizes.timer}" class="size-slider" id="timer-size">
                 <span id="timer-size-value">${config.overlaySizes.timer}x</span>
+              </div>
+            </div>
+            <div class="mynvo-row">
+              <div class="mynvo-label">Déplacer éléments</div>
+              <div style="color: var(--text-muted); font-size: 14px;">
+                Cliquez et glissez pour déplacer les éléments à l'écran
               </div>
             </div>
           </div>
@@ -1517,13 +1472,6 @@
         <div class="settings-tab-content" id="game-tab">
           <div class="settings-section">
             <h3>🎮 Options de jeu</h3>
-            <div class="mynvo-row">
-              <div class="mynvo-label">Contrôles ZQSD</div>
-              <label class="toggle-switch">
-                <input type="checkbox" id="zqsd-active" ${zqsdActive ? 'checked' : ''}>
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
             <div class="mynvo-row">
               <button class="quick-btn give-piece-btn" onclick="unlockAllCharacters();" style="width:100%;">🔓 Débloquer Tous les Personnages</button>
             </div>
@@ -1600,13 +1548,6 @@
       document.getElementById('fullscreen-keep').addEventListener('change', function() {
         config.fullscreenKeepOverlays = this.checked;
         saveConfig();
-      });
-      
-      document.getElementById('zqsd-active').addEventListener('change', function() {
-        zqsdActive = this.checked;
-        if (zqsdActive) {
-          setupZQSDSystem();
-        }
       });
       
       // Sliders de taille
@@ -1784,30 +1725,6 @@
       }
     }
 
-    // ============= APPLICATION DES POSITIONS DES OVERLAYS =============
-    function applyOverlayPositions() {
-      // FPS
-      const fpsOverlay = document.getElementById('fps-overlay');
-      if (fpsOverlay && config.overlayPositions.fps) {
-        fpsOverlay.style.left = config.overlayPositions.fps.x + 'px';
-        fpsOverlay.style.top = config.overlayPositions.fps.y + 'px';
-      }
-      
-      // TOP 3
-      const top3Overlay = document.getElementById('top3-overlay');
-      if (top3Overlay && config.overlayPositions.top3) {
-        top3Overlay.style.left = config.overlayPositions.top3.x + 'px';
-        top3Overlay.style.top = config.overlayPositions.top3.y + 'px';
-      }
-      
-      // Timer
-      const timerOverlay = document.getElementById('speedrun-timer-overlay');
-      if (timerOverlay && config.overlayPositions.timer) {
-        timerOverlay.style.left = config.overlayPositions.timer.x + 'px';
-        timerOverlay.style.top = config.overlayPositions.timer.y + 'px';
-      }
-    }
-
     // ============= PARTICULES D'ARRIÈRE-PLAN =============
     function initParticles() {
       const container = document.getElementById('particles-container');
@@ -1898,16 +1815,8 @@
       // 4. Activer le système de timer
       setupTimerSystem();
       
-      // 5. Rendre les overlays déplaçables
-      makeDraggable(document.getElementById('fps-overlay'));
-      makeDraggable(document.getElementById('top3-overlay'));
-      makeDraggable(document.getElementById('speedrun-timer-overlay'));
-      
-      // 6. Activer le menu contextuel
-      document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-        toggleBottomMenu();
-      });
+      // 5. Activer le drag & drop
+      setupDragAndDrop();
       
       console.log('✅ Tous les systèmes activés!');
     }
@@ -1931,19 +1840,18 @@
     // ============= LOGS DE DÉMARRAGE =============
     console.log('%c╔════════════════════════════════════════╗', 'color: #7c62dc; font-weight: bold;');
     console.log('%c║  SUBWAY SURFERS 2025 - ÉDITION MYNVO  ║', 'color: #7c62dc; font-weight: bold;');
-    console.log('%c║  Version Intégrée v5.0                ║', 'color: #7c62dc; font-weight: bold;');
+    console.log('%c║  Extension Intégrée v4.0               ║', 'color: #7c62dc; font-weight: bold;');
     console.log('%c╚════════════════════════════════════════╝', 'color: #7c62dc; font-weight: bold;');
     console.log('');
     console.log('%c🎮 Touches:', 'color: #00cc66; font-weight: bold;');
-    console.log('   • ZQSD pour se déplacer');
-    console.log('   • ESPACE pour sauter');
+    console.log('   • ZQSD + Espace pour jouer');
     console.log('   • T = Démarrer timer');
     console.log('   • ESPACE = Pause timer');
     console.log('   • R = Reset timer');
     console.log('');
     console.log('%c⚙️ Fonctionnalités:', 'color: #7c62dc; font-weight: bold;');
-    console.log('   • Jeu Subway Surfers intégré sans publicités');
-    console.log('   • Timer speedrun avec icônes');
+    console.log('   • Déblocage automatique de tous les personnages');
+    console.log('   • Timer speedrun amélioré avec touches séparées');
     console.log('   • FPS Counter en temps réel');
     console.log('   • TOP 3 personnalisable');
     console.log('   • Configuration complète des touches');
@@ -1952,8 +1860,6 @@
     console.log('');
     console.log('%c💡 Astuce:', 'color: #ffaa00; font-weight: bold;');
     console.log('   Ouvrez les "Paramètres" pour personnaliser l\'expérience!');
-    console.log('   Cliquez-droit pour ouvrir le menu rapide!');
-    console.log('   Glissez-déposez les éléments pour les repositionner!');
     console.log('');
   </script>
 </body>
