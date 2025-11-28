@@ -17,138 +17,9 @@
             --success: #00cc66;
             --danger: #ff4444;
             --warning: #ffaa00;
-            --timer-color: #7c62dc;
-            --stats-color: #7c62dc;
-            --top3-color: #7c62dc;
-            --fps-color: #7c62dc;
         }
 
-        .theme-violet {
-            --primary: #7c62dc;
-            --primary-dark: #6a50c9;
-            --primary-light: #9580e8;
-            --primary-transparent: rgba(124, 98, 220, 0.15);
-            --timer-color: #7c62dc;
-            --stats-color: #7c62dc;
-            --top3-color: #7c62dc;
-            --fps-color: #7c62dc;
-        }
-
-        .theme-blue {
-            --primary: #4a6fa5;
-            --primary-dark: #3a5a85;
-            --primary-light: #6b8cc0;
-            --primary-transparent: rgba(74, 111, 165, 0.15);
-            --timer-color: #4a6fa5;
-            --stats-color: #4a6fa5;
-            --top3-color: #4a6fa5;
-            --fps-color: #4a6fa5;
-        }
-
-        .theme-green {
-            --primary: #2ecc71;
-            --primary-dark: #27ae60;
-            --primary-light: #58d68d;
-            --primary-transparent: rgba(46, 204, 113, 0.15);
-            --timer-color: #2ecc71;
-            --stats-color: #2ecc71;
-            --top3-color: #2ecc71;
-            --fps-color: #2ecc71;
-        }
-
-        .theme-red {
-            --primary: #e74c3c;
-            --primary-dark: #c0392b;
-            --primary-light: #ff7979;
-            --primary-transparent: rgba(231, 76, 60, 0.15);
-            --timer-color: #e74c3c;
-            --stats-color: #e74c3c;
-            --top3-color: #e74c3c;
-            --fps-color: #e74c3c;
-        }
-
-        .theme-orange {
-            --primary: #e67e22;
-            --primary-dark: #d35400;
-            --primary-light: #f39c12;
-            --primary-transparent: rgba(230, 126, 34, 0.15);
-            --timer-color: #e67e22;
-            --stats-color: #e67e22;
-            --top3-color: #e67e22;
-            --fps-color: #e67e22;
-        }
-
-        .theme-purple {
-            --primary: #9b59b6;
-            --primary-dark: #8e44ad;
-            --primary-light: #bb8fce;
-            --primary-transparent: rgba(155, 89, 182, 0.15);
-            --timer-color: #9b59b6;
-            --stats-color: #9b59b6;
-            --top3-color: #9b59b6;
-            --fps-color: #9b59b6;
-        }
-
-        .theme-pink {
-            --primary: #e84393;
-            --primary-dark: #fd79a8;
-            --primary-light: #fab1a0;
-            --primary-transparent: rgba(232, 67, 147, 0.15);
-            --timer-color: #e84393;
-            --stats-color: #e84393;
-            --top3-color: #e84393;
-            --fps-color: #e84393;
-        }
-
-        .theme-cyan {
-            --primary: #00cec9;
-            --primary-dark: #00b894;
-            --primary-light: #81ecec;
-            --primary-transparent: rgba(0, 206, 201, 0.15);
-            --timer-color: #00cec9;
-            --stats-color: #00cec9;
-            --top3-color: #00cec9;
-            --fps-color: #00cec9;
-        }
-
-        .theme-yellow {
-            --primary: #fdcb6e;
-            --primary-dark: #fdcb6e;
-            --primary-light: #ffeaa7;
-            --primary-transparent: rgba(253, 203, 110, 0.15);
-            --timer-color: #fdcb6e;
-            --stats-color: #fdcb6e;
-            --top3-color: #fdcb6e;
-            --fps-color: #fdcb6e;
-        }
-
-        .theme-midnight {
-            --primary: #2d3436;
-            --primary-dark: #636e72;
-            --primary-light: #b2bec3;
-            --primary-transparent: rgba(45, 52, 54, 0.15);
-            --timer-color: #2d3436;
-            --stats-color: #2d3436;
-            --top3-color: #2d3436;
-            --fps-color: #2d3436;
-        }
-
-        .theme-ocean {
-            --primary: #0984e3;
-            --primary-dark: #0984e3;
-            --primary-light: #74b9ff;
-            --primary-transparent: rgba(9, 132, 227, 0.15);
-            --timer-color: #0984e3;
-            --stats-color: #0984e3;
-            --top3-color: #0984e3;
-            --fps-color: #0984e3;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
@@ -166,7 +37,7 @@
             margin: 0 auto;
         }
 
-        /* Header Styles */
+        /* Header */
         header {
             background: var(--primary-transparent);
             backdrop-filter: blur(12px);
@@ -210,9 +81,7 @@
             cursor: pointer;
         }
 
-        .nav-links a:hover {
-            color: var(--primary);
-        }
+        .nav-links a:hover { color: var(--primary); }
 
         /* Game Container */
         .game-section {
@@ -242,6 +111,11 @@
             height: 80vh;
             min-height: 600px;
             background: #000;
+            transition: all 0.3s ease;
+        }
+
+        .game-frame.theater-mode {
+            height: 90vh;
         }
 
         #game-iframe {
@@ -277,56 +151,29 @@
             transform: scale(1.05);
         }
 
-        /* Overlays - Améliorés pour le déplacement */
+        /* Overlays Draggables */
         .overlay {
             position: fixed;
             z-index: 2147483647;
             backdrop-filter: blur(10px);
-            pointer-events: all;
-            resize: both;
-            overflow: hidden;
-            min-width: 120px;
-            min-height: 40px;
             cursor: move;
             user-select: none;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            min-width: 120px;
+            min-height: 40px;
+            resize: both;
+            overflow: auto;
         }
 
-        .overlay-header {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 5px 10px;
-            border-radius: 8px 8px 0 0;
-            font-size: 12px;
-            font-weight: bold;
-            cursor: move;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .overlay-content {
-            padding: 10px;
-        }
-
-        .resize-handle {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: var(--primary);
-            border-radius: 50%;
-            bottom: 0;
-            right: 0;
-            cursor: nw-resize;
-            z-index: 10;
-        }
+        .overlay:active { cursor: grabbing; }
 
         #fps-overlay {
             top: 20px;
             left: 20px;
             background: rgba(0, 0, 0, 0.9);
-            color: var(--fps-color);
-            border: 2px solid var(--fps-color);
+            color: var(--primary);
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 2px solid var(--primary);
             font-family: 'Courier New', monospace;
             font-weight: bold;
         }
@@ -335,13 +182,15 @@
             bottom: 20px;
             left: 20px;
             background: rgba(0, 0, 0, 0.95);
-            color: var(--top3-color);
-            border: 2px solid var(--top3-color);
+            color: var(--primary);
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 2px solid var(--primary);
             min-width: 160px;
         }
 
         #top3-overlay .title {
-            color: var(--top3-color);
+            color: var(--primary);
             font-size: 12px;
             font-weight: 900;
             margin-bottom: 8px;
@@ -356,17 +205,13 @@
             font-size: 11px;
         }
 
-        #top3-overlay .player.first {
-            color: var(--top3-color);
-            font-weight: 700;
-        }
-
         #speedrun-timer-overlay {
             bottom: 20px;
             right: 20px;
             background: rgba(0, 0, 0, 0.9);
-            border: 2px solid var(--timer-color);
+            border: 2px solid var(--primary);
             border-radius: 10px;
+            padding: 12px 15px;
             font-family: 'Courier New', monospace;
             min-width: 140px;
         }
@@ -374,9 +219,8 @@
         #timer-display {
             font-weight: bold;
             font-size: 18px;
-            color: var(--timer-color);
+            color: var(--primary);
             text-align: center;
-            letter-spacing: 1px;
         }
 
         /* Stats Panel */
@@ -385,15 +229,18 @@
             top: 20px;
             right: 20px;
             background: rgba(0, 0, 0, 0.9);
-            border: 2px solid var(--stats-color);
+            border: 2px solid var(--primary);
             border-radius: 10px;
+            padding: 15px;
             z-index: 999;
             min-width: 180px;
-            backdrop-filter: blur(10px);
+            cursor: move;
+            resize: both;
+            overflow: auto;
         }
 
         .stats-panel h3 {
-            color: var(--stats-color);
+            color: var(--primary);
             font-size: 14px;
             margin-bottom: 10px;
             text-align: center;
@@ -406,73 +253,71 @@
             font-size: 12px;
         }
 
-        /* Bottom Menu */
-        #bottom-menu {
+        /* Cheat Menu */
+        #cheat-menu {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             background: rgba(0, 0, 0, 0.95);
-            border: 2px solid var(--primary);
-            border-radius: 12px;
-            padding: 15px;
+            border: 3px solid var(--success);
+            border-radius: 15px;
+            padding: 25px;
             z-index: 999999;
-            min-width: 220px;
-            backdrop-filter: blur(15px);
+            min-width: 350px;
+            backdrop-filter: blur(20px);
             display: none;
         }
 
-        #bottom-menu.visible {
-            display: block;
+        #cheat-menu.visible { display: block; }
+
+        .cheat-header {
+            text-align: center;
+            color: var(--success);
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            text-transform: uppercase;
         }
 
-        .menu-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .menu-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .close-btn {
-            background: var(--primary);
-            border: none;
-            color: #000;
-            font-weight: 700;
-            border-radius: 6px;
-            padding: 4px 8px;
-            cursor: pointer;
-            font-size: 10px;
-        }
-
-        .quick-btn {
+        .cheat-btn {
             width: 100%;
-            padding: 8px 10px;
-            background: #111;
-            border: 1px solid var(--primary);
-            border-radius: 6px;
-            color: #fff;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 11px;
-            transition: all 0.15s ease;
-            margin-top: 6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            pointer-events: all;
-        }
-
-        .quick-btn:hover {
-            background: var(--primary);
+            padding: 14px;
+            background: linear-gradient(135deg, var(--success), #27ae60);
+            border: none;
+            border-radius: 10px;
             color: #000;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 15px rgba(0, 204, 102, 0.3);
         }
 
-        /* Settings Modal */
+        .cheat-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 204, 102, 0.5);
+        }
+
+        .cheat-btn.danger {
+            background: linear-gradient(135deg, var(--danger), #c0392b);
+        }
+
+        .cheat-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--danger);
+            border: none;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        /* Modal */
         .modal {
             position: fixed;
             top: 50%;
@@ -487,13 +332,10 @@
             width: 600px;
             max-height: 80vh;
             overflow-y: auto;
-            backdrop-filter: blur(20px);
             display: none;
         }
 
-        .modal.active {
-            display: block;
-        }
+        .modal.active { display: block; }
 
         .settings-section {
             background: rgba(20, 20, 30, 0.7);
@@ -507,9 +349,6 @@
             color: var(--primary);
             margin-bottom: 12px;
             font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .settings-row {
@@ -532,11 +371,7 @@
             height: 24px;
         }
 
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
 
         .toggle-slider {
             position: absolute;
@@ -570,70 +405,6 @@
             transform: translateX(26px);
         }
 
-        .theme-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .theme-option {
-            padding: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            text-align: center;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
-
-        .theme-option.active {
-            border-color: var(--primary);
-            transform: scale(1.05);
-        }
-
-        .theme-option.violet { background: linear-gradient(135deg, #7c62dc, #6a50c9); color: white; }
-        .theme-option.blue { background: linear-gradient(135deg, #4a6fa5, #3a5a85); color: white; }
-        .theme-option.green { background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; }
-        .theme-option.red { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; }
-        .theme-option.orange { background: linear-gradient(135deg, #e67e22, #d35400); color: white; }
-        .theme-option.purple { background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; }
-        .theme-option.pink { background: linear-gradient(135deg, #e84393, #fd79a8); color: white; }
-        .theme-option.cyan { background: linear-gradient(135deg, #00cec9, #00b894); color: white; }
-        .theme-option.yellow { background: linear-gradient(135deg, #fdcb6e, #ffeaa7); color: #333; }
-        .theme-option.midnight { background: linear-gradient(135deg, #2d3436, #636e72); color: white; }
-        .theme-option.ocean { background: linear-gradient(135deg, #0984e3, #74b9ff); color: white; }
-
-        .key-config {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .key-input {
-            background: var(--bg-dark);
-            border: 2px solid var(--primary);
-            border-radius: 6px;
-            color: var(--text-light);
-            padding: 8px 12px;
-            font-family: 'Courier New', monospace;
-            text-align: center;
-            min-width: 60px;
-        }
-
-        .color-config {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .color-input {
-            width: 60px;
-            height: 30px;
-            border: 2px solid var(--primary);
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
         /* Footer */
         footer {
             text-align: center;
@@ -651,7 +422,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.9);
             padding: 2rem;
             border-radius: 10px;
             border: 2px solid var(--primary);
@@ -672,77 +443,17 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Discord Link */
-        .discord-link {
-            color: var(--text-light);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .discord-link:hover {
-            color: var(--primary);
-        }
-
-        /* Resolution Selector */
-        .resolution-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .resolution-option {
-            padding: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            text-align: center;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-            background: rgba(30, 30, 40, 0.7);
-        }
-
-        .resolution-option.active {
-            border-color: var(--primary);
-            transform: scale(1.05);
-            background: var(--primary-transparent);
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .nav-links {
-                gap: 1rem;
-            }
-
-            .game-frame {
-                height: 60vh;
-                min-height: 400px;
-            }
-
-            #top3-overlay {
-                display: none;
-            }
-
-            .modal {
-                width: 95%;
-                padding: 1rem;
-            }
-
-            .stats-panel {
-                display: none;
-            }
+            .header-content { flex-direction: column; gap: 1rem; }
+            .nav-links { gap: 1rem; }
+            .game-frame { height: 60vh; min-height: 400px; }
+            #top3-overlay, .stats-panel { display: none; }
+            .modal { width: 95%; padding: 1rem; }
         }
     </style>
 </head>
-<body class="theme-violet">
+<body>
     <div class="container">
         <header>
             <div class="header-content">
@@ -751,9 +462,10 @@
                 </div>
                 <div class="nav-links">
                     <a id="play-btn">🎮 Jouer</a>
-                    <a id="stats-btn">📊 Statistiques</a>
+                    <a id="cheat-btn">💎 Cheats</a>
+                    <a id="stats-btn">📊 Stats</a>
                     <a id="settings-btn">⚙️ Paramètres</a>
-                    <a href="https://discord.gg/KHfb8N3ekD" class="discord-link" target="_blank">💬 Discord</a>
+                    <a href="https://discord.gg/KHfb8N3ekD" target="_blank">💬 Discord</a>
                 </div>
             </div>
         </header>
@@ -767,13 +479,15 @@
                     </div>
                     
                     <div class="game-controls">
-                        <button class="control-btn" id="fullscreen-btn">⤢ Plein écran</button>
+                        <button class="control-btn" id="theater-btn">🎬 Mode Théâtre</button>
+                        <button class="control-btn" id="fullscreen-btn">⛶ Plein écran</button>
                     </div>
 
-                    <!-- LIEN CORRIGÉ -->
                     <iframe id="game-iframe" 
-                            src="https://adfree3kh0.github.io/projects/subway-surfers/index.html"
-                            allowfullscreen>
+                            src="https://3kh0.github.io/projects/subway-surfers/index.html"
+                            allowfullscreen
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-forms">
                     </iframe>
                 </div>
             </div>
@@ -784,1106 +498,550 @@
         </footer>
     </div>
 
-    <!-- Overlays améliorés avec en-têtes -->
+    <!-- FPS Overlay -->
     <div id="fps-overlay" class="overlay">
-        <div class="overlay-header">
-            <span>FPS</span>
-            <button class="close-overlay" data-overlay="fps">✖</button>
-        </div>
-        <div class="overlay-content">
-            FPS: <span id="fps-value">60</span>
-        </div>
-        <div class="resize-handle"></div>
+        FPS: <span id="fps-value">60</span>
     </div>
 
+    <!-- TOP 3 Overlay -->
     <div id="top3-overlay" class="overlay">
-        <div class="overlay-header">
-            <span>TOP 3</span>
-            <button class="close-overlay" data-overlay="top3">✖</button>
-        </div>
-        <div class="overlay-content">
-            <div class="title">🏆 TOP 3</div>
-            <div class="player first">🥇 Mynvo – 13:27</div>
-            <div class="player">🥈 Le_A – 11:51</div>
-            <div class="player">🥉 Pro – 10:23</div>
-        </div>
-        <div class="resize-handle"></div>
+        <div class="title">🏆 TOP 3</div>
+        <div class="player">🥇 Mynvo — 13:27</div>
+        <div class="player">🥈 Le_A — 11:51</div>
+        <div class="player">🥉 Pro — 10:23</div>
     </div>
 
+    <!-- Timer Overlay -->
     <div id="speedrun-timer-overlay" class="overlay">
-        <div class="overlay-header">
-            <span>Timer</span>
-            <button class="close-overlay" data-overlay="timer">✖</button>
-        </div>
-        <div class="overlay-content">
-            <div id="timer-display">00:00.00</div>
-        </div>
-        <div class="resize-handle"></div>
+        <div id="timer-display">00:00.00</div>
     </div>
 
-    <!-- Stats Panel amélioré -->
-    <div class="stats-panel overlay" id="stats-panel">
-        <div class="overlay-header">
-            <span>Stats</span>
-            <button class="close-overlay" data-overlay="stats">✖</button>
+    <!-- Stats Panel -->
+    <div class="stats-panel" id="stats-panel">
+        <h3>📊 Stats</h3>
+        <div class="stats-item">
+            <span>Score:</span>
+            <span id="max-score">0</span>
         </div>
-        <div class="overlay-content">
-            <h3>📊 Stats</h3>
-            <div class="stats-item">
-                <span>Score:</span>
-                <span id="max-score">0</span>
-            </div>
-            <div class="stats-item">
-                <span>Distance:</span>
-                <span id="total-distance">0m</span>
-            </div>
-            <div class="stats-item">
-                <span>Pièces:</span>
-                <span id="total-coins">0</span>
-            </div>
-            <div class="stats-item">
-                <span>Parties:</span>
-                <span id="games-played">0</span>
-            </div>
+        <div class="stats-item">
+            <span>Distance:</span>
+            <span id="total-distance">0m</span>
         </div>
-        <div class="resize-handle"></div>
-    </div>
-
-    <!-- Bottom Menu -->
-    <div id="bottom-menu">
-        <div class="menu-header">
-            <div class="menu-title">⚙️ Menu Rapide</div>
-            <button class="close-btn" id="close-menu-btn">✖</button>
+        <div class="stats-item">
+            <span>Pièces:</span>
+            <span id="total-coins">0</span>
         </div>
-        <button class="quick-btn" onclick="openSettingsModal()">🎮 Paramètres</button>
-        <button class="quick-btn" onclick="toggleTimer()">⏱️ Timer</button>
-        <button class="quick-btn" onclick="toggleFPS()">📊 FPS</button>
-        <button class="quick-btn" onclick="toggleFullscreen()">⤢ Plein écran</button>
-        <button class="quick-btn" onclick="toggleTop3()">🏆 TOP 3</button>
-        <button class="quick-btn" onclick="toggleStats()">📈 Stats</button>
-        <button class="quick-btn" onclick="unlockAllSkins()">🔓 Débloquer Tout</button>
-    </div>
-
-    <!-- Settings Modal -->
-    <div id="settings-modal" class="modal">
-        <h2 style="color: var(--primary); margin-bottom: 20px; text-align: center;">⚙️ Paramètres</h2>
-        
-        <div class="settings-section">
-            <h3>🎮 Contrôles Personnalisables</h3>
-            <div class="key-config">
-                <div class="settings-row">
-                    <div class="settings-label">Haut</div>
-                    <input type="text" class="key-input" id="key-up" maxlength="1" value="Z" readonly>
-                    <button class="control-btn" onclick="changeKey('up')">Modifier</button>
-                </div>
-                <div class="settings-row">
-                    <div class="settings-label">Bas</div>
-                    <input type="text" class="key-input" id="key-down" maxlength="1" value="S" readonly>
-                    <button class="control-btn" onclick="changeKey('down')">Modifier</button>
-                </div>
-                <div class="settings-row">
-                    <div class="settings-label">Gauche</div>
-                    <input type="text" class="key-input" id="key-left" maxlength="1" value="Q" readonly>
-                    <button class="control-btn" onclick="changeKey('left')">Modifier</button>
-                </div>
-                <div class="settings-row">
-                    <div class="settings-label">Droite</div>
-                    <input type="text" class="key-input" id="key-right" maxlength="1" value="D" readonly>
-                    <button class="control-btn" onclick="changeKey('right')">Modifier</button>
-                </div>
-                <div class="settings-row">
-                    <div class="settings-label">Saut</div>
-                    <input type="text" class="key-input" id="key-jump" maxlength="1" value=" " readonly>
-                    <button class="control-btn" onclick="changeKey('jump')">Modifier</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="settings-section">
-            <h3>⏱️ Contrôles Timer</h3>
-            <div class="key-config">
-                <div class="settings-row">
-                    <div class="settings-label">Start/Pause</div>
-                    <input type="text" class="key-input" id="key-timer-start" maxlength="1" value="T" readonly>
-                    <button class="control-btn" onclick="changeKey('timer-start')">Modifier</button>
-                </div>
-                <div class="settings-row">
-                    <div class="settings-label">Reset</div>
-                    <input type="text" class="key-input" id="key-timer-reset" maxlength="1" value="R" readonly>
-                    <button class="control-btn" onclick="changeKey('timer-reset')">Modifier</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="settings-section">
-            <h3>🎨 Couleurs</h3>
-            <div class="color-config">
-                <div class="settings-row">
-                    <div class="settings-label">Couleur FPS</div>
-                    <input type="color" class="color-input" id="color-fps" value="#7c62dc">
-                </div>
-                <div class="settings-row">
-                    <div class="settings-label">Couleur Timer</div>
-                    <input type="color" class="color-input" id="color-timer" value="#7c62dc">
-                </div>
-                <div class="settings-row">
-                    <div class="settings-label">Couleur TOP 3</div>
-                    <input type="color" class="color-input" id="color-top3" value="#7c62dc">
-                </div>
-                <div class="settings-row">
-                    <div class="settings-label">Couleur Stats</div>
-                    <input type="color" class="color-input" id="color-stats" value="#7c62dc">
-                </div>
-            </div>
-        </div>
-
-        <div class="settings-section">
-            <h3>🖥️ Résolution</h3>
-            <div class="resolution-options">
-                <div class="resolution-option" data-resolution="phone" onclick="changeResolution('phone')">
-                    📱 Téléphone
-                </div>
-                <div class="resolution-option" data-resolution="720p" onclick="changeResolution('720p')">
-                    🖥️ 720p
-                </div>
-                <div class="resolution-option" data-resolution="1080p" onclick="changeResolution('1080p')">
-                    🖥️ 1080p
-                </div>
-                <div class="resolution-option" data-resolution="1440p" onclick="changeResolution('1440p')">
-                    🖥️ 1440p
-                </div>
-                <div class="resolution-option active" data-resolution="auto" onclick="changeResolution('auto')">
-                    🔄 Auto
-                </div>
-            </div>
-        </div>
-
-        <div class="settings-section">
-            <h3>👁️ Affichage</h3>
-            <div class="settings-row">
-                <div class="settings-label">Afficher FPS</div>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="show-fps" checked>
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-            <div class="settings-row">
-                <div class="settings-label">Afficher TOP 3</div>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="show-top3" checked>
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-            <div class="settings-row">
-                <div class="settings-label">Afficher Timer</div>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="show-timer">
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-            <div class="settings-row">
-                <div class="settings-label">Afficher Stats</div>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="show-stats" checked>
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-            <div class="settings-row">
-                <div class="settings-label">Plein écran par défaut</div>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="fullscreen-default" checked>
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-            <div class="settings-row">
-                <div class="settings-label">Overlays en plein écran</div>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="show-overlays-fullscreen" checked>
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-        </div>
-
-        <div class="settings-section">
-            <h3>🎨 Thèmes</h3>
-            <p style="color: var(--text-muted); margin-bottom: 15px;">Choisissez un thème pour l'interface :</p>
-            <div class="theme-options">
-                <div class="theme-option violet active" data-theme="violet">🔮 Violet</div>
-                <div class="theme-option blue" data-theme="blue">🔵 Bleu</div>
-                <div class="theme-option green" data-theme="green">💚 Vert</div>
-                <div class="theme-option red" data-theme="red">❤️ Rouge</div>
-                <div class="theme-option orange" data-theme="orange">🟠 Orange</div>
-                <div class="theme-option purple" data-theme="purple">🟣 Pourpre</div>
-                <div class="theme-option pink" data-theme="pink">🌸 Rose</div>
-                <div class="theme-option cyan" data-theme="cyan">💧 Cyan</div>
-                <div class="theme-option yellow" data-theme="yellow">💛 Jaune</div>
-                <div class="theme-option midnight" data-theme="midnight">🌙 Minuit</div>
-                <div class="theme-option ocean" data-theme="ocean">🌊 Océan</div>
-            </div>
-        </div>
-
-        <div class="settings-section">
-            <h3>🔓 Débloquer Contenu</h3>
-            <div class="settings-row">
-                <div class="settings-label">Débloquer tous les skins</div>
-                <button class="control-btn" onclick="unlockAllSkins()">🔓 Débloquer</button>
-            </div>
-            <div class="settings-row">
-                <div class="settings-label">Pièces illimitées</div>
-                <button class="control-btn" onclick="unlockCoins()">💰 +999,999</button>
-            </div>
-            <div class="settings-row">
-                <div class="settings-label">Clés illimitées</div>
-                <button class="control-btn" onclick="unlockKeys()">🔑 +999</button>
-            </div>
-        </div>
-
-        <div style="text-align: center; margin-top: 20px;">
-            <button class="control-btn" onclick="resetControls()" style="margin-right: 10px;">🔄 Réinitialiser</button>
-            <button class="control-btn" onclick="closeSettingsModal()" style="padding: 10px 20px;">❌ Fermer</button>
+        <div class="stats-item">
+            <span>Parties:</span>
+            <span id="games-played">0</span>
         </div>
     </div>
 
-    <!-- Stats Modal -->
-    <div id="stats-modal" class="modal">
-        <h2 style="color: var(--primary); margin-bottom: 20px; text-align: center;">📊 Statistiques Détaillées</h2>
-        
-        <div class="settings-section">
-            <h3>📈 Performances</h3>
-            <div class="stats-item">
-                <span>Score Maximum:</span>
-                <span id="detailed-max-score">0</span>
-            </div>
-            <div class="stats-item">
-                <span>Distance Totale:</span>
-                <span id="detailed-total-distance">0m</span>
-            </div>
-            <div class="stats-item">
-                <span>Pièces Collectées:</span>
-                <span id="detailed-total-coins">0</span>
-            </div>
-            <div class="stats-item">
-                <span>Parties Jouées:</span>
-                <span id="detailed-games-played">0</span>
-            </div>
-            <div class="stats-item">
-                <span>Temps de Jeu Total:</span>
-                <span id="detailed-total-playtime">00:00:00</span>
-            </div>
-        </div>
-
-        <div style="text-align: center; margin-top: 20px;">
-            <button class="control-btn" onclick="closeStatsModal()" style="padding: 10px 20px;">Fermer</button>
-        </div>
+    <!-- Cheat Menu -->
+    <div id="cheat-menu">
+        <button class="cheat-close" onclick="toggleCheatMenu()">✖</button>
+        <div class="cheat-header">💎 Cheat Menu</div>
+        <button class="cheat-btn" onclick="unlockAllSkins()">🎨 Débloquer TOUS les Skins</button>
+        <button class="cheat-btn" onclick="giveMaxCoins()">💰 999,999 Pièces</button>
+        <button class="cheat-btn" onclick="giveMaxKeys()">🔑 999 Clés</button>
+        <button class="cheat-btn" onclick="unlockAllBoards()">🛹 Tous les Hoverboards</button>
+        <button class="cheat-btn" onclick="godMode()">⭐ Mode Invincible</button>
+        <button class="cheat-btn danger" onclick="resetProgress()">🔄 Réinitialiser</button>
     </div>
 
+    <!-- PARTIE 2 et 3 arrivent... -->
     <script>
-        // Configuration
-        const config = {
-            showFPS: true,
-            showTop3: true,
-            showTimer: false,
-            showStats: true,
-            fullscreenDefault: true,
-            showOverlaysFullscreen: true,
-            resolution: 'auto',
-            theme: 'violet',
-            colors: {
-                fps: '#7c62dc',
-                timer: '#7c62dc',
-                top3: '#7c62dc',
-                stats: '#7c62dc'
-            },
-            controls: {
-                up: 'Z',
-                down: 'S',
-                left: 'Q',
-                right: 'D',
-                jump: ' ',
-                timerStart: 'T',
-                timerReset: 'R'
-            },
-            stats: {
-                maxScore: 12500,
-                totalDistance: 8450,
-                totalCoins: 320,
-                gamesPlayed: 15,
-                totalPlaytime: 4520
-            }
-        };
-
-        // État du timer
-        let timerState = 'stopped';
-        let timerStartTime = 0;
-        let timerCurrentTime = 0;
-        let timerInterval = null;
-        let changingKey = null;
-
-        // FPS Counter
-        let frameCount = 0;
-        let lastTime = performance.now();
-        let fps = 60;
-
-        // Variables pour le déplacement et redimensionnement
-        let activeOverlay = null;
-        let isResizing = false;
-        let startX, startY, startWidth, startHeight;
-
-        // Initialisation
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeApp();
-            setupEventListeners();
-            startFPSCounter();
-            hideLoading();
-            setupOverlayDragging();
-            
-            // Plein écran par défaut si activé
-            if (config.fullscreenDefault) {
-                setTimeout(() => {
-                    toggleFullscreen();
-                }, 1000);
-            }
-        });
-
-        function initializeApp() {
-            loadConfig();
-            applyConfig();
-            setupCustomControls();
-            setupTimerControls();
-            setupFullscreenOverlays();
-        }
-
-        function setupEventListeners() {
-            // Navigation
-            document.getElementById('play-btn').addEventListener('click', focusGame);
-            document.getElementById('settings-btn').addEventListener('click', openSettingsModal);
-            document.getElementById('stats-btn').addEventListener('click', openStatsModal);
-
-            // Contrôles de jeu
-            document.getElementById('fullscreen-btn').addEventListener('click', toggleFullscreen);
-
-            // Menu contextuel
-            document.addEventListener('contextmenu', function(e) {
-                e.preventDefault();
-                toggleBottomMenu();
-            });
-
-            document.getElementById('close-menu-btn').addEventListener('click', toggleBottomMenu);
-
-            // Paramètres
-            document.getElementById('show-fps').addEventListener('change', function() {
-                config.showFPS = this.checked;
-                document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
-                saveConfig();
-            });
-
-            document.getElementById('show-top3').addEventListener('change', function() {
-                config.showTop3 = this.checked;
-                document.getElementById('top3-overlay').style.display = config.showTop3 ? 'block' : 'none';
-                saveConfig();
-            });
-
-            document.getElementById('show-timer').addEventListener('change', function() {
-                config.showTimer = this.checked;
-                document.getElementById('speedrun-timer-overlay').style.display = config.showTimer ? 'block' : 'none';
-                saveConfig();
-            });
-
-            document.getElementById('show-stats').addEventListener('change', function() {
-                config.showStats = this.checked;
-                document.getElementById('stats-panel').style.display = config.showStats ? 'block' : 'none';
-                saveConfig();
-            });
-
-            document.getElementById('fullscreen-default').addEventListener('change', function() {
-                config.fullscreenDefault = this.checked;
-                saveConfig();
-            });
-
-            document.getElementById('show-overlays-fullscreen').addEventListener('change', function() {
-                config.showOverlaysFullscreen = this.checked;
-                saveConfig();
-            });
-
-            // Couleurs
-            document.getElementById('color-fps').addEventListener('input', function() {
-                config.colors.fps = this.value;
-                updateColors();
-                saveConfig();
-            });
-
-            document.getElementById('color-timer').addEventListener('input', function() {
-                config.colors.timer = this.value;
-                updateColors();
-                saveConfig();
-            });
-
-            document.getElementById('color-top3').addEventListener('input', function() {
-                config.colors.top3 = this.value;
-                updateColors();
-                saveConfig();
-            });
-
-            document.getElementById('color-stats').addEventListener('input', function() {
-                config.colors.stats = this.value;
-                updateColors();
-                saveConfig();
-            });
-
-            // Thèmes
-            document.querySelectorAll('.theme-option').forEach(option => {
-                option.addEventListener('click', function() {
-                    const theme = this.dataset.theme;
-                    changeTheme(theme);
-                });
-            });
-
-            // Boutons de fermeture des overlays
-            document.querySelectorAll('.close-overlay').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const overlayType = this.dataset.overlay;
-                    hideOverlay(overlayType);
-                });
-            });
-
-            // Écouteur global pour la modification des touches
-            document.addEventListener('keydown', handleKeyChange);
-
-            // Plein écran avec F11
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'F11') {
-                    e.preventDefault();
-                    toggleFullscreen();
-                }
-            });
-
-            // Plein écran
-            document.addEventListener('fullscreenchange', handleFullscreenChange);
-        }
-
-        // Système de déplacement et redimensionnement des overlays
-        function setupOverlayDragging() {
-            const overlays = document.querySelectorAll('.overlay');
-            
-            overlays.forEach(overlay => {
-                const header = overlay.querySelector('.overlay-header');
-                const resizeHandle = overlay.querySelector('.resize-handle');
-                
-                // Déplacement
-                header.addEventListener('mousedown', function(e) {
-                    activeOverlay = overlay;
-                    startX = e.clientX;
-                    startY = e.clientY;
-                    startWidth = parseInt(document.defaultView.getComputedStyle(overlay).width, 10);
-                    startHeight = parseInt(document.defaultView.getComputedStyle(overlay).height, 10);
-                    
-                    document.addEventListener('mousemove', doDrag);
-                    document.addEventListener('mouseup', stopDrag);
-                });
-                
-                // Redimensionnement
-                resizeHandle.addEventListener('mousedown', function(e) {
-                    isResizing = true;
-                    activeOverlay = overlay;
-                    startX = e.clientX;
-                    startY = e.clientY;
-                    startWidth = parseInt(document.defaultView.getComputedStyle(overlay).width, 10);
-                    startHeight = parseInt(document.defaultView.getComputedStyle(overlay).height, 10);
-                    
-                    document.addEventListener('mousemove', doResize);
-                    document.addEventListener('mouseup', stopResize);
-                    e.stopPropagation();
-                });
-            });
-            
-            function doDrag(e) {
-                if (!activeOverlay) return;
-                
-                const dx = e.clientX - startX;
-                const dy = e.clientY - startY;
-                
-                activeOverlay.style.left = (activeOverlay.offsetLeft + dx) + 'px';
-                activeOverlay.style.top = (activeOverlay.offsetTop + dy) + 'px';
-                
-                startX = e.clientX;
-                startY = e.clientY;
-            }
-            
-            function stopDrag() {
-                activeOverlay = null;
-                document.removeEventListener('mousemove', doDrag);
-                document.removeEventListener('mouseup', stopDrag);
-            }
-            
-            function doResize(e) {
-                if (!activeOverlay || !isResizing) return;
-                
-                const width = startWidth + (e.clientX - startX);
-                const height = startHeight + (e.clientY - startY);
-                
-                if (width > 100) activeOverlay.style.width = width + 'px';
-                if (height > 50) activeOverlay.style.height = height + 'px';
-            }
-            
-            function stopResize() {
-                isResizing = false;
-                activeOverlay = null;
-                document.removeEventListener('mousemove', doResize);
-                document.removeEventListener('mouseup', stopResize);
-            }
-        }
-
-        // Fonctions de déblocage
-        function unlockAllSkins() {
-            try {
-                // Tentative d'injection dans l'iframe
-                const iframe = document.getElementById('game-iframe');
-                iframe.contentWindow.postMessage({
-                    type: 'unlock_all',
-                    coins: 999999,
-                    keys: 999,
-                    skins: 'all'
-                }, '*');
-                
-                // Tentative via localStorage
-                localStorage.setItem('subway_coins', '999999');
-                localStorage.setItem('subway_keys', '999');
-                localStorage.setItem('subway_unlocked_characters', 'all');
-                
-                alert('✅ Tous les skins ont été débloqués !');
-            } catch(e) {
-                alert('⚠️ Impossible de débloquer les skins automatiquement. Essayez manuellement dans le jeu.');
-            }
-        }
-
-        function unlockCoins() {
-            try {
-                const iframe = document.getElementById('game-iframe');
-                iframe.contentWindow.postMessage({
-                    type: 'add_coins',
-                    amount: 999999
-                }, '*');
-                
-                localStorage.setItem('subway_coins', '999999');
-                alert('💰 Pièces ajoutées !');
-            } catch(e) {
-                alert('⚠️ Impossible d\'ajouter des pièces automatiquement.');
-            }
-        }
-
-        function unlockKeys() {
-            try {
-                const iframe = document.getElementById('game-iframe');
-                iframe.contentWindow.postMessage({
-                    type: 'add_keys',
-                    amount: 999
-                }, '*');
-                
-                localStorage.setItem('subway_keys', '999');
-                alert('🔑 Clés ajoutées !');
-            } catch(e) {
-                alert('⚠️ Impossible d\'ajouter des clés automatiquement.');
-            }
-        }
-
-        function hideOverlay(type) {
-            switch(type) {
-                case 'fps':
-                    config.showFPS = false;
-                    document.getElementById('fps-overlay').style.display = 'none';
-                    document.getElementById('show-fps').checked = false;
-                    break;
-                case 'top3':
-                    config.showTop3 = false;
-                    document.getElementById('top3-overlay').style.display = 'none';
-                    document.getElementById('show-top3').checked = false;
-                    break;
-                case 'timer':
-                    config.showTimer = false;
-                    document.getElementById('speedrun-timer-overlay').style.display = 'none';
-                    document.getElementById('show-timer').checked = false;
-                    break;
-                case 'stats':
-                    config.showStats = false;
-                    document.getElementById('stats-panel').style.display = 'none';
-                    document.getElementById('show-stats').checked = false;
-                    break;
-            }
-            saveConfig();
-        }
-
-        // Système de contrôles personnalisés
-        function setupCustomControls() {
-            document.addEventListener('keydown', handleCustomKeyDown, true);
-        }
-
-        function setupTimerControls() {
-            document.addEventListener('keydown', handleTimerKeyDown, true);
-        }
-
-        function setupFullscreenOverlays() {
-            // S'assurer que les overlays restent visibles en plein écran
-            document.addEventListener('fullscreenchange', function() {
-                if (config.showOverlaysFullscreen) {
-                    if (document.fullscreenElement) {
-                        // Forcer l'affichage des overlays en plein écran
-                        document.querySelectorAll('.overlay').forEach(overlay => {
-                            overlay.style.display = 'block';
-                        });
-                        document.getElementById('stats-panel').style.display = config.showStats ? 'block' : 'none';
-                    }
-                }
-            });
-        }
-
-        function handleCustomKeyDown(e) {
-            if (e.target.tagName === 'INPUT' || changingKey) return;
-
-            const key = e.key.toUpperCase();
-            const keyMap = {
-                [config.controls.up]: { key: 'ArrowUp', code: 'ArrowUp' },
-                [config.controls.down]: { key: 'ArrowDown', code: 'ArrowDown' },
-                [config.controls.left]: { key: 'ArrowLeft', code: 'ArrowLeft' },
-                [config.controls.right]: { key: 'ArrowRight', code: 'ArrowRight' },
-                [config.controls.jump]: { key: ' ', code: 'Space' }
-            };
-
-            if (keyMap[key]) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                // Simulation des touches pour le jeu
-                const iframe = document.getElementById('game-iframe');
-                try {
-                    iframe.contentWindow.postMessage({
-                        type: 'keydown',
-                        key: keyMap[key].key,
-                        code: keyMap[key].code
-                    }, '*');
-                } catch (err) {
-                    console.log('Key simulation:', keyMap[key].key);
-                }
-            }
-        }
-
-        function handleTimerKeyDown(e) {
-            if (e.target.tagName === 'INPUT' || changingKey) return;
-
-            const key = e.key.toUpperCase();
-            
-            if (key === config.controls.timerStart) {
-                if (timerState === 'stopped' || timerState === 'paused') {
-                    startTimer();
-                } else if (timerState === 'running') {
-                    pauseTimer();
-                }
-            } else if (key === config.controls.timerReset) {
-                resetTimer();
-            }
-        }
-
-        // Modification des touches
-        function changeKey(action) {
-            changingKey = action;
-            const input = document.getElementById(`key-${action}`);
-            input.style.borderColor = 'var(--warning)';
-            input.placeholder = 'Appuyez sur une touche...';
-            input.value = '';
-        }
-
-        function handleKeyChange(e) {
-            if (changingKey) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const key = e.key.toUpperCase();
-                
-                // Vérifier si la touche est déjà utilisée
-                for (const control in config.controls) {
-                    if (config.controls[control] === key && control !== changingKey) {
-                        resetKeyInput();
-                        return;
-                    }
-                }
-                
-                document.getElementById(`key-${changingKey}`).value = key;
-                config.controls[changingKey] = key;
-                
-                document.getElementById(`key-${changingKey}`).style.borderColor = 'var(--primary)';
-                document.getElementById(`key-${changingKey}`).placeholder = '';
-                
-                saveConfig();
-                changingKey = null;
-            }
-        }
-
-        function resetKeyInput() {
-            if (changingKey) {
-                document.getElementById(`key-${changingKey}`).value = config.controls[changingKey];
-                document.getElementById(`key-${changingKey}`).style.borderColor = 'var(--primary)';
-                document.getElementById(`key-${changingKey}`).placeholder = '';
-                changingKey = null;
-            }
-        }
-
-        function resetControls() {
-            config.controls = {
-                up: 'Z',
-                down: 'S',
-                left: 'Q',
-                right: 'D',
-                jump: ' ',
-                timerStart: 'T',
-                timerReset: 'R'
-            };
-            
-            document.getElementById('key-up').value = 'Z';
-            document.getElementById('key-down').value = 'S';
-            document.getElementById('key-left').value = 'Q';
-            document.getElementById('key-right').value = 'D';
-            document.getElementById('key-jump').value = ' ';
-            document.getElementById('key-timer-start').value = 'T';
-            document.getElementById('key-timer-reset').value = 'R';
-            
-            saveConfig();
-        }
-
-        // Timer functions
-        function startTimer() {
-            if (timerState === 'stopped' || timerState === 'paused') {
-                timerStartTime = performance.now() - timerCurrentTime;
-                timerState = 'running';
-                
-                timerInterval = setInterval(() => {
-                    if (timerState === 'running') {
-                        timerCurrentTime = performance.now() - timerStartTime;
-                        updateTimerDisplay();
-                    }
-                }, 10);
-            }
-        }
-
-        function pauseTimer() {
-            if (timerState === 'running') {
-                timerState = 'paused';
-                clearInterval(timerInterval);
-            }
-        }
-
-        function resetTimer() {
-            timerState = 'stopped';
-            timerCurrentTime = 0;
-            clearInterval(timerInterval);
-            updateTimerDisplay();
-        }
-
-        function updateTimerDisplay() {
-            const totalSec = Math.floor(timerCurrentTime / 1000);
-            const m = Math.floor(totalSec / 60);
-            const s = totalSec % 60;
-            const cs = Math.floor((timerCurrentTime % 1000) / 10);
-            
-            document.getElementById('timer-display').textContent = 
-                `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}.${cs.toString().padStart(2, '0')}`;
-        }
-
-        // FPS Counter (réel)
-        function startFPSCounter() {
-            function updateFPS() {
-                frameCount++;
-                const currentTime = performance.now();
-                
-                if (currentTime - lastTime >= 1000) {
-                    fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
-                    document.getElementById('fps-value').textContent = fps;
-                    
-                    // Changer la couleur selon les FPS
-                    const fpsEl = document.getElementById('fps-overlay');
-                    if (fps >= 55) {
-                        fpsEl.style.borderColor = config.colors.fps;
-                        fpsEl.style.color = config.colors.fps;
-                    } else if (fps >= 30) {
-                        fpsEl.style.borderColor = config.colors.fps;
-                        fpsEl.style.color = config.colors.fps;
-                    } else {
-                        fpsEl.style.borderColor = config.colors.fps;
-                        fpsEl.style.color = config.colors.fps;
-                    }
-                    
-                    frameCount = 0;
-                    lastTime = currentTime;
-                }
-                
-                requestAnimationFrame(updateFPS);
-            }
-            updateFPS();
-        }
-
-        // Gestion des thèmes
-        function changeTheme(themeName) {
-            document.body.classList.remove('theme-violet', 'theme-blue', 'theme-green', 'theme-red', 'theme-orange', 
-                                         'theme-purple', 'theme-pink', 'theme-cyan', 'theme-yellow', 'theme-midnight', 'theme-ocean');
-            document.body.classList.add(`theme-${themeName}`);
-            config.theme = themeName;
-            
-            // Mettre à jour les sélections de thème
-            document.querySelectorAll('.theme-option').forEach(option => {
-                option.classList.remove('active');
-            });
-            document.querySelector(`.theme-option[data-theme="${themeName}"]`).classList.add('active');
-            
-            saveConfig();
-        }
-
-        // Gestion de la résolution
-        function changeResolution(resolution) {
-            config.resolution = resolution;
-            
-            // Mettre à jour les sélections de résolution
-            document.querySelectorAll('.resolution-option').forEach(option => {
-                option.classList.remove('active');
-            });
-            document.querySelector(`.resolution-option[data-resolution="${resolution}"]`).classList.add('active');
-            
-            // Appliquer la résolution
-            const gameFrame = document.querySelector('.game-frame');
-            
-            switch(resolution) {
-                case 'phone':
-                    gameFrame.style.height = '50vh';
-                    gameFrame.style.minHeight = '300px';
-                    break;
-                case '720p':
-                    gameFrame.style.height = '60vh';
-                    gameFrame.style.minHeight = '400px';
-                    break;
-                case '1080p':
-                    gameFrame.style.height = '70vh';
-                    gameFrame.style.minHeight = '500px';
-                    break;
-                case '1440p':
-                    gameFrame.style.height = '80vh';
-                    gameFrame.style.minHeight = '600px';
-                    break;
-                case 'auto':
-                default:
-                    gameFrame.style.height = '80vh';
-                    gameFrame.style.minHeight = '600px';
-                    break;
-            }
-            
-            saveConfig();
-        }
-
-        // Mise à jour des couleurs
-        function updateColors() {
-            document.documentElement.style.setProperty('--fps-color', config.colors.fps);
-            document.documentElement.style.setProperty('--timer-color', config.colors.timer);
-            document.documentElement.style.setProperty('--top3-color', config.colors.top3);
-            document.documentElement.style.setProperty('--stats-color', config.colors.stats);
-            
-            // Appliquer les couleurs aux éléments
-            document.getElementById('fps-overlay').style.borderColor = config.colors.fps;
-            document.getElementById('fps-overlay').style.color = config.colors.fps;
-            
-            document.getElementById('speedrun-timer-overlay').style.borderColor = config.colors.timer;
-            document.getElementById('timer-display').style.color = config.colors.timer;
-            
-            document.getElementById('top3-overlay').style.borderColor = config.colors.top3;
-            document.getElementById('top3-overlay').style.color = config.colors.top3;
-            document.getElementById('top3-overlay').querySelector('.title').style.color = config.colors.top3;
-            document.getElementById('top3-overlay').querySelectorAll('.player').forEach(player => {
-                player.style.color = config.colors.top3;
-            });
-            
-            document.getElementById('stats-panel').style.borderColor = config.colors.stats;
-            document.getElementById('stats-panel').querySelector('h3').style.color = config.colors.stats;
-        }
-
-        // Fonctions d'interface
-        function openSettingsModal() {
-            document.getElementById('settings-modal').classList.add('active');
-        }
-
-        function closeSettingsModal() {
-            document.getElementById('settings-modal').classList.remove('active');
-            resetKeyInput();
-        }
-
-        function openStatsModal() {
-            document.getElementById('stats-modal').classList.add('active');
-        }
-
-        function closeStatsModal() {
-            document.getElementById('stats-modal').classList.remove('active');
-        }
-
-        function toggleBottomMenu() {
-            document.getElementById('bottom-menu').classList.toggle('visible');
-        }
-
-        function toggleFullscreen() {
-            const gameFrame = document.querySelector('.game-frame');
-            
-            if (!document.fullscreenElement) {
-                if (gameFrame.requestFullscreen) {
-                    gameFrame.requestFullscreen();
-                } else if (gameFrame.webkitRequestFullscreen) {
-                    gameFrame.webkitRequestFullscreen();
-                } else if (gameFrame.msRequestFullscreen) {
-                    gameFrame.msRequestFullscreen();
-                }
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                } else if (document.msExitFullscreen) {
-                    document.msExitFullscreen();
-                }
-            }
-        }
-
-        function handleFullscreenChange() {
-            const fullscreenBtn = document.getElementById('fullscreen-btn');
-            if (document.fullscreenElement) {
-                fullscreenBtn.textContent = 'Quitter Plein écran';
-                
-                // Forcer l'affichage des overlays si l'option est activée
-                if (config.showOverlaysFullscreen) {
-                    document.querySelectorAll('.overlay').forEach(overlay => {
-                        overlay.style.display = 'block';
-                    });
-                    document.getElementById('stats-panel').style.display = config.showStats ? 'block' : 'none';
-                }
-            } else {
-                fullscreenBtn.textContent = '⤢ Plein écran';
-                
-                // Restaurer l'affichage normal des overlays
-                document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
-                document.getElementById('top3-overlay').style.display = config.showTop3 ? 'block' : 'none';
-                document.getElementById('speedrun-timer-overlay').style.display = config.showTimer ? 'block' : 'none';
-                document.getElementById('stats-panel').style.display = config.showStats ? 'block' : 'none';
-            }
-        }
-
-        function toggleTimer() {
-            config.showTimer = !config.showTimer;
-            document.getElementById('speedrun-timer-overlay').style.display = config.showTimer ? 'block' : 'none';
-            document.getElementById('show-timer').checked = config.showTimer;
-            saveConfig();
-        }
-
-        function toggleFPS() {
-            config.showFPS = !config.showFPS;
-            document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
-            document.getElementById('show-fps').checked = config.showFPS;
-            saveConfig();
-        }
-
-        function toggleTop3() {
-            config.showTop3 = !config.showTop3;
-            document.getElementById('top3-overlay').style.display = config.showTop3 ? 'block' : 'none';
-            document.getElementById('show-top3').checked = config.showTop3;
-            saveConfig();
-        }
-
-        function toggleStats() {
-            config.showStats = !config.showStats;
-            document.getElementById('stats-panel').style.display = config.showStats ? 'block' : 'none';
-            document.getElementById('show-stats').checked = config.showStats;
-            saveConfig();
-        }
-
-        function focusGame() {
-            document.querySelector('.game-section').scrollIntoView({ behavior: 'smooth' });
-            document.getElementById('game-iframe').focus();
-        }
-
-        function hideLoading() {
-            setTimeout(() => {
-                document.getElementById('loading').style.display = 'none';
-            }, 2000);
-        }
-
-        // Sauvegarde/Chargement de la configuration
-        function saveConfig() {
-            localStorage.setItem('mynvoConfig', JSON.stringify(config));
-        }
-
-        function loadConfig() {
-            try {
-                const saved = localStorage.getItem('mynvoConfig');
-                if (saved) {
-                    const savedConfig = JSON.parse(saved);
-                    Object.assign(config, savedConfig);
-                }
-            } catch (e) {
-                console.warn('Impossible de charger la configuration');
-            }
-        }
-
-        function applyConfig() {
-            // Appliquer le thème
-            changeTheme(config.theme);
-            
-            // Appliquer l'état des overlays
-            document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
-            document.getElementById('top3-overlay').style.display = config.showTop3 ? 'block' : 'none';
-            document.getElementById('speedrun-timer-overlay').style.display = config.showTimer ? 'block' : 'none';
-            document.getElementById('stats-panel').style.display = config.showStats ? 'block' : 'none';
-            
-            // Appliquer les états des toggles
-            document.getElementById('show-fps').checked = config.showFPS;
-            document.getElementById('show-top3').checked = config.showTop3;
-            document.getElementById('show-timer').checked = config.showTimer;
-            document.getElementById('show-stats').checked = config.showStats;
-            document.getElementById('fullscreen-default').checked = config.fullscreenDefault;
-            document.getElementById('show-overlays-fullscreen').checked = config.showOverlaysFullscreen;
-            
-            // Appliquer les contrôles personnalisés
-            document.getElementById('key-up').value = config.controls.up;
-            document.getElementById('key-down').value = config.controls.down;
-            document.getElementById('key-left').value = config.controls.left;
-            document.getElementById('key-right').value = config.controls.right;
-            document.getElementById('key-jump').value = config.controls.jump;
-            document.getElementById('key-timer-start').value = config.controls.timerStart;
-            document.getElementById('key-timer-reset').value = config.controls.timerReset;
-            
-            // Appliquer les couleurs
-            document.getElementById('color-fps').value = config.colors.fps;
-            document.getElementById('color-timer').value = config.colors.timer;
-            document.getElementById('color-top3').value = config.colors.top3;
-            document.getElementById('color-stats').value = config.colors.stats;
-            updateColors();
-            
-            // Appliquer la résolution
-            document.querySelectorAll('.resolution-option').forEach(option => {
-                option.classList.remove('active');
-            });
-            document.querySelector(`.resolution-option[data-resolution="${config.resolution}"]`).classList.add('active');
-            changeResolution(config.resolution);
-            
-            // Mettre à jour les stats
-            document.getElementById('max-score').textContent = config.stats.maxScore.toLocaleString();
-            document.getElementById('total-distance').textContent = config.stats.totalDistance.toLocaleString() + 'm';
-            document.getElementById('total-coins').textContent = config.stats.totalCoins.toLocaleString();
-            document.getElementById('games-played').textContent = config.stats.gamesPlayed;
-            
-            document.getElementById('detailed-max-score').textContent = config.stats.maxScore.toLocaleString();
-            document.getElementById('detailed-total-distance').textContent = config.stats.totalDistance.toLocaleString() + 'm';
-            document.getElementById('detailed-total-coins').textContent = config.stats.totalCoins.toLocaleString();
-            document.getElementById('detailed-games-played').textContent = config.stats.gamesPlayed;
-            
-            // Calculer le temps de jeu formaté
-            const hours = Math.floor(config.stats.totalPlaytime / 3600);
-            const minutes = Math.floor((config.stats.totalPlaytime % 3600) / 60);
-            const seconds = config.stats.totalPlaytime % 60;
-            document.getElementById('detailed-total-playtime').textContent = 
-                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        }
-
-        console.log('🎮 Subway Surfers 2025 - Version Mynvo Chargée!');
+        console.log('✅ PARTIE 1/3 CHARGÉE - En attente des parties 2 et 3...');
     </script>
 </body>
 </html>
+
+// ========================================
+// SUBWAY SURFERS BY MYNVO - PARTIE 2/3
+// JavaScript Core + Fonctionnalités
+// ========================================
+
+// Configuration globale
+const config = {
+    showFPS: true,
+    showTop3: true,
+    showTimer: false,
+    showStats: true,
+    fullscreenDefault: false,
+    theaterMode: false,
+    theme: 'violet',
+    stats: {
+        maxScore: 0,
+        totalDistance: 0,
+        totalCoins: 0,
+        gamesPlayed: 0,
+        totalPlaytime: 0
+    }
+};
+
+// État du timer
+let timerState = 'stopped';
+let timerStartTime = 0;
+let timerCurrentTime = 0;
+let timerInterval = null;
+
+// FPS Counter
+let frameCount = 0;
+let lastTime = performance.now();
+let fps = 60;
+
+// Variables pour le drag & drop des overlays
+let isDragging = false;
+let currentDragElement = null;
+let offsetX = 0;
+let offsetY = 0;
+
+// ========================================
+// INITIALISATION
+// ========================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🎮 Subway Surfers Mynvo - Initialisation...');
+    
+    loadConfig();
+    setupEventListeners();
+    makeDraggable();
+    startFPSCounter();
+    applyConfig();
+    
+    setTimeout(() => {
+        document.getElementById('loading').style.display = 'none';
+    }, 2000);
+    
+    console.log('✅ Tout est chargé !');
+});
+
+// ========================================
+// EVENT LISTENERS
+// ========================================
+
+function setupEventListeners() {
+    // Navigation
+    document.getElementById('play-btn').addEventListener('click', focusGame);
+    document.getElementById('cheat-btn').addEventListener('click', toggleCheatMenu);
+    document.getElementById('stats-btn').addEventListener('click', () => alert('Stats complètes - À implémenter'));
+    document.getElementById('settings-btn').addEventListener('click', () => alert('Paramètres - À implémenter'));
+    
+    // Contrôles de jeu
+    document.getElementById('theater-btn').addEventListener('click', toggleTheaterMode);
+    document.getElementById('fullscreen-btn').addEventListener('click', toggleFullscreen);
+    
+    // Raccourcis clavier
+    document.addEventListener('keydown', handleKeyboard);
+}
+
+// ========================================
+// SYSTÈME DE DRAG & DROP
+// ========================================
+
+function makeDraggable() {
+    const draggableElements = document.querySelectorAll('.overlay, .stats-panel');
+    
+    draggableElements.forEach(element => {
+        element.addEventListener('mousedown', startDrag);
+    });
+    
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('mouseup', stopDrag);
+}
+
+function startDrag(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+    
+    isDragging = true;
+    currentDragElement = e.currentTarget;
+    
+    const rect = currentDragElement.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+    
+    currentDragElement.style.cursor = 'grabbing';
+    currentDragElement.style.zIndex = '9999999';
+}
+
+function drag(e) {
+    if (!isDragging || !currentDragElement) return;
+    
+    e.preventDefault();
+    
+    let newX = e.clientX - offsetX;
+    let newY = e.clientY - offsetY;
+    
+    // Limites de l'écran
+    const maxX = window.innerWidth - currentDragElement.offsetWidth;
+    const maxY = window.innerHeight - currentDragElement.offsetHeight;
+    
+    newX = Math.max(0, Math.min(newX, maxX));
+    newY = Math.max(0, Math.min(newY, maxY));
+    
+    currentDragElement.style.left = newX + 'px';
+    currentDragElement.style.top = newY + 'px';
+    currentDragElement.style.right = 'auto';
+    currentDragElement.style.bottom = 'auto';
+}
+
+function stopDrag() {
+    if (currentDragElement) {
+        currentDragElement.style.cursor = 'move';
+        currentDragElement.style.zIndex = '';
+    }
+    isDragging = false;
+    currentDragElement = null;
+}
+
+// ========================================
+// FPS COUNTER
+// ========================================
+
+function startFPSCounter() {
+    function updateFPS() {
+        frameCount++;
+        const currentTime = performance.now();
+        
+        if (currentTime - lastTime >= 1000) {
+            fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+            document.getElementById('fps-value').textContent = fps;
+            
+            // Couleur selon les FPS
+            const fpsEl = document.getElementById('fps-overlay');
+            if (fps >= 55) {
+                fpsEl.style.color = '#00cc66';
+                fpsEl.style.borderColor = '#00cc66';
+            } else if (fps >= 30) {
+                fpsEl.style.color = '#ffaa00';
+                fpsEl.style.borderColor = '#ffaa00';
+            } else {
+                fpsEl.style.color = '#ff4444';
+                fpsEl.style.borderColor = '#ff4444';
+            }
+            
+            frameCount = 0;
+            lastTime = currentTime;
+        }
+        
+        requestAnimationFrame(updateFPS);
+    }
+    updateFPS();
+}
+
+// ========================================
+// TIMER FUNCTIONS
+// ========================================
+
+function startTimer() {
+    if (timerState === 'stopped' || timerState === 'paused') {
+        timerStartTime = performance.now() - timerCurrentTime;
+        timerState = 'running';
+        
+        timerInterval = setInterval(() => {
+            if (timerState === 'running') {
+                timerCurrentTime = performance.now() - timerStartTime;
+                updateTimerDisplay();
+            }
+        }, 10);
+    }
+}
+
+function pauseTimer() {
+    if (timerState === 'running') {
+        timerState = 'paused';
+        clearInterval(timerInterval);
+    }
+}
+
+function resetTimer() {
+    timerState = 'stopped';
+    timerCurrentTime = 0;
+    clearInterval(timerInterval);
+    updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+    const totalSec = Math.floor(timerCurrentTime / 1000);
+    const m = Math.floor(totalSec / 60);
+    const s = totalSec % 60;
+    const cs = Math.floor((timerCurrentTime % 1000) / 10);
+    
+    document.getElementById('timer-display').textContent = 
+        `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}.${cs.toString().padStart(2, '0')}`;
+}
+
+// ========================================
+// CHEAT FUNCTIONS
+// ========================================
+
+function toggleCheatMenu() {
+    const menu = document.getElementById('cheat-menu');
+    menu.classList.toggle('visible');
+}
+
+function unlockAllSkins() {
+    console.log('🎨 Déblocage de tous les skins...');
+    
+    // Tentative d'injection dans l'iframe
+    try {
+        const iframe = document.getElementById('game-iframe');
+        iframe.contentWindow.postMessage({
+            type: 'cheat',
+            action: 'unlock_skins'
+        }, '*');
+    } catch (e) {
+        console.log('⚠️ Impossible d\'injecter dans l\'iframe');
+    }
+    
+    // LocalStorage hack
+    localStorage.setItem('subway_unlocked_characters', 'all');
+    localStorage.setItem('subway_skins_unlocked', 'true');
+    
+    showNotification('✅ Tous les skins débloqués ! Redémarre le jeu.', 'success');
+}
+
+function giveMaxCoins() {
+    console.log('💰 Ajout de 999,999 pièces...');
+    
+    try {
+        const iframe = document.getElementById('game-iframe');
+        iframe.contentWindow.postMessage({
+            type: 'cheat',
+            action: 'set_coins',
+            value: 999999
+        }, '*');
+    } catch (e) {
+        console.log('⚠️ Impossible d\'injecter');
+    }
+    
+    localStorage.setItem('subway_coins', '999999');
+    config.stats.totalCoins = 999999;
+    updateStatsDisplay();
+    
+    showNotification('✅ 999,999 pièces ajoutées !', 'success');
+}
+
+function giveMaxKeys() {
+    console.log('🔑 Ajout de 999 clés...');
+    
+    try {
+        const iframe = document.getElementById('game-iframe');
+        iframe.contentWindow.postMessage({
+            type: 'cheat',
+            action: 'set_keys',
+            value: 999
+        }, '*');
+    } catch (e) {
+        console.log('⚠️ Impossible d\'injecter');
+    }
+    
+    localStorage.setItem('subway_keys', '999');
+    
+    showNotification('✅ 999 clés ajoutées !', 'success');
+}
+
+function unlockAllBoards() {
+    console.log('🛹 Déblocage de tous les hoverboards...');
+    
+    localStorage.setItem('subway_unlocked_boards', 'all');
+    
+    showNotification('✅ Tous les hoverboards débloqués !', 'success');
+}
+
+function godMode() {
+    console.log('⭐ Activation du mode invincible...');
+    
+    try {
+        const iframe = document.getElementById('game-iframe');
+        iframe.contentWindow.postMessage({
+            type: 'cheat',
+            action: 'god_mode',
+            enabled: true
+        }, '*');
+    } catch (e) {
+        console.log('⚠️ God mode non disponible pour cette version');
+    }
+    
+    localStorage.setItem('subway_god_mode', 'true');
+    
+    showNotification('✅ Mode invincible activé !', 'success');
+}
+
+function resetProgress() {
+    if (!confirm('⚠️ Êtes-vous sûr de vouloir tout réinitialiser ?')) return;
+    
+    localStorage.clear();
+    config.stats = {
+        maxScore: 0,
+        totalDistance: 0,
+        totalCoins: 0,
+        gamesPlayed: 0,
+        totalPlaytime: 0
+    };
+    
+    updateStatsDisplay();
+    showNotification('✅ Progression réinitialisée !', 'success');
+    
+    setTimeout(() => location.reload(), 1500);
+}
+
+// ========================================
+// UI FUNCTIONS
+// ========================================
+
+function toggleTheaterMode() {
+    config.theaterMode = !config.theaterMode;
+    const gameFrame = document.querySelector('.game-frame');
+    const btn = document.getElementById('theater-btn');
+    
+    if (config.theaterMode) {
+        gameFrame.classList.add('theater-mode');
+        btn.textContent = '🎬 Mode Normal';
+    } else {
+        gameFrame.classList.remove('theater-mode');
+        btn.textContent = '🎬 Mode Théâtre';
+    }
+    
+    saveConfig();
+}
+
+function toggleFullscreen() {
+    const gameFrame = document.querySelector('.game-frame');
+    
+    if (!document.fullscreenElement) {
+        gameFrame.requestFullscreen().catch(err => {
+            console.log('Erreur fullscreen:', err);
+        });
+    } else {
+        document.exitFullscreen();
+    }
+}
+
+function focusGame() {
+    document.querySelector('.game-section').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('game-iframe').focus();
+}
+
+function showNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#00cc66' : '#ff4444'};
+        color: #000;
+        padding: 15px 25px;
+        border-radius: 10px;
+        font-weight: 700;
+        z-index: 99999999;
+        animation: slideIn 0.3s ease;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    `;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// ========================================
+// KEYBOARD SHORTCUTS
+// ========================================
+
+function handleKeyboard(e) {
+    // F11 pour mode théâtre (au lieu du fullscreen navigateur)
+    if (e.key === 'F11') {
+        e.preventDefault();
+        toggleTheaterMode();
+    }
+    
+    // T pour timer
+    if (e.key === 't' || e.key === 'T') {
+        if (timerState === 'stopped' || timerState === 'paused') {
+            startTimer();
+        } else {
+            pauseTimer();
+        }
+    }
+    
+    // R pour reset timer
+    if (e.key === 'r' || e.key === 'R') {
+        resetTimer();
+    }
+    
+    // C pour cheats
+    if (e.key === 'c' || e.key === 'C') {
+        toggleCheatMenu();
+    }
+}
+
+// ========================================
+// CONFIG & STATS
+// ========================================
+
+function updateStatsDisplay() {
+    document.getElementById('max-score').textContent = config.stats.maxScore.toLocaleString();
+    document.getElementById('total-distance').textContent = config.stats.totalDistance.toLocaleString() + 'm';
+    document.getElementById('total-coins').textContent = config.stats.totalCoins.toLocaleString();
+    document.getElementById('games-played').textContent = config.stats.gamesPlayed;
+}
+
+function saveConfig() {
+    localStorage.setItem('mynvoConfig', JSON.stringify(config));
+}
+
+function loadConfig() {
+    try {
+        const saved = localStorage.getItem('mynvoConfig');
+        if (saved) {
+            Object.assign(config, JSON.parse(saved));
+        }
+    } catch (e) {
+        console.warn('Impossible de charger la config');
+    }
+}
+
+function applyConfig() {
+    // Appliquer les états des overlays
+    document.getElementById('fps-overlay').style.display = config.showFPS ? 'block' : 'none';
+    document.getElementById('top3-overlay').style.display = config.showTop3 ? 'block' : 'none';
+    document.getElementById('speedrun-timer-overlay').style.display = config.showTimer ? 'block' : 'none';
+    document.getElementById('stats-panel').style.display = config.showStats ? 'block' : 'none';
+    
+    updateStatsDisplay();
+}
+
+// ========================================
+// ANIMATIONS CSS (à ajouter dans le style)
+// ========================================
+
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideOut {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
+
+console.log('✅ PARTIE 2/3 CHARGÉE !');
